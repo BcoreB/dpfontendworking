@@ -89,7 +89,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
+    --foreground-rgb: 0, 0, 0;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
@@ -98,12 +98,7 @@
 body {
   color: rgb(var(--foreground-rgb));
   height: 100vh !important;
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: #818CF8;
 }
 .landing-bg
 {
@@ -119,7 +114,7 @@ body {
   }
 }
 .stroke-text {
-  -webkit-text-stroke: 1px white; /* Stroke color */
+  -webkit-text-stroke: 1px rgb(255, 255, 255); /* Stroke color */
   color: transparent; /* Fill color */
 }
 .stroke-text-black {

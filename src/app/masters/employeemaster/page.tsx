@@ -366,23 +366,23 @@ const getFileExtension = (mime: string) => {
                     
                         <div className="grid grid-cols-1 lg:grid-cols-6   gap-1 py-1">
                             <div className="grid gap-1 lg:row-span-3   py-1">
-                            <div className='flex flex-col items-center justify-center border-solid'>
-                            <Image
-                                     id='profilepic'
-                                     key={keyCode}
-                                    src= {selectedFile || `/images/${selectedImageFile}?${Date.now()}` || `/images/defaultprofilepic.jpg`}
-                                    width={100}
-                                    height={100}
-                                    alt={getLanguageByEnglish("Picture of the author")}
-                                    className='m-0 p-0 rounded-md' 
-                                    
-                                />
-                            
-                                {/* <Button className=''>Browse</Button> */}
-                                <Input id="picture" type="file" onChange={handleFileChange} 
-                                    className='w-12 text-white bg-transparent border-none hover:bg-inherit m-auto p-0 items-center'/>
-                                </div>                      
-                            </div>
+                              <div className='flex flex-col items-center justify-center border-solid'>
+                                  <Image
+                                        id='profilepic'
+                                        key={keyCode}
+                                        src= {selectedFile || `/images/${selectedImageFile}?${Date.now()}` || `/images/defaultprofilepic.jpg`}
+                                        width={100}
+                                        height={100}
+                                        alt={getLanguageByEnglish("Picture of the author")}
+                                        className='m-0 p-0 rounded-md' 
+                                        
+                                  />
+                              
+                                  {/* <Button className=''>Browse</Button> */}
+                                    <Input id="picture" type="file" onChange={handleFileChange} 
+                                      className='w-12 text-white bg-transparent border-none hover:bg-inherit m-auto p-0 items-center'/>
+                               </div>                      
+                             </div>
 
                             <div className="grid gap-1 py-1">
                                 <DPInput
