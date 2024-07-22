@@ -66,7 +66,7 @@ const menulist: Menu[] = [
         CategoryName: 'Master',
         MenuList: [
           { MenuID: 1, Name: "EmployeeMaster", Link: "/masterexplorer?docCd=10014", DocCd: 10014, icon: ICON_URL },
-          { MenuID: 2, Name: "Menu 2", Link: "", DocCd: 0, icon: ICON_URL }
+          { MenuID: 2, Name: "Accomodation Master", Link: "/masters/accomodationmaster", DocCd: 0, icon: ICON_URL }
         ]
       },
       {

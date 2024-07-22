@@ -56,7 +56,7 @@ const AccomodationMaster = () => {
    const addNew = useCallback(() => {
     
       
-    const url = '/masters/accomodationMaster'
+    const url = '/masters/accomodationmaster'
     router.push( url);
     alert("Added new")
     window.location.reload()
@@ -65,7 +65,7 @@ const AccomodationMaster = () => {
   const saveData = useCallback(() => {
     
       
-    const url = '/masters/accomodationMaster'
+    const url = '/masters/accomodationmaster'
     router.push( url);
     alert("Saved Data")
     window.location.reload()
@@ -74,7 +74,7 @@ const AccomodationMaster = () => {
   const deleteData = useCallback(() => {
     
       
-    const url = '/masters/accomodationMaster'
+    const url = '/masters/accomodationmaster'
     router.push( url);
     alert("Saved Data")
     window.location.reload()
@@ -83,7 +83,7 @@ const AccomodationMaster = () => {
   const printData = useCallback(() => {
     
       
-    const url = '/masters/accomodationMaster'
+    const url = '/masters/accomodationmaster'
     router.push( url);
     alert("printed Data")
     window.location.reload()
@@ -92,7 +92,7 @@ const AccomodationMaster = () => {
   const onLogClick = useCallback(() => {
     
       
-    const url = '/masters/accomodationMaster'
+    const url = '/masters/accomodationmaster'
     router.push( url);
     alert("Logging data")
     window.location.reload()
@@ -101,7 +101,7 @@ const AccomodationMaster = () => {
   const draftData = useCallback(() => {
     
       
-    const url = '/masters/accomodationMaster'
+    const url = '/masters/accomodationmaster'
     router.push( url);
     // alert("drafted data")
     window.location.reload()
@@ -111,14 +111,14 @@ const AccomodationMaster = () => {
   return (
     <div className='w-full h-full  px-5 py-5  lg:px-20 lg:pb-14 lg:pt-8'>
       <Navbar />
-    <MaxWidthWrapper className='px-5 py-5  lg:px-20 lg:pb-14 lg:pt-20'>
+    <MaxWidthWrapper className='px-5 py-5  lg:px-20 lg:pb-6 lg:pt-20'>
       
       <div className='border-solid'>
         <Form {...form}>
           <form onSubmit={form.handleSubmit( onSubmit)} className="space-y-8">
                       {/* <NasterHeader onNewButtonClicked={addNew} onSaveButtonClicked={onSubmit}/> */}
                     <header>
-                      <div className='flex justify-between bg-purple-100'>
+                      <div className='flex justify-between bg-purple-100 mb-5'>
                         <div>
                           <Button  variant='ghost' type="button" onClick={addNew}>New</Button>
                           <Button  variant='ghost'  type="submit" onClick={saveData} >Save</Button>
@@ -133,7 +133,7 @@ const AccomodationMaster = () => {
                       </div>
                     </header>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-6   gap-1 py-1">
+                    <div className="grid grid-cols-1 lg:grid-cols-6   gap-4 py-1">
                         
                         <div className="grid gap-1 py-1 lg:col-span-2">
                           <DPInput
@@ -141,7 +141,7 @@ const AccomodationMaster = () => {
                                       name="accocode"
                                       disabled={false}
                                       type="text"
-                                      labelText ={getLanguageByEnglish("Accomodatio code")}
+                                      labelText ={getLanguageByEnglish("Accomodation code")}
                                       placeholder={getLanguageByEnglish("00000")}
                                       onValueChange={(field,value)=>{
                                           form.setValue("accocode", value)}}  
@@ -190,7 +190,7 @@ const AccomodationMaster = () => {
                                           name="roadno"
                                           disabled={false}
                                           type="text"
-                                          labelText ={getLanguageByEnglish("Building No")}
+                                          labelText ={getLanguageByEnglish("Road No")}
                                           placeholder={getLanguageByEnglish("000000")}
                                           onValueChange={(field,value)=>{
                                               form.setValue("roadno", value)}}  
