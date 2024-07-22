@@ -8,8 +8,13 @@ import DPComboBox from '@/components/ui/dpcombobox'
 
 // Define the schema for air sector master
 export const formSchema = z.object({
-  airseccode: z.string(),
-  airsecname: z.string(),
+  airseccode: z.string().max(20,{message:'maximum length allowed 20'})
+  .min(5, {
+    message: "accocode must be at least 5 characters.",
+  }),
+  airsecname: z.string().min(2, {
+    message: "Accomodation name must be at least 2 characters.",
+  }),
   defaultairline: z.string(),
   cost: z.string(),
   remarks: z.string(),

@@ -6,8 +6,13 @@ import { saveMasterData, updateMasterData } from '../../datalayer/api';
 
 // Define the schema for accommodation master
 export const formSchema = z.object({
-  accocode: z.string(),
-  accname: z.string(),
+  accocode: z.string().max(20,{message:'maximum length allowed 20'})
+  .min(5, {
+    message: "accocode must be at least 5 characters.",
+  }),
+  accname: z.string().min(2, {
+    message: "Accomodation name must be at least 2 characters.",
+  }),
   buildno: z.string(),
   roadno: z.string(),
   accotype: z.string(),

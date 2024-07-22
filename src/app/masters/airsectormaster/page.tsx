@@ -48,15 +48,15 @@ const AccomodationMaster = () => {
     window.location.reload()
     
   },[])
-  const saveData = useCallback(() => {
+  // const saveData = useCallback(() => {
     
       
-    const url = '/masters/airsectormaster'
-    router.push( url);
-    alert("Saved Data")
-    window.location.reload()
+  //   const url = '/masters/airsectormaster'
+  //   router.push( url);
+  //   alert("Saved Data")
+  //   window.location.reload()
     
-  },[])
+  // },[])
   const deleteData = useCallback(() => {
     
       
@@ -107,7 +107,7 @@ const AccomodationMaster = () => {
                       <div className='flex justify-between bg-purple-100 mb-5'>
                         <div>
                           <Button  variant='ghost' type="button" onClick={addNew}>New</Button>
-                          <Button  variant='ghost'  type="submit" onClick={saveData} >Save</Button>
+                          <Button  variant='ghost'  type="submit" >Save</Button>
                           <Button  variant='ghost'  type="button" onClick={deleteData}>Delete</Button>
                   
                         </div>
