@@ -10,7 +10,7 @@ export default function RootLayout({
   return (
     <>
         <div className='absolute right-0 z-5'>
-            <Sidebar/>
+            
         </div>    
         <main>{children}</main>
     </>
