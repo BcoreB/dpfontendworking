@@ -1,4 +1,5 @@
 
+// "use client"
 // import React, { useState } from 'react';
 // import { Transition } from '@headlessui/react';
 
@@ -14,7 +15,11 @@
 //   { name: 'Drafts', content: '' },
 // ];
 
-// const Sidebar: React.FC = () => {
+// interface SidebarProps {
+//   fillFormWithPredefinedData: () => void;
+// }
+
+// const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData }) => {
 //   const [activeSection, setActiveSection] = useState<number | null>(null);
 //   const [notes, setNotes] = useState<string[]>([]);
 //   const [newNote, setNewNote] = useState<string>('');
@@ -32,7 +37,7 @@
 
 //   return (
 //     <div className="flex h-screen relative">
-//       <div className="right-0 flex flex-col text-sm z-10 pt-40 gap-24 items-center h-full bg-gray-100 shadow-lg gap-8 py-8" style={{ width: '2rem' }}>
+//       <div className="right-0 flex flex-col text-sm z-10 pt-40 gap-24 items-center h-full bg-gray-100 shadow-lg" style={{ width: '2rem' }}>
 //         {sections.map((section, index) => (
 //           <button
 //             key={index}
@@ -62,6 +67,12 @@
 //             {section.name === 'Document Actions' && (
 //               <>
 //                 <h2 className="text-xl font-bold">Document Actions</h2>
+//                 <button
+//                   onClick={fillFormWithPredefinedData}
+//                   className="mb-4 mt-5 px-4 py-2 bg-blue-500 text-white rounded"
+//                 >
+//                   Fill Form 
+//                 </button>
 //               </>
 //             )}
 //             {section.name === 'Notes' && (
@@ -112,6 +123,7 @@
 // export default Sidebar;
 
 "use client"
+
 import React, { useState } from 'react';
 import { Transition } from '@headlessui/react';
 
@@ -135,6 +147,10 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData }) => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
   const [notes, setNotes] = useState<string[]>([]);
   const [newNote, setNewNote] = useState<string>('');
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
+
+  const fileInputRef = React.createRef<HTMLInputElement>();
 
   const toggleSection = (index: number) => {
     setActiveSection(activeSection === index ? null : index);
@@ -147,13 +163,38 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData }) => {
     }
   };
 
+  const handleBrowse = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setAttachments([...attachments, ...Array.from(event.target.files)]);
+    }
+  };
+
+  const handleOpen = (fileIndex: number | null = selectedFileIndex) => {
+    if (fileIndex !== null && attachments[fileIndex]) {
+      const file = attachments[fileIndex];
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL, '_blank');
+    }
+  };
+
+  const handleDelete = () => {
+    if (selectedFileIndex !== null) {
+      setAttachments(attachments.filter((_, i) => i !== selectedFileIndex));
+      setSelectedFileIndex(null);
+    }
+  };
+
   return (
     <div className="flex h-screen relative">
-      <div className="right-0 flex flex-col text-sm z-10 pt-40 gap-24 items-center h-full bg-gray-100 shadow-lg" style={{ width: '2rem' }}>
+      <div className="right-0 flex flex-col text-sm z-10 pt-2 gap-20 items-center mt-44 bg-gray-100 shadow-lg" style={{ width: '2rem' }}>
         {sections.map((section, index) => (
           <button
             key={index}
-            className="w-full text-gray-700 hover:text-gray-900 text-center transform origin-center rotate-90 py-2"
+            className="w-5/6 text-gray-700 hover:text-gray-900 text-center transform origin-center rotate-90 py-2"
             onClick={() => toggleSection(index)}
           >
             <div className='w-40'>
@@ -213,10 +254,46 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData }) => {
             {section.name === 'Attachments' && (
               <>
                 <h2 className="text-xl font-bold mb-4">Attachments</h2>
+                <input
+                  type="file"
+                  multiple
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
                 <div className="flex gap-2 mt-auto items-baseline">
-                  <button className="px-4 py-2 bg-blue-500 text-white rounded">Browse</button>
-                  <button className="px-4 py-2 bg-green-500 text-white rounded">Open</button>
-                  <button className="px-4 py-2 bg-red-500 text-white rounded">Delete</button>
+                  <button
+                    className="px-4 py-2 bg-blue-500 text-white rounded"
+                    onClick={handleBrowse}
+                  >
+                    Browse
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-green-500 text-white rounded"
+                    onClick={() => handleOpen()}
+                    disabled={selectedFileIndex === null}
+                  >
+                    Open
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-red-500 text-white rounded"
+                    onClick={handleDelete}
+                    disabled={selectedFileIndex === null}
+                  >
+                    Delete
+                  </button>
+                </div>
+                <div className="mt-4">
+                  {attachments.map((file, fileIndex) => (
+                    <div
+                      key={fileIndex}
+                      className={`p-2 border border-gray-300 rounded mb-2 cursor-pointer ${selectedFileIndex === fileIndex ? 'bg-gray-200' : ''}`}
+                      onClick={() => setSelectedFileIndex(fileIndex)}
+                      onDoubleClick={() => handleOpen(fileIndex)}
+                    >
+                      {file.name}
+                    </div>
+                  ))}
                 </div>
               </>
             )}
