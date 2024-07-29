@@ -96,7 +96,7 @@ const AccomodationMaster = () => {
   
   return (
     <div className='w-full h-full  px-5 py-5  lg:px-20 lg:pb-14 lg:pt-8'>
-      <Navbar />
+     
     <MaxWidthWrapper className='px-5 py-5  lg:px-20 lg:pb-6 lg:pt-20'>
       
       <div className='border-solid'>

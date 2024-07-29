@@ -336,11 +336,11 @@ const AccomodationMaster = () => {
 
   return (
     <div className='w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8'>
-      <Navbar />
+      
       <div className='absolute top-0 right-0 z-5'>
         <Sidebar fillFormWithPredefinedData={fillFormWithPredefinedData} />
       </div>
-      <MaxWidthWrapper className='px-5 py-5 lg:px-20 lg:pb-6 lg:pt-20'>
+      <MaxWidthWrapper className=''>
         <div className='border-solid'>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
