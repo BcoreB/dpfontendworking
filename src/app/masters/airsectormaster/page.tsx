@@ -15,7 +15,8 @@ import getLanguageByEnglish from '@/utils/languages'
 import { DocStaus } from '@/dptype'
 
 import DPComboBox from '@/components/ui/dpcombobox'
-import Navbar from '@/app/components/Navbar'
+import FormHeader from '@/app/components/formHeader';
+import Sidebar from '@/app/components/SideBar';
 
 const AccomodationMaster = () => {
   const searchParams = useSearchParams()
@@ -29,16 +30,11 @@ const AccomodationMaster = () => {
   const form =  InitializeForm()
     // 2. Define a submit handler.
 
-    const onSubmit=async ( values: z.infer<typeof formSchema> )=> {
 
-  
-      setFormValues(values);
-   
-
-    
-     // onOpen();
-   }
-
+   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setFormValues(values);
+    alert(JSON.stringify(values, null, 2)); // Show form values as alert
+  };
    const addNew = useCallback(() => {
     
       
@@ -103,21 +99,14 @@ const AccomodationMaster = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit( onSubmit)} className="space-y-8">
                       {/* <NasterHeader onNewButtonClicked={addNew} onSaveButtonClicked={onSubmit}/> */}
-                    <header>
-                      <div className='flex justify-between bg-purple-100 mb-5'>
-                        <div>
-                          <Button  variant='ghost' type="button" onClick={addNew}>New</Button>
-                          <Button  variant='ghost'  type="submit" >Save</Button>
-                          <Button  variant='ghost'  type="button" onClick={deleteData}>Delete</Button>
-                  
-                        </div>
-                        <div>
-                          <Button  variant='ghost'  type="button" onClick={printData}  >Print</Button>
-                          <Button  variant='ghost' type="button" onClick={onLogClick}>Log</Button>
-                          <Button  variant='ghost'  type="button" onClick={draftData}>Draft</Button>
-                        </div>
-                      </div>
-                    </header>
+                      <FormHeader
+                        onNew={addNew}
+                        onSave={form.handleSubmit(onSubmit)} // Pass the form's submit handler
+                        onDelete={deleteData}
+                        onPrint={printData}
+                        onLog={onLogClick}
+                        onDraft={draftData}
+                      />
 
                     <div className="grid grid-cols-1 lg:grid-cols-6   gap-4 py-1">
                         
