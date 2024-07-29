@@ -252,8 +252,8 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData }) => {
               </>
             )}
             {section.name === 'Attachments' && (
-              <>
-                <h2 className="text-xl font-bold mb-4">Attachments</h2>
+              <div className="flex flex-col h-full">
+                <h2 className="text-xl font-bold">Attachments</h2>
                 <input
                   type="file"
                   multiple
@@ -261,7 +261,19 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData }) => {
                   style={{ display: 'none' }}
                   onChange={handleFileChange}
                 />
-                <div className="flex gap-2 mt-auto items-baseline">
+                <div className="flex flex-col flex-grow mt-4">
+                  {attachments.map((file, fileIndex) => (
+                    <div
+                      key={fileIndex}
+                      className={`p-2 border border-gray-300 rounded mb-2 cursor-pointer ${selectedFileIndex === fileIndex ? 'bg-gray-200' : ''}`}
+                      onClick={() => setSelectedFileIndex(fileIndex)}
+                      onDoubleClick={() => handleOpen(fileIndex)}
+                    >
+                      {file.name}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-2 mt-auto">
                   <button
                     className="px-4 py-2 bg-blue-500 text-white rounded"
                     onClick={handleBrowse}
@@ -283,19 +295,7 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData }) => {
                     Delete
                   </button>
                 </div>
-                <div className="mt-4">
-                  {attachments.map((file, fileIndex) => (
-                    <div
-                      key={fileIndex}
-                      className={`p-2 border border-gray-300 rounded mb-2 cursor-pointer ${selectedFileIndex === fileIndex ? 'bg-gray-200' : ''}`}
-                      onClick={() => setSelectedFileIndex(fileIndex)}
-                      onDoubleClick={() => handleOpen(fileIndex)}
-                    >
-                      {file.name}
-                    </div>
-                  ))}
-                </div>
-              </>
+              </div>
             )}
             {section.name === 'Drafts' && (
               <>
