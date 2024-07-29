@@ -210,87 +210,85 @@
 
 // export default AccomodationMaster
 
-
 "use client"
-import React, { useCallback, useState } from 'react'
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import { Form } from "@/components/ui/form"
-import MaxWidthWrapper from '@/components/MaxWidthWrapper'
-import DPComboBox from '@/components/ui/dpcombobox'
-import DPInput from '@/components/ui/dpinput'
-import DPTextArea from '@/components/ui/dptextarea'
-import { InitializeForm, formSchema, accoType } from './formSchema'
-import { useRouter, useSearchParams } from 'next/navigation'
-import getLanguageByEnglish from '@/utils/languages'
-import Navbar from '@/app/components/Navbar'
-import Sidebar from '@/app/components/SideBar'
-import FormHeader from '@/app/components/formHeader'
+import React, { useCallback, useState } from 'react';
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import MaxWidthWrapper from '@/components/MaxWidthWrapper';
+import DPComboBox from '@/components/ui/dpcombobox';
+import DPInput from '@/components/ui/dpinput';
+import DPTextArea from '@/components/ui/dptextarea';
+import { InitializeForm, formSchema, accoType } from './formSchema';
+import { useRouter, useSearchParams } from 'next/navigation';
+import getLanguageByEnglish from '@/utils/languages';
+import Navbar from '@/app/components/Navbar';
+import Sidebar from '@/app/components/SideBar';
+import FormHeader from '@/app/components/formHeader';
 
 const AccomodationMaster: React.FC = () => {
-  const searchParams = useSearchParams()
-  const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>()
-  const router = useRouter()
+  const searchParams = useSearchParams();
+  const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
+  const router = useRouter();
 
   // 1. Define your form.
-  const form = InitializeForm()
+  const form = InitializeForm();
 
   // Function to fill the form with predefined data
   const fillFormWithPredefinedData = () => {
-    form.setValue("accocode", "PRE001")
-    form.setValue("accname", "Predefined Accommodation")
-    form.setValue("buildno", "42")
-    form.setValue("roadno", "Main St")
-    form.setValue("accotype", "a")
-    form.setValue("blockno", "B1")
-    form.setValue("flatno", "101")
-    form.setValue("area", "Downtown")
-    form.setValue("remarks", "This is predefined data.")
-  }
+    form.setValue("accocode", "PRE001");
+    form.setValue("accname", "Predefined Accommodation");
+    form.setValue("buildno", "42");
+    form.setValue("roadno", "Main St");
+    form.setValue("accotype", "a");
+    form.setValue("blockno", "B1");
+    form.setValue("flatno", "101");
+    form.setValue("area", "Downtown");
+    form.setValue("remarks", "This is predefined data.");
+  };
 
   // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setFormValues(values)
-    // Handle your submit logic here
-  }
+    setFormValues(values);
+    alert(JSON.stringify(values, null, 2)); // Show form values as alert
+  };
 
   const addNew = useCallback(() => {
-    const url = '/masters/accomodationmaster'
-    router.push(url)
-    alert("Added new")
-    window.location.reload()
-  }, [router])
+    const url = '/masters/accomodationmaster';
+    router.push(url);
+    alert("Added new");
+    window.location.reload();
+  }, [router]);
 
   const deleteData = useCallback(() => {
-    const url = '/masters/accomodationmaster'
-    router.push(url)
-    alert("Saved Data")
-    window.location.reload()
-  }, [router])
+    const url = '/masters/accomodationmaster';
+    router.push(url);
+    alert("Saved Data");
+    window.location.reload();
+  }, [router]);
 
   const printData = useCallback(() => {
-    const url = '/masters/accomodationmaster'
-    router.push(url)
-    alert("printed Data")
-    window.location.reload()
-  }, [router])
+    const url = '/masters/accomodationmaster';
+    router.push(url);
+    alert("printed Data");
+    window.location.reload();
+  }, [router]);
 
   const onLogClick = useCallback(() => {
-    const url = '/masters/accomodationmaster'
-    router.push(url)
-    alert("Logging data")
-    window.location.reload()
-  }, [router])
+    const url = '/masters/accomodationmaster';
+    router.push(url);
+    alert("Logging data");
+    window.location.reload();
+  }, [router]);
 
   const draftData = useCallback(() => {
-    const url = '/masters/accomodationmaster'
-    router.push(url)
-    window.location.reload()
-  }, [router])
+    const url = '/masters/accomodationmaster';
+    router.push(url);
+    window.location.reload();
+  }, [router]);
 
   return (
     <div className='w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8'>
-      
       <div className='absolute top-0 right-0 z-5'>
         <Sidebar fillFormWithPredefinedData={fillFormWithPredefinedData} />
       </div>
@@ -300,7 +298,7 @@ const AccomodationMaster: React.FC = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormHeader
                 onNew={addNew}
-                onSave={onSubmit}
+                onSave={form.handleSubmit(onSubmit)} // Pass the form's submit handler
                 onDelete={deleteData}
                 onPrint={printData}
                 onLog={onLogClick}
@@ -411,7 +409,7 @@ const AccomodationMaster: React.FC = () => {
         </div>
       </MaxWidthWrapper>
     </div>
-  )
-}
+  );
+};
 
-export default AccomodationMaster
+export default AccomodationMaster;
