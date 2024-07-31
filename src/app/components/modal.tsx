@@ -1,27 +1,34 @@
+"use client"
 import React from 'react';
+import 'devextreme/dist/css/dx.light.css';
+ 
+import {
+    DataGrid
+} from 'devextreme-react/data-grid';
+
 
 interface ModalProps {
   isVisible: boolean;
   onClose: () => void;
   title: string;
-  children: React.ReactNode;
+  data: any[]; // Modify this to fit your data structure
 }
 
-const Modal: React.FC<ModalProps> = ({ isVisible, onClose, title, children }) => {
+const Modal: React.FC<ModalProps> = ({ isVisible, onClose, title, data }) => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg p-5 w-3/4 max-w-lg mx-auto">
-        <div className="flex justify-between items-center border-b pb-2 mb-4">
-          <h2 className="text-xl font-semibold">{title}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">&times;</button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white rounded-lg p-5 w-5/6  mx-auto">
+        <div className="flex justify-between items-center border-b pb-3">
+          <h3 className="text-lg font-semibold">{title}</h3>
+          <button onClick={onClose} className="text-red-500">X</button>
         </div>
-        <div>
-          {children}
-        </div>
-        <div className="flex justify-end mt-4">
-          <button onClick={onClose} className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600">Close</button>
+        <div className="mt-4">
+            <DataGrid
+                dataSource={data}
+                keyExpr="LogId">
+            </DataGrid>
         </div>
       </div>
     </div>

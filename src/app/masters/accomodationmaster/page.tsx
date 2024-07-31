@@ -10,17 +10,20 @@ import DPTextArea from '@/components/ui/dptextarea';
 import { InitializeForm, formSchema, accoType } from './formSchema';
 import { useRouter, useSearchParams } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
+import Navbar from '@/app/components/Navbar';
 import Sidebar from '@/app/components/SideBar';
 import FormHeader from '@/app/components/formHeader';
-import Modal from '@/app/components/Modal';
+import Modal from '@/app/components/modal';
+import sampleData from '@/app/components/data/modalData';
 
 const AccomodationMaster: React.FC = () => {
   const searchParams = useSearchParams();
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
   const [isModalVisible, setModalVisible] = useState(false);
+  const [logData, setLogData] = useState<any[]>(sampleData); // Store log data in state
   const router = useRouter();
 
-  // 1. Define your form.
+  // Define your form.
   const form = InitializeForm();
 
   // Function to fill the form with predefined data
@@ -36,7 +39,7 @@ const AccomodationMaster: React.FC = () => {
     form.setValue("remarks", "This is predefined data.");
   };
 
-  // 2. Define a submit handler.
+  // Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setFormValues(values);
     alert(JSON.stringify(values, null, 2)); // Show form values as alert
@@ -78,13 +81,13 @@ const AccomodationMaster: React.FC = () => {
       <div className='absolute top-0 right-0 z-5'>
         <Sidebar fillFormWithPredefinedData={fillFormWithPredefinedData} />
       </div>
-      <MaxWidthWrapper className=''>
+      <MaxWidthWrapper>
         <div className='border-solid'>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormHeader
                 onNew={addNew}
-                onSave={form.handleSubmit(onSubmit)} // Pass the form's submit handler
+                onSave={form.handleSubmit(onSubmit)}
                 onDelete={deleteData}
                 onPrint={printData}
                 onLog={onLogClick}
@@ -195,9 +198,7 @@ const AccomodationMaster: React.FC = () => {
         </div>
       </MaxWidthWrapper>
 
-      <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data">
-        <p>Log data content goes here...</p>
-      </Modal>
+      <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" data={logData} />
     </div>
   );
 };
