@@ -1,4 +1,3 @@
-
 "use client"
 import React, { useCallback, useState } from 'react';
 import { z } from "zod";
@@ -11,13 +10,14 @@ import DPTextArea from '@/components/ui/dptextarea';
 import { InitializeForm, formSchema, accoType } from './formSchema';
 import { useRouter, useSearchParams } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
-import Navbar from '@/app/components/Navbar';
 import Sidebar from '@/app/components/SideBar';
 import FormHeader from '@/app/components/formHeader';
+import Modal from '@/app/components/Modal';
 
 const AccomodationMaster: React.FC = () => {
   const searchParams = useSearchParams();
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
+  const [isModalVisible, setModalVisible] = useState(false);
   const router = useRouter();
 
   // 1. Define your form.
@@ -64,11 +64,8 @@ const AccomodationMaster: React.FC = () => {
   }, [router]);
 
   const onLogClick = useCallback(() => {
-    const url = '/masters/accomodationmaster';
-    router.push(url);
-    alert("Logging data");
-    window.location.reload();
-  }, [router]);
+    setModalVisible(true);
+  }, []);
 
   const draftData = useCallback(() => {
     const url = '/masters/accomodationmaster';
@@ -197,6 +194,10 @@ const AccomodationMaster: React.FC = () => {
           </Form>
         </div>
       </MaxWidthWrapper>
+
+      <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data">
+        <p>Log data content goes here...</p>
+      </Modal>
     </div>
   );
 };
