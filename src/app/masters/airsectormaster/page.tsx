@@ -17,11 +17,13 @@ import { DocStaus } from '@/dptype'
 import DPComboBox from '@/components/ui/dpcombobox'
 import FormHeader from '@/app/components/formHeader';
 import Sidebar from '@/app/components/SideBar';
+import Modal from '@/app/components/modal';
 
 const AccomodationMaster = () => {
   const searchParams = useSearchParams()
+  const docCd = 2;
   const [formValues,setFormValues]=useState< z.infer<typeof formSchema>>()
-
+  const [isModalVisible, setModalVisible] = useState(false);
   const [type, setType] = useState<{ value: string; label: string }[]>([]);
   
 
@@ -72,14 +74,8 @@ const AccomodationMaster = () => {
     
   },[])
   const onLogClick = useCallback(() => {
-    
-      
-    const url = '/masters/airsectormaster'
-    router.push( url);
-    alert("Logging data")
-    window.location.reload()
-    
-  },[])
+    setModalVisible(true);
+  }, []);
   const draftData = useCallback(() => {
     
       
@@ -177,6 +173,7 @@ const AccomodationMaster = () => {
         </Form>
       </div>
     </MaxWidthWrapper>
+    <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" docCd={docCd} />
     </div>
   )
   

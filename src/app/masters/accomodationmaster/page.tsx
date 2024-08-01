@@ -1,3 +1,4 @@
+// AccomodationMaster.tsx
 "use client"
 import React, { useCallback, useState } from 'react';
 import { z } from "zod";
@@ -14,13 +15,12 @@ import Navbar from '@/app/components/Navbar';
 import Sidebar from '@/app/components/SideBar';
 import FormHeader from '@/app/components/formHeader';
 import Modal from '@/app/components/modal';
-import sampleData from '@/app/components/data/modalData';
 
 const AccomodationMaster: React.FC = () => {
   const searchParams = useSearchParams();
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
   const [isModalVisible, setModalVisible] = useState(false);
-  const [logData, setLogData] = useState<any[]>(sampleData); // Store log data in state
+  const docCd = 1; // Set default DocCd
   const router = useRouter();
 
   // Define your form.
@@ -198,7 +198,7 @@ const AccomodationMaster: React.FC = () => {
         </div>
       </MaxWidthWrapper>
 
-      <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" data={logData} />
+      <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" docCd={docCd} />
     </div>
   );
 };
