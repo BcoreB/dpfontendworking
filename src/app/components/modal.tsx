@@ -26,6 +26,8 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, title, data }) => {
         </div>
         <div className="mt-4">
             <DataGrid
+                columnAutoWidth={true}
+                allowColumnReordering={true}
                 dataSource={data}
                 keyExpr="LogId">
             </DataGrid>

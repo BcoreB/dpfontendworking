@@ -189,8 +189,8 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData }) => {
   };
 
   return (
-    <div className="flex h-screen relative">
-      <div className="right-0 flex flex-col text-sm z-10 pt-2 gap-20 items-center mt-44 bg-gray-100 shadow-lg" style={{ width: '2rem' }}>
+    <div className="flex h-screen relative ">
+      <div className="right-0 flex bg-purple-100 flex-col text-sm z-10 pt-2 gap-20 items-center mt-52 bg-gray-100 shadow-lg" style={{ width: '2rem' }}>
         {sections.map((section, index) => (
           <button
             key={index}

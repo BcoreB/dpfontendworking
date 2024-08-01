@@ -148,3 +148,13 @@ input, select
 {
   z-index: 10 !important;
 }
+
+/* Data grid customization */
+.dx-datagrid-headers
+{
+  font-weight: 700 !important;
+}
+.dx-widget
+{
+  border : 1px solid rgb(159, 159, 159);
+}

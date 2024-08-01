@@ -14,7 +14,7 @@ const sampleData = [
       LogTime: "2024-07-31T10:00:00Z"
     },
     {
-      LogId: "5a8f6e28-3d61-11eb-adc1-0242ac120002",
+      LogId: "5a8f6e28",
       SysTerminal: "Terminal2",
       CompId: "a21d67e8-3d61-11eb-adc1-0242ac120002",
       SiteId: "SiteB",
@@ -26,7 +26,7 @@ const sampleData = [
       LogTime: "2024-07-31T11:00:00Z"
     },
     {
-      LogId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+      LogId: "7c9e6679",
       SysTerminal: "Terminal3",
       CompId: "bd7a76b5-7426-40de-944b-e07fc1f90ae7",
       SiteId: "SiteC",
