@@ -1,4 +1,3 @@
-// AccomodationMaster.tsx
 "use client"
 import React, { useCallback, useState } from 'react';
 import { z } from "zod";
@@ -21,6 +20,7 @@ const AccomodationMaster: React.FC = () => {
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
   const [isModalVisible, setModalVisible] = useState(false);
   const docCd = 1; // Set default DocCd
+  const docKey = 101; // Set default DocKey
   const router = useRouter();
 
   // Define your form.
@@ -79,7 +79,7 @@ const AccomodationMaster: React.FC = () => {
   return (
     <div className='w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8'>
       <div className='absolute top-0 right-0 z-5'>
-        <Sidebar fillFormWithPredefinedData={fillFormWithPredefinedData} />
+        <Sidebar fillFormWithPredefinedData={fillFormWithPredefinedData} docCd={docCd} docKey={docKey} />
       </div>
       <MaxWidthWrapper>
         <div className='border-solid'>

@@ -1,8 +1,21 @@
-
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
+
+// Mock function to simulate fetching notes
+const getNotesByDocCdAndDocKey = (docCd: number, docKey: number): string[] => {
+  const notesData: { [key: number]: { [key: number]: string[] } } = {
+    1: {
+      101: ["Note for DocCd 1, DocKey 101", "Another note for DocCd 1, DocKey 101"],
+      102: ["Note for DocCd 1, DocKey 102"],
+      // Add more notes for other docKeys if needed
+    },
+    // Add more docCds with their respective notes
+  };
+
+  return notesData[docCd]?.[docKey] || [];
+};
 
 interface Section {
   name: string;
@@ -18,9 +31,11 @@ const sections: Section[] = [
 
 interface SidebarProps {
   fillFormWithPredefinedData: () => void;
+  docCd: number;
+  docKey: number;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData }) => {
+const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, docKey }) => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
   const [notes, setNotes] = useState<string[]>([]);
   const [newNote, setNewNote] = useState<string>('');
@@ -65,13 +80,20 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData }) => {
     }
   };
 
+  useEffect(() => {
+    if (activeSection === 1) { // If Notes section is active
+      const fetchedNotes = getNotesByDocCdAndDocKey(docCd, docKey);
+      setNotes(fetchedNotes);
+    }
+  }, [activeSection, docCd, docKey]);
+
   return (
     <div className="flex h-screen relative ">
       <div className="right-0 flex bg-purple-100 flex-col text-sm z-10 pt-2 gap-20 items-center mt-48 bg-gray-100 shadow-lg" style={{ width: '2rem' }}>
         {sections.map((section, index) => (
           <button
             key={index}
-            className="w-5/6 border  text-gray-700 hover:text-gray-900 text-center transform origin-center rotate-90 py-2"
+            className="w-5/6 text-gray-700 hover:text-gray-900 text-center transform origin-center rotate-90 "
             onClick={() => toggleSection(index)}
           >
             <div className='w-40'>
