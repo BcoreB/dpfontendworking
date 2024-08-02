@@ -153,8 +153,15 @@ input, select
 .dx-datagrid-headers
 {
   font-weight: 700 !important;
+  background-color:  rgb(243 232 255 / var(--tw-bg-opacity)) !important;
+  color: black !important;
 }
 .dx-widget
 {
   border : 1px solid rgb(159, 159, 159);
+}
+.modal-header
+{
+  background-color: #818CF8;
+  padding: .5rem 2rem;
 }

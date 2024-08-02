@@ -71,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData }) => {
         {sections.map((section, index) => (
           <button
             key={index}
-            className="w-5/6 text-gray-700 hover:text-gray-900 text-center transform origin-center rotate-90 py-2"
+            className="w-5/6 border  text-gray-700 hover:text-gray-900 text-center transform origin-center rotate-90 py-2"
             onClick={() => toggleSection(index)}
           >
             <div className='w-40'>
