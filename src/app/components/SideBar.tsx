@@ -90,11 +90,11 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
 
   return (
     <div className="flex h-screen relative">
-      <div className="right-0 flex bg-purple-100 flex-col text-sm z-10 pt-2 justify-evenly  items-center mt-48 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
+      <div className="right-0 flex bg-purple-100 flex-col text-sm z-10 pt-2 justify-evenly items-center mt-48 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
         {sections.map((section, index) => (
           <button
             key={index}
-            className={`w-20 bg-purple-200 text-black py-1 rounded-sm hover:text-gray-900  text-center transform origin-center rotate-90 ${section.name === 'Document Actions' ? 'w-36 mb-4' : ''} ${section.name === 'Attachments' ? 'w-28' : ''}`}
+            className={`w-20 bg-purple-200 text-black py-1 rounded-sm hover:text-gray-900 text-center transform origin-center rotate-90 ${section.name === 'Document Actions' ? 'w-36 mb-4' : ''} ${section.name === 'Attachments' ? 'w-28' : ''}`}
             onClick={() => toggleSection(index)}
           >
             <div className=''>
@@ -130,12 +130,11 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
             )}
             {section.name === 'Notes' && (
               <>
-                <input
-                  type="text"
+                <textarea
                   value={newNote}
                   onChange={(e) => setNewNote(e.target.value)}
                   placeholder="Add a note"
-                  className="w-5/6 mb-4 p-2 h-28 border border-gray-300 rounded"
+                  className="w-11/12 mb-4 p-2 h-28 text-sm border border-gray-300 rounded resize-none overflow-y-scroll"
                 />
                 <button
                   onClick={handleAddNote}
@@ -146,11 +145,11 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
                 <div>
                   <h2 className="text-xl font-bold mb-4">Notes</h2>
                   {notes.map((note, noteIndex) => (
-                    <div key={noteIndex} className="mb-2 w-5/6 p-2 border border-gray-300 rounded flex items-center justify-between">
-                      <p className={`overflow-hidden leading-loose ${note.expanded ? 'max-h-none' : 'max-h-8'} transition-all duration-300`} style={{ textOverflow: 'ellipsis' }}>
+                    <div key={noteIndex} className="mb-2 w-11/12 p-2 border border-gray-300 rounded flex items-start justify-between">
+                      <p className={`overflow-hidden text-xs leading-loose ${note.expanded ? 'max-h-72' : 'max-h-8'} transition-all duration-300`} style={{ textOverflow: 'ellipsis', maxHeight: note.expanded ? '300px' : '', overflowY: note.expanded ? 'scroll' : 'hidden' }}>
                         {note.text}
                       </p>
-                      <button onClick={() => toggleNote(noteIndex)} className="ml-2 rotate-180 text-gray-600 hover:text-gray-800">
+                      <button onClick={() => toggleNote(noteIndex)} className="ml-2 text-gray-600 hover:text-gray-800">
                         {note.expanded ? (
                           <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
