@@ -90,14 +90,14 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
 
   return (
     <div className="flex h-screen relative">
-      <div className="right-0 flex bg-purple-100 flex-col text-sm z-10 pt-2 gap-20 items-center mt-48 bg-gray-100 shadow-lg" style={{ width: '2rem' }}>
+      <div className="right-0 flex bg-purple-100 flex-col text-sm z-10 pt-2 justify-evenly  items-center mt-48 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
         {sections.map((section, index) => (
           <button
             key={index}
-            className="w-5/6 text-gray-700 hover:text-gray-900 text-center transform origin-center rotate-90"
+            className={`w-20 bg-purple-200 text-black py-1 rounded-sm hover:text-gray-900  text-center transform origin-center rotate-90 ${section.name === 'Document Actions' ? 'w-36 mb-4' : ''} ${section.name === 'Attachments' ? 'w-28' : ''}`}
             onClick={() => toggleSection(index)}
           >
-            <div className='w-40'>
+            <div className=''>
               {section.name}
             </div>
           </button>
@@ -190,20 +190,20 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
                 </div>
                 <div className="flex gap-2 mt-auto">
                   <button
-                    className="px-4 py-2 bg-blue-500 text-white rounded"
+                    className="px-4 py-2 bg-purple-200 text-black rounded"
                     onClick={handleBrowse}
                   >
                     Browse
                   </button>
                   <button
-                    className="px-4 py-2 bg-green-500 text-white rounded"
+                    className="px-4 py-2 bg-purple-200 text-black rounded"
                     onClick={() => handleOpen()}
                     disabled={selectedFileIndex === null}
                   >
                     Open
                   </button>
                   <button
-                    className="px-4 py-2 bg-red-500 text-white rounded"
+                    className="px-4 py-2 bg-purple-200 text-black rounded"
                     onClick={handleDelete}
                     disabled={selectedFileIndex === null}
                   >
