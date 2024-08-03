@@ -1,21 +1,9 @@
-"use client"
+// app/components/SideBar.tsx
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
-
-// Mock function to simulate fetching notes
-const getNotesByDocCdAndDocKey = (docCd: number, docKey: number): string[] => {
-  const notesData: { [key: number]: { [key: number]: string[] } } = {
-    1: {
-      101: ["Note for DocCd 1, DocKey 101", "Another note for DocCd 1, DocKey 101"],
-      102: ["Note for DocCd 1, DocKey 102"],
-      // Add more notes for other docKeys if needed
-    },
-    // Add more docCds with their respective notes
-  };
-
-  return notesData[docCd]?.[docKey] || [];
-};
+import { getNotes, addNote } from './data/notes'; // Adjust path as needed
 
 interface Section {
   name: string;
@@ -37,7 +25,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, docKey }) => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
-  const [notes, setNotes] = useState<string[]>([]);
+  const [notes, setNotes] = useState<{ text: string; expanded: boolean }[]>([]);
   const [newNote, setNewNote] = useState<string>('');
   const [attachments, setAttachments] = useState<File[]>([]);
   const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
@@ -48,11 +36,21 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
     setActiveSection(activeSection === index ? null : index);
   };
 
-  const addNote = () => {
+  const handleAddNote = () => {
     if (newNote.trim() !== '') {
-      setNotes([...notes, newNote]);
+      addNote(docCd, docKey, newNote);
+      fetchNotes(); // Fetch notes after adding a new one
       setNewNote('');
     }
+  };
+
+  const fetchNotes = () => {
+    const existingNotes = getNotes(docCd, docKey);
+    const notesList = existingNotes.map(note => ({
+      text: note,
+      expanded: false,
+    }));
+    setNotes(notesList);
   };
 
   const handleBrowse = () => {
@@ -61,7 +59,7 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setAttachments([...attachments, ...Array.from(event.target.files)]);
+      setAttachments(prevAttachments => [...prevAttachments, ...Array.from(event.target.files)]);
     }
   };
 
@@ -75,25 +73,28 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
 
   const handleDelete = () => {
     if (selectedFileIndex !== null) {
-      setAttachments(attachments.filter((_, i) => i !== selectedFileIndex));
+      setAttachments(prevAttachments => prevAttachments.filter((_, i) => i !== selectedFileIndex));
       setSelectedFileIndex(null);
     }
   };
 
   useEffect(() => {
     if (activeSection === 1) { // If Notes section is active
-      const fetchedNotes = getNotesByDocCdAndDocKey(docCd, docKey);
-      setNotes(fetchedNotes);
+      fetchNotes();
     }
   }, [activeSection, docCd, docKey]);
 
+  const toggleNote = (index: number) => {
+    setNotes(prevNotes => prevNotes.map((note, i) => i === index ? { ...note, expanded: !note.expanded } : note));
+  };
+
   return (
-    <div className="flex h-screen relative ">
+    <div className="flex h-screen relative">
       <div className="right-0 flex bg-purple-100 flex-col text-sm z-10 pt-2 gap-20 items-center mt-48 bg-gray-100 shadow-lg" style={{ width: '2rem' }}>
         {sections.map((section, index) => (
           <button
             key={index}
-            className="w-5/6 text-gray-700 hover:text-gray-900 text-center transform origin-center rotate-90 "
+            className="w-5/6 text-gray-700 hover:text-gray-900 text-center transform origin-center rotate-90"
             onClick={() => toggleSection(index)}
           >
             <div className='w-40'>
@@ -137,7 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
                   className="w-5/6 mb-4 p-2 h-28 border border-gray-300 rounded"
                 />
                 <button
-                  onClick={addNote}
+                  onClick={handleAddNote}
                   className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
                 >
                   Add
@@ -145,7 +146,22 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
                 <div>
                   <h2 className="text-xl font-bold mb-4">Notes</h2>
                   {notes.map((note, noteIndex) => (
-                    <p key={noteIndex} className="mb-2 w-5/6 p-2 border border-gray-300 rounded">{note}</p>
+                    <div key={noteIndex} className="mb-2 w-5/6 p-2 border border-gray-300 rounded flex items-center justify-between">
+                      <p className={`overflow-hidden leading-loose ${note.expanded ? 'max-h-none' : 'max-h-8'} transition-all duration-300`} style={{ textOverflow: 'ellipsis' }}>
+                        {note.text}
+                      </p>
+                      <button onClick={() => toggleNote(noteIndex)} className="ml-2 rotate-180 text-gray-600 hover:text-gray-800">
+                        {note.expanded ? (
+                          <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                          </svg>
+                        ) : (
+                          <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 15l-7-7-7 7"></path>
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                   ))}
                 </div>
               </>
