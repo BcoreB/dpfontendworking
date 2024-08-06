@@ -1,9 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { cn } from "@/lib/utils";
-import getLanguageByEnglish from '@/utils/languages'
-import Image from "next/image";
+import getLanguageByEnglish from '@/utils/languages';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,16 +9,11 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-// import DROPDOWN_ITEM_DATA_SYSTEM from './data/systemData';
-// import DROPDOWN_ITEM_DATA_MASTER_SETUP from './data/MasterSetupData';
 import { DROPDOWN_ITEM_DATA_SYSTEM, DROPDOWN_ITEM_DATA_MASTER_SETUP, DROPDOWN_ITEM_DATA_EMPLOYEE_MANAGEMENT, DROPDOWN_ITEM_DATA_EXPLOYEE_SELF_SERVICE } from './data/menulist';
-
-// The rest of your Navbar component remains the same
-
+import { useDirection } from '../../app/DirectionContext';
 
 interface DropdownItem {
   title: string;
@@ -42,6 +35,7 @@ interface DropdownMenuItemProps {
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const { isRtl } = useDirection(); // Get RTL direction from context
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -56,26 +50,28 @@ export default function Navbar() {
   }, [isMobileMenuOpen]);
 
   return (
-    <main className="flex-row w-full">
-      <NavigationMenu className="relative flex items-center justify-between px-4 py-4">
-        <div className="Logo">
-          <h1 className='text-2xl font-bold'>BCore</h1>
+    <main className={`flex-row w-full ${isRtl ? 'rtl' : 'ltr'}`}>
+      <NavigationMenu className={`relative flex items-center justify-between px-4 py-4 ${isRtl ? 'flex-row-reverse' : ''}`}>
+        <div className={`Logo ${isRtl ? 'ml-auto' : 'mr-auto'} ${isRtl ? 'text-right' : 'text-left'}`}>
+          <h1 className='text-2xl font-bold'>{getLanguageByEnglish("BCore")}</h1>
         </div>
         <button 
-          className="lg:hidden block text-2xl absolute right-4" 
+          className={`lg:hidden block text-2xl absolute ${isRtl ? 'left-4' : 'right-4'}`} 
           onClick={toggleMobileMenu}
         >
           {isMobileMenuOpen ? '✖' : '☰'}
         </button>
-        <NavigationMenuList className={`hidden lg:flex flex-row gap-4`}>
+        <NavigationMenuList className={`hidden lg:flex flex-row gap-4 ${isRtl ? 'flex-row-reverse' : ''}`}>
           <DropdownMenuItem itemText="System" dropdownData={DROPDOWN_ITEM_DATA_SYSTEM} />
           <DropdownMenuItem itemText="Master Setup" dropdownData={DROPDOWN_ITEM_DATA_MASTER_SETUP} />
           <DropdownMenuItem itemText="Employee Self Service" dropdownData={DROPDOWN_ITEM_DATA_EXPLOYEE_SELF_SERVICE} />
           <DropdownMenuItem itemText="Employee Management" dropdownData={DROPDOWN_ITEM_DATA_EMPLOYEE_MANAGEMENT} />
           <NavigationMenuItem>
             <Link href="/" className='hidden md:block' legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                <Button variant={'default'} className='text-black bg-white hidden md:block'>{getLanguageByEnglish("LOGOUT ")} </Button>
+              <NavigationMenuLink>
+                <Button variant={'default'} className={`text-black bg-white hidden md:block ${isRtl ? 'text-right' : 'text-left'}`}>
+                  {getLanguageByEnglish("LOGOUT")}
+                </Button>
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
@@ -83,7 +79,7 @@ export default function Navbar() {
         
         <div 
           ref={sidebarRef} 
-          className={`fixed top-0 right-0 w-3/4 h-full bg-white text-black flex flex-col items-start p-4 lg:hidden transform ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-500 ease-in-out`}
+          className={`fixed top-0 ${isRtl ? 'left-0' : 'right-0'} w-3/4 h-full bg-white text-black flex flex-col items-start p-4 lg:hidden transform ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-500 ease-in-out`}
         >
           <button 
             className="self-end text-3xl mb-4" 
@@ -98,7 +94,7 @@ export default function Navbar() {
             <DropdownMenuItem itemText="Employee Management" dropdownData={DROPDOWN_ITEM_DATA_EMPLOYEE_MANAGEMENT} />
           </div>
           <div className="mt-auto w-full">
-            <Button variant={'default'} className='text-white bg-black mt-4 w-full'> LOGOUT </Button>
+            <Button variant={'default'} className='text-white bg-black mt-4 w-full'>{getLanguageByEnglish("LOGOUT")}</Button>
           </div>
         </div>
       </NavigationMenu>
@@ -107,18 +103,20 @@ export default function Navbar() {
 }
 
 function DropdownMenuItem({ itemText, dropdownData, isMobileMenu = false }: DropdownMenuItemProps & { isMobileMenu?: boolean }) {
+  const { isRtl } = useDirection(); // Get RTL direction from context
+
   return (
     <NavigationMenu>
       <NavigationMenuItem>
-        <NavigationMenuTrigger className="text-base">{itemText}</NavigationMenuTrigger>
-        <NavigationMenuContent className={`bg-white z-100 text-black ${isMobileMenu ? 'overflow-y-auto max-h-60 ' : ''}`}>
-          <ul className={`grid gap-3 p-4 ${isMobileMenu ? 'w-[200px] z-100' : 'md:w-[500px] md:grid-cols-2 lg:w-[600px]'}`}>
+        <NavigationMenuTrigger className={`text-base ${isRtl ? 'text-right' : 'text-left'}`}>{itemText}</NavigationMenuTrigger>
+        <NavigationMenuContent className={`bg-white z-100 text-black ${isMobileMenu ? 'overflow-y-auto max-h-60' : ''}`}>
+          <ul className={`grid gap-3 p-4 ${isMobileMenu ? 'w-[200px] z-100' : 'md:w-[500px] md:grid-cols-2 lg:w-[600px]'} ${isRtl ? 'text-right' : 'text-left'}`}>
             {dropdownData.map((category) => (
               <div key={category.category}>
                 <h3 className="font-bold mb-2">{getLanguageByEnglish(category.category)}</h3>
-                <ul className={`list-none ${isMobileMenu ? '' : 'pl-4'}`}>
+                <ul className={`list-none ${isMobileMenu ? '' : 'pl-4'} ${isRtl ? 'text-right' : 'text-left'}`}>
                   {category.items.map((item) => (
-                    <li key={item.title} className="flex items-center mb-4 gap-2">
+                    <li key={item.title} className={`flex items-center mb-4 gap-2 ${isRtl ? 'flex-row-reverse' : ''}`}>
                       <img src={item.icon} alt="" className="mr-2" width={30} height={30} />
                       <Link href={item.href} className="text-sm">{getLanguageByEnglish(item.title)}</Link>
                     </li>
@@ -132,29 +130,3 @@ function DropdownMenuItem({ itemText, dropdownData, isMobileMenu = false }: Drop
     </NavigationMenu>
   );
 }
-
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  )
-});
-ListItem.displayName = "ListItem";
