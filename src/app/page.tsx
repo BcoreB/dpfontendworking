@@ -39,7 +39,7 @@
 "use client"
 import { useState } from 'react'; // Import useState hook
 import Image from 'next/image';
-import LoginForm from './components/LoginForm';
+import LoginForm from '../components/Menu/LoginForm';
 
 export default function Home() {
   const [language, setLanguage] = useState('EN'); // State to track language

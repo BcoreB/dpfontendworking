@@ -15,9 +15,9 @@ import getLanguageByEnglish from '@/utils/languages'
 import { DocStaus } from '@/dptype'
 
 import DPComboBox from '@/components/ui/dpcombobox'
-import FormHeader from '@/app/components/formHeader';
-import Sidebar from '@/app/components/SideBar';
-import Modal from '@/app/components/modal';
+import FormHeader from '@/components/Menu/formHeader';
+import Sidebar from '@/components/Menu/SideBar';
+import Modal from '@/components/Menu/modal';
 
 const AccomodationMaster = () => {
   const searchParams = useSearchParams()

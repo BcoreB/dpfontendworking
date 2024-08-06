@@ -19,7 +19,7 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd }) => {
   useEffect(() => {
     if (isVisible) {
       // Dynamically import the data file based on docCd
-      import(`@/app/components/data/${docCd}.tsx`)
+      import(`@/components/menu/data/${docCd}.tsx`)
         .then(module => setData(module.default))
         .catch(error => {
           console.error("Failed to load data:", error);

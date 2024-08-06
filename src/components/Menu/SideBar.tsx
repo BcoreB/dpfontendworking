@@ -150,7 +150,7 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
           className="absolute right-0 h-5/6 mt-28 bg-white shadow-lg p-4"
-          style={{ width: '20rem' }}
+          style={{ width: '22rem' }}
         >
           <div>
             {section.name === 'Document Actions' && (
@@ -183,16 +183,11 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
                   {notes.map((note, noteIndex) => (
                     <div key={noteIndex} className="mb-2 w-11/12">
                       <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleNote(noteIndex)}>
-                        <p className={`p-2 border border-gray-300 rounded ${note.expanded ? 'max-h-full' : 'max-h-6'} overflow-hidden`}>
+                        <p className={`p-2 w-11/12 border border-gray-300 rounded ${note.expanded ? 'max-h-full leading-normal text-xs' : 'max-h-8 leading-loose text-xs'} overflow-hidden`}>
                           {note.text}
                         </p>
                         <span className="ml-2">{note.expanded ? '▲' : '▼'}</span>
                       </div>
-                      {note.expanded && (
-                        <div className="max-h-48 overflow-y-auto">
-                          <p className="p-2 border border-gray-300 rounded">{note.text}</p>
-                        </div>
-                      )}
                     </div>
                   ))}
                 </div>

@@ -1,7 +1,7 @@
 "use client"
 import React, { useCallback, useState } from 'react';
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import { Form } from "@/components/ui/form";
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import DPComboBox from '@/components/ui/dpcombobox';
@@ -10,10 +10,10 @@ import DPTextArea from '@/components/ui/dptextarea';
 import { InitializeForm, formSchema, accoType } from './formSchema';
 import { useRouter, useSearchParams } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
-import Navbar from '@/app/components/Navbar';
-import Sidebar from '@/app/components/SideBar';
-import FormHeader from '@/app/components/formHeader';
-import Modal from '@/app/components/modal';
+import Navbar from '@/components/Menu/Navbar';
+import Sidebar from '@/components/Menu/SideBar';
+import FormHeader from '@/components/Menu/formHeader';
+import Modal from '@/components/Menu/modal';
 
 const AccomodationMaster: React.FC = () => {
   const searchParams = useSearchParams();

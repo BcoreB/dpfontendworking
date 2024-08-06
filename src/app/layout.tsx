@@ -27,7 +27,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { DirectionProvider } from './DirectionContext';
-import HideableNavbar from "./components/HideableNavbar";
+import HideableNavbar from "../components/Menu/HideableNavbar";
 
 const inter = Inter({ subsets: ["latin"] });
 

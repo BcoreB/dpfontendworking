@@ -1,6 +1,6 @@
 import Image from "next/image";
 import getLanguageByEnglish from '@/utils/languages'
-import Navbar from "../components/Navbar";
+import Navbar from "../../components/Menu/Navbar";
 export default function Home() {
   return (
     <main className="landing-bg w-full h-full justify-between relative px-5 py-5  lg:px-20 lg:pb-14 lg:pt-8">
