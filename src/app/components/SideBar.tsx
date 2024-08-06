@@ -1,7 +1,6 @@
-// app/components/SideBar.tsx
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { Transition } from '@headlessui/react';
 import { getNotes, addNote } from './data/notes'; // Adjust path as needed
 
@@ -23,14 +22,33 @@ interface SidebarProps {
   docKey: number;
 }
 
+interface Note {
+  text: string;
+  expanded: boolean;
+}
+
+interface Attachment {
+  file: File;
+  thumbnail: string;
+}
+
+const fileIcons: { [key: string]: string } = {
+  'application/pdf': '/icons/pdf-icon.png',
+  'application/msword': '/icons/word-icon.png',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '/icons/word-icon.png',
+  'application/vnd.ms-excel': '/icons/excel-icon.png',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '/icons/excel-icon.png',
+  'default': '/icons/default-icon.png',
+};
+
 const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, docKey }) => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
-  const [notes, setNotes] = useState<{ text: string; expanded: boolean }[]>([]);
+  const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState<string>('');
-  const [attachments, setAttachments] = useState<File[]>([]);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
 
-  const fileInputRef = React.createRef<HTMLInputElement>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const toggleSection = (index: number) => {
     setActiveSection(activeSection === index ? null : index);
@@ -57,15 +75,30 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setAttachments(prevAttachments => [...prevAttachments, ...Array.from(event.target.files)]);
+      const filesArray = Array.from(event.target.files);
+      filesArray.forEach(file => {
+        const reader = new FileReader();
+
+        if (file.type.startsWith('image/')) {
+          reader.onload = (e) => {
+            if (e.target?.result) {
+              setAttachments(prevAttachments => [...prevAttachments, { file, thumbnail: e.target.result as string }]);
+            }
+          };
+          reader.readAsDataURL(file);
+        } else {
+          const icon = fileIcons[file.type] || fileIcons['default'];
+          setAttachments(prevAttachments => [...prevAttachments, { file, thumbnail: icon }]);
+        }
+      });
     }
   };
 
   const handleOpen = (fileIndex: number | null = selectedFileIndex) => {
     if (fileIndex !== null && attachments[fileIndex]) {
-      const file = attachments[fileIndex];
+      const file = attachments[fileIndex].file;
       const fileURL = URL.createObjectURL(file);
       window.open(fileURL, '_blank');
     }
@@ -73,8 +106,11 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
 
   const handleDelete = () => {
     if (selectedFileIndex !== null) {
-      setAttachments(prevAttachments => prevAttachments.filter((_, i) => i !== selectedFileIndex));
-      setSelectedFileIndex(null);
+      const confirmed = window.confirm('Do you want to delete this file?');
+      if (confirmed) {
+        setAttachments(prevAttachments => prevAttachments.filter((_, i) => i !== selectedFileIndex));
+        setSelectedFileIndex(null);
+      }
     }
   };
 
@@ -145,21 +181,18 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
                 <div>
                   <h2 className="text-xl font-bold mb-4">Notes</h2>
                   {notes.map((note, noteIndex) => (
-                    <div key={noteIndex} className="mb-2 w-11/12 p-2 border border-gray-300 rounded flex items-start justify-between">
-                      <p className={`overflow-hidden text-xs leading-loose ${note.expanded ? 'max-h-72' : 'max-h-8'} transition-all duration-300`} style={{ textOverflow: 'ellipsis', maxHeight: note.expanded ? '300px' : '', overflowY: note.expanded ? 'scroll' : 'hidden' }}>
-                        {note.text}
-                      </p>
-                      <button onClick={() => toggleNote(noteIndex)} className="ml-2 text-gray-600 hover:text-gray-800">
-                        {note.expanded ? (
-                          <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                          </svg>
-                        ) : (
-                          <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 15l-7-7-7 7"></path>
-                          </svg>
-                        )}
-                      </button>
+                    <div key={noteIndex} className="mb-2 w-11/12">
+                      <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleNote(noteIndex)}>
+                        <p className={`p-2 border border-gray-300 rounded ${note.expanded ? 'max-h-full' : 'max-h-6'} overflow-hidden`}>
+                          {note.text}
+                        </p>
+                        <span className="ml-2">{note.expanded ? '▲' : '▼'}</span>
+                      </div>
+                      {note.expanded && (
+                        <div className="max-h-48 overflow-y-auto">
+                          <p className="p-2 border border-gray-300 rounded">{note.text}</p>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -176,14 +209,15 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
                   onChange={handleFileChange}
                 />
                 <div className="flex flex-col flex-grow mt-4">
-                  {attachments.map((file, fileIndex) => (
+                  {attachments.map((attachment, fileIndex) => (
                     <div
                       key={fileIndex}
-                      className={`p-2 border border-gray-300 rounded mb-2 cursor-pointer ${selectedFileIndex === fileIndex ? 'bg-gray-200' : ''}`}
+                      className={`p-2 border border-gray-300 rounded mb-2 cursor-pointer flex items-center gap-2 ${selectedFileIndex === fileIndex ? 'bg-gray-200' : ''}`}
                       onClick={() => setSelectedFileIndex(fileIndex)}
                       onDoubleClick={() => handleOpen(fileIndex)}
                     >
-                      {file.name}
+                      <img src={attachment.thumbnail} alt="thumbnail" className="w-10 h-10 object-cover rounded" />
+                      <span>{attachment.file.name}</span>
                     </div>
                   ))}
                 </div>
