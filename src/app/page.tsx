@@ -90,7 +90,7 @@ export default function Home() {
           />
         </div>
       </header>
-      <div className="absolute bottom-1 md:w-1/4 w-3/4 right-1">
+      <div className="absolute bottom-1 md:w-1/4 w-3/4 right-5">
         <LoginForm />
       </div>
     </main>

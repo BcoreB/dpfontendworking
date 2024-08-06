@@ -1,7 +1,6 @@
 "use client"
 import React, { useCallback, useState } from 'react';
 import { z } from "zod";
-import { Button } from '@/components/ui/button';
 import { Form } from "@/components/ui/form";
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import DPComboBox from '@/components/ui/dpcombobox';
@@ -10,10 +9,10 @@ import DPTextArea from '@/components/ui/dptextarea';
 import { InitializeForm, formSchema, accoType } from './formSchema';
 import { useRouter, useSearchParams } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
-import Navbar from '@/components/Menu/Navbar';
 import Sidebar from '@/components/Menu/SideBar';
 import FormHeader from '@/components/Menu/formHeader';
 import Modal from '@/components/Menu/modal';
+import { getPredefinedData } from '@/components/Menu/data/prefillData';
 
 const AccomodationMaster: React.FC = () => {
   const searchParams = useSearchParams();
@@ -27,16 +26,19 @@ const AccomodationMaster: React.FC = () => {
   const form = InitializeForm();
 
   // Function to fill the form with predefined data
-  const fillFormWithPredefinedData = () => {
-    form.setValue("accocode", "PRE001");
-    form.setValue("accname", "Predefined Accommodation");
-    form.setValue("buildno", "42");
-    form.setValue("roadno", "Main St");
-    form.setValue("accotype", "a");
-    form.setValue("blockno", "B1");
-    form.setValue("flatno", "101");
-    form.setValue("area", "Downtown");
-    form.setValue("remarks", "This is predefined data.");
+  const fillFormWithPredefinedData = (docCd: number, docKey: number) => {
+    const data = getPredefinedData(docCd, docKey);
+    if (data) {
+      form.setValue("accocode", data.accocode);
+      form.setValue("accname", data.accname);
+      form.setValue("buildno", data.buildno);
+      form.setValue("roadno", data.roadno);
+      form.setValue("accotype", data.accotype);
+      form.setValue("blockno", data.blockno);
+      form.setValue("flatno", data.flatno);
+      form.setValue("area", data.area);
+      form.setValue("remarks", data.remarks);
+    }
   };
 
   // Define a submit handler.
@@ -79,7 +81,7 @@ const AccomodationMaster: React.FC = () => {
   return (
     <div className='w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8'>
       <div className='absolute top-0 right-0 z-5'>
-        <Sidebar fillFormWithPredefinedData={fillFormWithPredefinedData} docCd={docCd} docKey={docKey} />
+        <Sidebar fillFormWithPredefinedData={() => fillFormWithPredefinedData(docCd, docKey)} docCd={docCd} docKey={docKey} />
       </div>
       <MaxWidthWrapper>
         <div className='border-solid'>
@@ -198,7 +200,7 @@ const AccomodationMaster: React.FC = () => {
         </div>
       </MaxWidthWrapper>
 
-      <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" docCd={docCd} />
+      <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" docCd={docCd} docKey={docKey} />
     </div>
   );
 };

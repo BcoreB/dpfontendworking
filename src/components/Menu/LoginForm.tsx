@@ -2,7 +2,6 @@
 "use client"
 import React, { useState } from 'react';
 import { useDirection } from '../../app/DirectionContext';
-import axios from 'axios';
 
 const LoginForm: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -14,6 +13,12 @@ const LoginForm: React.FC = () => {
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Check if location is selected
+    if (location === '') {
+      setError('Please select a location.');
+      return;
+    }
 
     if (username === 'admin' && password === 'admin') {
       window.location.href = '/home';

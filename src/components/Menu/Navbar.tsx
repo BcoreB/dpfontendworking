@@ -73,7 +73,7 @@ export default function Navbar() {
           <DropdownMenuItem itemText="Employee Self Service" dropdownData={DROPDOWN_ITEM_DATA_EXPLOYEE_SELF_SERVICE} />
           <DropdownMenuItem itemText="Employee Management" dropdownData={DROPDOWN_ITEM_DATA_EMPLOYEE_MANAGEMENT} />
           <NavigationMenuItem>
-            <Link href="/docs" className='hidden md:block' legacyBehavior passHref>
+            <Link href="/" className='hidden md:block' legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 <Button variant={'default'} className='text-black bg-white hidden md:block'>{getLanguageByEnglish("LOGOUT ")} </Button>
               </NavigationMenuLink>
