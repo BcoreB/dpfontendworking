@@ -33,7 +33,7 @@ interface Attachment {
 }
 
 const fileIcons: { [key: string]: string } = {
-  'application/pdf': '/icons/pdf-icon.png',
+  'application/pdf': '/fileIcons/pdf.png',
   'application/msword': '/icons/word-icon.png',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '/icons/word-icon.png',
   'application/vnd.ms-excel': '/icons/excel-icon.png',

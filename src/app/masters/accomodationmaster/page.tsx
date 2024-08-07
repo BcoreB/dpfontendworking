@@ -73,10 +73,8 @@ const AccomodationMaster: React.FC = () => {
   }, []);
 
   const draftData = useCallback(() => {
-    const url = '/masters/accomodationmaster';
-    router.push(url);
-    window.location.reload();
-  }, [router]);
+    alert(`Draft button clicked. Form Data: ${JSON.stringify(form.getValues())}, docCd: ${docCd}, docKey: ${docKey}`);
+  }, [form, docCd, docKey]);
 
   return (
     <div className='w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8'>
@@ -94,6 +92,9 @@ const AccomodationMaster: React.FC = () => {
                 onPrint={printData}
                 onLog={onLogClick}
                 onDraft={draftData}
+                docCd={docCd}
+                docKey={docKey}
+                formValues={formValues}
               />
               <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 py-1">
                 <div className="grid gap-1 py-1 lg:col-span-2">
