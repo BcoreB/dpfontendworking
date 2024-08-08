@@ -1,5 +1,5 @@
-"use client";
-import React, { useCallback, useState } from 'react';
+"use client"
+import React, { useState } from 'react';
 import { z } from "zod";
 import { Form } from "@/components/ui/form";
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
@@ -7,7 +7,7 @@ import DPComboBox from '@/components/ui/dpcombobox';
 import DPInput from '@/components/ui/dpinput';
 import DPTextArea from '@/components/ui/dptextarea';
 import { InitializeForm, formSchema, accoType } from './formSchema';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
 import Sidebar from '@/components/Menu/SideBar';
 import FormHeader from '@/components/Menu/formHeader';
@@ -15,7 +15,7 @@ import Modal from '@/components/Menu/modal';
 import { getPredefinedData } from '@/components/Menu/data/prefillData';
 
 const AccomodationMaster: React.FC = () => {
-  const searchParams = useSearchParams();
+  
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
   const [isModalVisible, setModalVisible] = useState(false);
   const docCd = 1; // Set default DocCd
@@ -47,10 +47,6 @@ const AccomodationMaster: React.FC = () => {
     alert(JSON.stringify(values, null, 2)); // Show form values as alert
   };
 
-  const handleModalClose = () => {
-    setModalVisible(false);
-  };
-
   return (
     <div className='w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8'>
       <div className='absolute top-0 right-0 z-5'>
@@ -67,6 +63,7 @@ const AccomodationMaster: React.FC = () => {
                 docKey={docKey}
                 setModalVisible={setModalVisible}
                 router={router}
+                getValues={form.getValues} // Pass getValues to FormHeader
               />
               <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 py-1">
                 <div className="grid gap-1 py-1 lg:col-span-2">
@@ -152,7 +149,7 @@ const AccomodationMaster: React.FC = () => {
                     disabled={false}
                     type="text"
                     labelText={getLanguageByEnglish("Area")}
-                    placeholder={getLanguageByEnglish("Manama")}
+                    placeholder={getLanguageByEnglish("000000")}
                     onValueChange={(field, value) => form.setValue("area", value)}
                   />
                 </div>
@@ -161,9 +158,8 @@ const AccomodationMaster: React.FC = () => {
                     formcontrol={form.control}
                     name="remarks"
                     disabled={false}
-                    type="text"
                     labelText={getLanguageByEnglish("Remarks")}
-                    placeholder={getLanguageByEnglish("Write down your notes here.")}
+                    placeholder={getLanguageByEnglish("000000")}
                     onValueChange={(field, value) => form.setValue("remarks", value)}
                   />
                 </div>
@@ -172,8 +168,7 @@ const AccomodationMaster: React.FC = () => {
           </Form>
         </div>
       </MaxWidthWrapper>
-
-      <Modal isVisible={isModalVisible} onClose={handleModalClose} title="Log Data" docCd={docCd} docKey={docKey} />
+      <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} docCd={docCd} />
     </div>
   );
 };

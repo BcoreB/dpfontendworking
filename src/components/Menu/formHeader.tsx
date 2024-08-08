@@ -1,6 +1,8 @@
+"use client"
 import React, { useCallback, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { Router } from 'next/router';
+import { AppRouterInstance } from 'next/dist/shared/lib/router/router'; // Import the correct type for router
+import { UseFormGetValues } from 'react-hook-form'; // Import UseFormGetValues type
 
 interface FormHeaderProps {
   onSave: () => void;
@@ -8,10 +10,11 @@ interface FormHeaderProps {
   docKey: number;
   formValues?: any; // Optional as it's not directly used
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  router: Router;
+  router: AppRouterInstance; // Update the type for router
+  getValues: UseFormGetValues<any>; // Add getValues to props
 }
 
-const FormHeader: React.FC<FormHeaderProps> = ({ onSave, docCd, docKey, formValues, setModalVisible, router }) => {
+const FormHeader: React.FC<FormHeaderProps> = ({ onSave, docCd, docKey, formValues, setModalVisible, router, getValues }) => {
   const draftAlerted = useRef(false);
 
   const addNew = useCallback(() => {
@@ -36,20 +39,20 @@ const FormHeader: React.FC<FormHeaderProps> = ({ onSave, docCd, docKey, formValu
   }, [router]);
 
   const draftData = useCallback(() => {
-    if (formValues && !draftAlerted.current) {
+    if (!draftAlerted.current) {
       draftAlerted.current = true;
-      alert(JSON.stringify(formValues, null, 2)); // Show form values as alert
+      const currentFormValues = getValues(); // Get current form values
+      alert(JSON.stringify(currentFormValues, null, 2)); // Show current form values as alert
       // Here you can add logic to save the draft data
       setTimeout(() => {
         draftAlerted.current = false;
       }, 1000); // Reset the alert flag after 1 second
     }
-  }, [formValues]);
+  }, [getValues]);
 
   const onLogClick = useCallback(() => {
     setModalVisible(true);
   }, [setModalVisible]);
-
   return (
     <div className="form-header">
       <div className='flex justify-between bg-purple-100 mb-5'>
