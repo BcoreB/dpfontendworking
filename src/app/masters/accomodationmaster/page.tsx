@@ -47,30 +47,9 @@ const AccomodationMaster: React.FC = () => {
     alert(JSON.stringify(values, null, 2)); // Show form values as alert
   };
 
-  const addNew = useCallback(() => {
-    const url = '/masters/accomodationmaster';
-    router.push(url);
-    alert("Added new");
-    window.location.reload();
-  }, [router]);
-
-  const deleteData = useCallback(() => {
-    const url = '/masters/accomodationmaster';
-    router.push(url);
-    alert("Saved Data");
-    window.location.reload();
-  }, [router]);
-
-  const printData = useCallback(() => {
-    const url = '/masters/accomodationmaster';
-    router.push(url);
-    alert("printed Data");
-    window.location.reload();
-  }, [router]);
-
-  const onLogClick = useCallback(() => {
-    setModalVisible(true);
-  }, []);
+  const handleModalClose = () => {
+    setModalVisible(false);
+  };
 
   return (
     <div className='w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8'>
@@ -82,14 +61,12 @@ const AccomodationMaster: React.FC = () => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormHeader
-                onNew={addNew}
                 onSave={form.handleSubmit(onSubmit)}
-                onDelete={deleteData}
-                onPrint={printData}
-                onLog={onLogClick}
                 formValues={formValues}
                 docCd={docCd}
                 docKey={docKey}
+                setModalVisible={setModalVisible}
+                router={router}
               />
               <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 py-1">
                 <div className="grid gap-1 py-1 lg:col-span-2">
@@ -196,7 +173,7 @@ const AccomodationMaster: React.FC = () => {
         </div>
       </MaxWidthWrapper>
 
-      <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" docCd={docCd} docKey={docKey} />
+      <Modal isVisible={isModalVisible} onClose={handleModalClose} title="Log Data" docCd={docCd} docKey={docKey} />
     </div>
   );
 };
