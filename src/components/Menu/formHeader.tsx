@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 
 interface FormHeaderProps {
@@ -7,13 +7,20 @@ interface FormHeaderProps {
   onDelete: () => void;
   onPrint: () => void;
   onLog: () => void;
-  onDraft: () => void;
   docCd: number;
   docKey: number;
-  formValues: any;
+  formValues?: any; // Optional as it's not directly used
 }
 
-const FormHeader: React.FC<FormHeaderProps> = ({ onNew, onSave, onDelete, onPrint, onLog, onDraft, docCd, docKey, formValues }) => {
+const FormHeader: React.FC<FormHeaderProps> = ({ onNew, onSave, onDelete, onPrint, onLog, docCd, docKey, formValues }) => {
+  
+  const draftData = useCallback(() => {
+    if (formValues) {
+      alert(JSON.stringify(formValues, null, 2)); // Show form values as alert
+      // Here you can add logic to save the draft data
+    }
+  }, [formValues]);
+
   return (
     <div className="form-header">
       <div className='flex justify-between bg-purple-100 mb-5'>
@@ -25,16 +32,7 @@ const FormHeader: React.FC<FormHeaderProps> = ({ onNew, onSave, onDelete, onPrin
         <div>
           <Button variant='ghost' type="button" onClick={onPrint}>Print</Button>
           <Button variant='ghost' type="button" onClick={onLog}>Log</Button>
-          <Button
-            variant='ghost'
-            type="button"
-            onClick={() => {
-              alert(`Draft button clicked. Form Data: ${JSON.stringify(formValues)}, docCd: ${docCd}, docKey: ${docKey}`);
-              onDraft();
-            }}
-          >
-            Draft
-          </Button>
+          <Button variant='ghost' type="button" onClick={draftData}>Draft</Button>
         </div>
       </div>
     </div>
