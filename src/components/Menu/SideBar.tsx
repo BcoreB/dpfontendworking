@@ -1,9 +1,7 @@
-"use client";
-
 import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { Transition } from '@headlessui/react';
 import { getNotes, addNote } from './data/notes'; // Adjust path as needed
-import { getDraftData } from '@/components/Menu/data/draftData' // Adjust path as needed
+import { getDraftData } from '@/components/Menu/data/draftData'; // Adjust path as needed
 
 interface Section {
   name: string;
@@ -21,29 +19,11 @@ interface SidebarProps {
   fillFormWithPredefinedData: () => void;
   docCd: number;
   docKey: number;
-  form: any; // Add form prop to handle form updates
+  form: any; // Replace with actual type
+  setDraftData: (data: any) => void; // Add the correct type for data if known
 }
 
-interface Note {
-  text: string;
-  expanded: boolean;
-}
-
-interface Attachment {
-  file: File;
-  thumbnail: string;
-}
-
-const fileIcons: { [key: string]: string } = {
-  'application/pdf': '/fileIcons/pdf.png',
-  'application/msword': '/icons/word-icon.png',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '/icons/word-icon.png',
-  'application/vnd.ms-excel': '/icons/excel-icon.png',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '/icons/excel-icon.png',
-  'default': '/icons/default-icon.png',
-};
-
-const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, docKey, form }) => {
+const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, docKey, form, setDraftData }) => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState<string>('');
@@ -60,10 +40,7 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
   const handleDraftClick = (draftKey: string) => {
     const draftValues = drafts[draftKey];
     if (draftValues) {
-      const values = Object.entries(draftValues)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join('\n');
-      alert(values); // Alert the values of the selected draft
+      setDraftData(draftValues); // Use the function passed as a prop
     }
   };
 
@@ -235,29 +212,21 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
                       onClick={() => setSelectedFileIndex(fileIndex)}
                       onDoubleClick={() => handleOpen(fileIndex)}
                     >
-                      <img src={attachment.thumbnail} alt="thumbnail" className="w-10 h-10 object-cover rounded" />
-                      <span>{attachment.file.name}</span>
+                      <img src={attachment.thumbnail} alt="Attachment thumbnail" className="w-16 h-16 object-cover" />
+                      <span className="truncate">{attachment.file.name}</span>
                     </div>
                   ))}
                 </div>
-                <div className="flex gap-2 mt-auto">
+                <div className="flex justify-between mt-2">
                   <button
-                    className="px-4 py-2 bg-purple-200 text-black rounded"
                     onClick={handleBrowse}
+                    className="px-4 py-2 bg-blue-500 text-white rounded"
                   >
                     Browse
                   </button>
                   <button
-                    className="px-4 py-2 bg-purple-200 text-black rounded"
-                    onClick={() => handleOpen()}
-                    disabled={selectedFileIndex === null}
-                  >
-                    Open
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-purple-200 text-black rounded"
                     onClick={handleDelete}
-                    disabled={selectedFileIndex === null}
+                    className="px-4 py-2 bg-red-500 text-white rounded"
                   >
                     Delete
                   </button>
@@ -268,11 +237,11 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
               <>
                 <h2 className="text-xl font-bold">Drafts</h2>
                 <div>
-                  {Object.keys(drafts || {}).map(draftKey => (
+                  {Object.keys(drafts).map((draftKey) => (
                     <button
                       key={draftKey}
-                      className="block mb-2 px-4 py-2 bg-blue-500 text-white rounded"
                       onClick={() => handleDraftClick(draftKey)}
+                      className="block p-2 bg-blue-500 text-white rounded mb-2 w-full text-left"
                     >
                       {draftKey}
                     </button>

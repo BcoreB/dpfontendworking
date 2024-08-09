@@ -15,14 +15,13 @@ import Modal from '@/components/Menu/modal';
 import { getPredefinedData } from '@/components/Menu/data/prefillData';
 
 const AccomodationMaster: React.FC = () => {
-  
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
   const [isModalVisible, setModalVisible] = useState(false);
-  const docCd = 1; // Set default DocCd
-  const docKey = 101; // Set default DocKey
+  const [docCd, setDocCd] = useState<number>(1); // Default DocCd
+  const [docKey, setDocKey] = useState<number>(101); // Default DocKey
   const router = useRouter();
 
-  // Define your form.
+  // Define your form with potential default values.
   const form = InitializeForm();
 
   // Function to fill the form with predefined data
@@ -41,16 +40,39 @@ const AccomodationMaster: React.FC = () => {
     }
   };
 
+  const setDraftData = (data: any) => {
+    // Assuming form is defined as per your earlier code
+      form.setValue("accocode", data.accocode);
+      form.setValue("accname", data.accname);
+      form.setValue("buildno", data.buildno);
+      form.setValue("roadno", data.roadno);
+      form.setValue("accotype", data.accotype);
+      form.setValue("blockno", data.blockno);
+      form.setValue("flatno", data.flatno);
+      form.setValue("area", data.area);
+      form.setValue("remarks", data.remarks);
+  };
+  
   // Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setFormValues(values);
-    alert(JSON.stringify(values, null, 2)); // Show form values as alert
+    try {
+      setFormValues(values);
+      alert(JSON.stringify(values, null, 2)); // Show form values as alert
+    } catch (error) {
+      console.error("Form submission error: ", error);
+    }
   };
 
   return (
     <div className='w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8'>
       <div className='absolute top-0 right-0 z-5'>
-        <Sidebar fillFormWithPredefinedData={() => fillFormWithPredefinedData(docCd, docKey)} docCd={docCd} docKey={docKey} form={form} />
+        <Sidebar
+          fillFormWithPredefinedData={() => fillFormWithPredefinedData(docCd, docKey)}
+          docCd={docCd}
+          docKey={docKey}
+          form={form}
+          setDraftData={setDraftData} // Pass the function as a prop
+      />
       </div>
       <MaxWidthWrapper>
         <div className='border-solid'>
@@ -63,7 +85,7 @@ const AccomodationMaster: React.FC = () => {
                 docKey={docKey}
                 setModalVisible={setModalVisible}
                 router={router}
-                getValues={form.getValues} // Pass getValues to FormHeader
+                getValues={form.getValues}
               />
               <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 py-1">
                 <div className="grid gap-1 py-1 lg:col-span-2">
