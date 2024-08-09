@@ -150,8 +150,8 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
           leave="transition-transform duration-300"
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
-          className="absolute right-0 h-5/6 mt-28 bg-white shadow-lg p-4"
-          style={{ width: '22rem' }}
+          className="absolute right-0 h-5/6 mt-28 shadow-lg p-4"
+          style={{ width: '22rem', background:'#FEFAF6'}}
         >
           <div>
             {section.name === 'Document Actions' && (
@@ -212,21 +212,29 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
                       onClick={() => setSelectedFileIndex(fileIndex)}
                       onDoubleClick={() => handleOpen(fileIndex)}
                     >
-                      <img src={attachment.thumbnail} alt="Attachment thumbnail" className="w-16 h-16 object-cover" />
-                      <span className="truncate">{attachment.file.name}</span>
+                      <img src={attachment.thumbnail} alt="thumbnail" className="w-10 h-10 object-cover rounded" />
+                      <span>{attachment.file.name}</span>
                     </div>
                   ))}
                 </div>
-                <div className="flex justify-between mt-2">
+                <div className="flex gap-2 mt-auto">
                   <button
+                    className="px-4 py-2 bg-purple-200 text-black rounded"
                     onClick={handleBrowse}
-                    className="px-4 py-2 bg-blue-500 text-white rounded"
                   >
                     Browse
                   </button>
                   <button
+                    className="px-4 py-2 bg-purple-200 text-black rounded"
+                    onClick={() => handleOpen()}
+                    disabled={selectedFileIndex === null}
+                  >
+                    Open
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-purple-200 text-black rounded"
                     onClick={handleDelete}
-                    className="px-4 py-2 bg-red-500 text-white rounded"
+                    disabled={selectedFileIndex === null}
                   >
                     Delete
                   </button>
@@ -235,13 +243,13 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
             )}
             {section.name === 'Drafts' && (
               <>
-                <h2 className="text-xl font-bold">Drafts</h2>
+                <h2 className="text-xl pb-4 font-bold">Drafts</h2>
                 <div>
                   {Object.keys(drafts).map((draftKey) => (
                     <button
                       key={draftKey}
                       onClick={() => handleDraftClick(draftKey)}
-                      className="block p-2 bg-blue-500 text-white rounded mb-2 w-full text-left"
+                      className="block py-4  text-black rounded mb-2 w-1/2 text-left"
                     >
                       {draftKey}
                     </button>
