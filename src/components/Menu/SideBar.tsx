@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { Transition } from '@headlessui/react';
 import { getNotes, addNote } from './data/notes'; // Adjust path as needed
+import { getDraftData } from '@/components/Menu/data/draftData' // Adjust path as needed
 
 interface Section {
   name: string;
@@ -20,6 +21,7 @@ interface SidebarProps {
   fillFormWithPredefinedData: () => void;
   docCd: number;
   docKey: number;
+  form: any; // Add form prop to handle form updates
 }
 
 interface Note {
@@ -41,17 +43,28 @@ const fileIcons: { [key: string]: string } = {
   'default': '/icons/default-icon.png',
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, docKey }) => {
+const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, docKey, form }) => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState<string>('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
+  const [drafts, setDrafts] = useState<{ [key: string]: any }>({}); // State for storing drafts
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const toggleSection = (index: number) => {
     setActiveSection(activeSection === index ? null : index);
+  };
+
+  const handleDraftClick = (draftKey: string) => {
+    const draftValues = drafts[draftKey];
+    if (draftValues) {
+      const values = Object.entries(draftValues)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('\n');
+      alert(values); // Alert the values of the selected draft
+    }
   };
 
   const handleAddNote = () => {
@@ -69,6 +82,11 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
       expanded: false,
     }));
     setNotes(notesList);
+  };
+
+  const fetchDrafts = () => {
+    const draftsData = getDraftData(docCd, docKey); // Fetch all drafts based on docCd and docKey
+    setDrafts(draftsData || {}); // Store drafts data in state
   };
 
   const handleBrowse = () => {
@@ -117,6 +135,12 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
   useEffect(() => {
     if (activeSection === 1) { // If Notes section is active
       fetchNotes();
+    }
+  }, [activeSection, docCd, docKey]);
+
+  useEffect(() => {
+    if (activeSection === 3) { // If Drafts section is active
+      fetchDrafts();
     }
   }, [activeSection, docCd, docKey]);
 
@@ -200,10 +224,10 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
                   type="file"
                   multiple
                   ref={fileInputRef}
-                  style={{ display: 'none' }}
                   onChange={handleFileChange}
+                  className="hidden"
                 />
-                <div className="flex flex-col flex-grow mt-4">
+                <div className="flex-1 overflow-y-auto">
                   {attachments.map((attachment, fileIndex) => (
                     <div
                       key={fileIndex}
@@ -243,6 +267,17 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
             {section.name === 'Drafts' && (
               <>
                 <h2 className="text-xl font-bold">Drafts</h2>
+                <div>
+                  {Object.keys(drafts || {}).map(draftKey => (
+                    <button
+                      key={draftKey}
+                      className="block mb-2 px-4 py-2 bg-blue-500 text-white rounded"
+                      onClick={() => handleDraftClick(draftKey)}
+                    >
+                      {draftKey}
+                    </button>
+                  ))}
+                </div>
               </>
             )}
           </div>
