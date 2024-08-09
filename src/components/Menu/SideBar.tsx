@@ -151,7 +151,7 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
           className="absolute right-0 h-5/6 mt-28 shadow-lg p-4"
-          style={{ width: '22rem', background:'#FEFAF6'}}
+          style={{ width: '22rem', background:'#FFF7FC'}}
         >
           <div>
             {section.name === 'Document Actions' && (
