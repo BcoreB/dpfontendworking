@@ -42,18 +42,18 @@ const AccomodationMaster: React.FC = () => {
 
   const setDraftData = (data: any) => {
     // Assuming form is defined as per your earlier code
-      form.setValue("accocode", data.accocode);
-      form.setValue("accname", data.accname);
-      form.setValue("buildno", data.buildno);
-      form.setValue("roadno", data.roadno);
-      form.setValue("accotype", data.accotype);
-      form.setValue("blockno", data.blockno);
-      form.setValue("flatno", data.flatno);
-      form.setValue("area", data.area);
-      form.setValue("remarks", data.remarks);
+    form.setValue("accocode", data.accocode);
+    form.setValue("accname", data.accname);
+    form.setValue("buildno", data.buildno);
+    form.setValue("roadno", data.roadno);
+    form.setValue("accotype", data.accotype);
+    form.setValue("blockno", data.blockno);
+    form.setValue("flatno", data.flatno);
+    form.setValue("area", data.area);
+    form.setValue("remarks", data.remarks);
   };
-  
-  // Define a submit handler.
+
+  // Function to handle form submission
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setFormValues(values);
@@ -72,15 +72,15 @@ const AccomodationMaster: React.FC = () => {
           docKey={docKey}
           form={form}
           setDraftData={setDraftData} // Pass the function as a prop
-      />
+        />
       </div>
       <MaxWidthWrapper>
         <div className='border-solid'>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormHeader
-                onSave={form.handleSubmit(onSubmit)}
-                formValues={formValues}
+                onSubmit={form.handleSubmit(onSubmit)} // Pass the submit handler to FormHeader
+                setFormValues={setFormValues}         // Pass the setFormValues function as a prop
                 docCd={docCd}
                 docKey={docKey}
                 setModalVisible={setModalVisible}

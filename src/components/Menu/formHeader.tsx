@@ -1,20 +1,29 @@
-"use client"
+"use client";
 import React, { useCallback, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { AppRouterInstance } from 'next/dist/shared/lib/router/router'; // Import the correct type for router
-import { UseFormGetValues } from 'react-hook-form'; // Import UseFormGetValues type
+import { AppRouterInstance } from 'next/dist/shared/lib/router/router';
+import { UseFormGetValues } from 'react-hook-form';
+import Cookies from 'js-cookie'; // Import js-cookie
 
 interface FormHeaderProps {
-  onSave: () => void;
+  onSubmit: () => void;
   docCd: number;
   docKey: number;
-  formValues?: any; // Optional as it's not directly used
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  router: AppRouterInstance; // Update the type for router
-  getValues: UseFormGetValues<any>; // Add getValues to props
+  router: AppRouterInstance;
+  getValues: UseFormGetValues<any>;
+  setFormValues: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const FormHeader: React.FC<FormHeaderProps> = ({ onSave, docCd, docKey, formValues, setModalVisible, router, getValues }) => {
+const FormHeader: React.FC<FormHeaderProps> = ({
+  onSubmit,
+  docCd,
+  docKey,
+  setModalVisible,
+  router,
+  getValues,
+  setFormValues,
+}) => {
   const draftAlerted = useRef(false);
 
   const addNew = useCallback(() => {
@@ -38,33 +47,58 @@ const FormHeader: React.FC<FormHeaderProps> = ({ onSave, docCd, docKey, formValu
     window.location.reload();
   }, [router]);
 
-  const draftData = useCallback(() => {
-    if (!draftAlerted.current) {
-      draftAlerted.current = true;
-      const currentFormValues = getValues(); // Get current form values
-      alert(JSON.stringify(currentFormValues, null, 2)); // Show current form values as alert
-      // Here you can add logic to save the draft data
-      setTimeout(() => {
-        draftAlerted.current = false;
-      }, 1000); // Reset the alert flag after 1 second
+  const saveDraft = useCallback(() => {
+    const currentFormValues = getValues(); // Get current form values
+    const allDraftsKey = 'allDrafts'; // Key for storing the collection of drafts
+
+    // Retrieve the existing drafts from the cookie, or initialize an empty object
+    const existingDrafts = Cookies.get(allDraftsKey) ? JSON.parse(Cookies.get(allDraftsKey)!) : {};
+
+    // Find the maximum existing index for the current docCd and docKey
+    const existingKeys = Object.keys(existingDrafts).filter(key => key.startsWith(`draft_${docCd}_${docKey}_`));
+    let maxIndex = 0;
+
+    if (existingKeys.length > 0) {
+      maxIndex = Math.max(
+        ...existingKeys.map(key => {
+          const parts = key.split('_');
+          return parseInt(parts[3], 10);
+        })
+      );
     }
-  }, [getValues]);
+
+    // Increment the index to generate a new unique draft key
+    const newDraftIndex = maxIndex + 1;
+    const draftKey = `draft_${docCd}_${docKey}_${newDraftIndex}`;
+
+    // Add the new draft under the unique key
+    existingDrafts[draftKey] = currentFormValues;
+
+    try {
+      // Save the updated collection back to the cookie
+      Cookies.set(allDraftsKey, JSON.stringify(existingDrafts), { expires: 365 }); // Store with a 1-year expiry
+      console.log("Draft saved successfully with key:", draftKey);
+    } catch (error) {
+      console.error("Failed to save draft:", error);
+    }
+  }, [getValues, docCd, docKey]);
 
   const onLogClick = useCallback(() => {
     setModalVisible(true);
   }, [setModalVisible]);
+
   return (
     <div className="form-header">
       <div className='flex justify-between bg-purple-100 mb-5'>
         <div>
           <Button variant='ghost' type="button" onClick={addNew}>New</Button>
-          <Button variant='ghost' type="submit" onClick={onSave}>Save</Button>
+          <Button variant='ghost' type="submit" onClick={onSubmit}>Save</Button> {/* Change here */}
           <Button variant='ghost' type="button" onClick={deleteData}>Delete</Button>
         </div>
         <div>
           <Button variant='ghost' type="button" onClick={printData}>Print</Button>
           <Button variant='ghost' type="button" onClick={onLogClick}>Log</Button>
-          <Button variant='ghost' type="button" onClick={draftData}>Draft</Button>
+          <Button variant='ghost' type="button" onClick={saveDraft}>Draft</Button>
         </div>
       </div>
     </div>
@@ -72,6 +106,3 @@ const FormHeader: React.FC<FormHeaderProps> = ({ onSave, docCd, docKey, formValu
 };
 
 export default FormHeader;
-
-
-
