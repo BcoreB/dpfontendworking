@@ -21,10 +21,8 @@ const AccomodationMaster: React.FC = () => {
   const [docKey, setDocKey] = useState<number>(101); // Default DocKey
   const router = useRouter();
 
-  // Define your form with potential default values.
   const form = InitializeForm();
 
-  // Function to fill the form with predefined data
   const fillFormWithPredefinedData = (docCd: number, docKey: number) => {
     const data = getPredefinedData(docCd, docKey);
     if (data) {
@@ -41,7 +39,6 @@ const AccomodationMaster: React.FC = () => {
   };
 
   const setDraftData = (data: any) => {
-    // Assuming form is defined as per your earlier code
     form.setValue("accocode", data.accocode);
     form.setValue("accname", data.accname);
     form.setValue("buildno", data.buildno);
@@ -53,16 +50,6 @@ const AccomodationMaster: React.FC = () => {
     form.setValue("remarks", data.remarks);
   };
 
-  // Function to handle form submission
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      setFormValues(values);
-      alert(JSON.stringify(values, null, 2)); // Show form values as alert
-    } catch (error) {
-      console.error("Form submission error: ", error);
-    }
-  };
-
   return (
     <div className='w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8'>
       <div className='absolute top-0 right-0 z-5'>
@@ -71,16 +58,15 @@ const AccomodationMaster: React.FC = () => {
           docCd={docCd}
           docKey={docKey}
           form={form}
-          setDraftData={setDraftData} // Pass the function as a prop
+          setDraftData={setDraftData}
         />
       </div>
       <MaxWidthWrapper>
         <div className='border-solid'>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(() => {})} className="space-y-8">
               <FormHeader
-                onSubmit={form.handleSubmit(onSubmit)} // Pass the submit handler to FormHeader
-                setFormValues={setFormValues}         // Pass the setFormValues function as a prop
+                setFormValues={setFormValues}
                 docCd={docCd}
                 docKey={docKey}
                 setModalVisible={setModalVisible}
@@ -186,7 +172,7 @@ const AccomodationMaster: React.FC = () => {
                   />
                 </div>
               </div>
-            </form>
+              </form>
           </Form>
         </div>
       </MaxWidthWrapper>
