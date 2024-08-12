@@ -38,17 +38,7 @@ const AccomodationMaster: React.FC = () => {
     }
   };
 
-  const setDraftData = (data: any) => {
-    form.setValue("accocode", data.accocode);
-    form.setValue("accname", data.accname);
-    form.setValue("buildno", data.buildno);
-    form.setValue("roadno", data.roadno);
-    form.setValue("accotype", data.accotype);
-    form.setValue("blockno", data.blockno);
-    form.setValue("flatno", data.flatno);
-    form.setValue("area", data.area);
-    form.setValue("remarks", data.remarks);
-  };
+ 
 
   return (
     <div className='w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8'>
@@ -58,7 +48,6 @@ const AccomodationMaster: React.FC = () => {
           docCd={docCd}
           docKey={docKey}
           form={form}
-          setDraftData={setDraftData}
         />
       </div>
       <MaxWidthWrapper>
@@ -172,7 +161,7 @@ const AccomodationMaster: React.FC = () => {
                   />
                 </div>
               </div>
-              </form>
+             </form>
           </Form>
         </div>
       </MaxWidthWrapper>
