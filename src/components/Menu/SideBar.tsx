@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { Transition } from '@headlessui/react';
 import { getNotes, addNote } from './data/notes'; // Adjust path as needed
 import { getDraftData } from '@/components/Menu/data/draftData'; // Adjust path as needed
-
+import Cookies from 'js-cookie';
 interface Section {
   name: string;
   content: string;
@@ -41,8 +41,22 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
   const handleDraftClick = (draftKey: string) => {
     const draftValues = drafts[draftKey];
     if (draftValues) {
-      setDraftData(draftValues); // Use the function passed as a prop
+      setDraftData(draftValues);
     }
+  };
+
+  const fetchDrafts = () => {
+    const allDraftsKey = 'allDrafts';
+    const existingDrafts = Cookies.get(allDraftsKey) ? JSON.parse(Cookies.get(allDraftsKey)!) : {};
+
+    const filteredDrafts = Object.keys(existingDrafts)
+      .filter(key => key.startsWith(`draft_${docCd}_${docKey}_`))
+      .reduce((acc, key) => {
+        acc[key] = existingDrafts[key];
+        return acc;
+      }, {});
+
+    setDrafts(filteredDrafts || {});
   };
 
   const handleAddNote = () => {
@@ -62,10 +76,7 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
     setNotes(notesList);
   };
 
-  const fetchDrafts = () => {
-    const draftsData = getDraftData(docCd, docKey); // Fetch all drafts based on docCd and docKey
-    setDrafts(draftsData || {}); // Store drafts data in state
-  };
+  
 
   const handleBrowse = () => {
     fileInputRef.current?.click();
@@ -256,22 +267,24 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
               </div>
             )}
             {section.name === 'Drafts' && (
-              <div>
-                <h2 className="text-xl font-bold mb-4">Drafts</h2>
-                {Object.keys(drafts).length > 0 ? (
-                  Object.keys(drafts).map((draftKey, draftIndex) => (
-                    <div
-                      key={draftIndex}
-                      className="mb-2 p-2 border border-gray-300 rounded cursor-pointer"
-                      onClick={() => handleDraftClick(draftKey)}
-                    >
-                      Draft {draftKey}
-                    </div>
-                  ))
-                ) : (
-                  <p>No drafts available.</p>
-                )}
-              </div>
+              <>
+                <h2 className="text-xl font-bold">Drafts</h2>
+                <div className="mt-2">
+                  {Object.keys(drafts).length > 0 ? (
+                    Object.keys(drafts).map((draftKey, draftIndex) => (
+                      <div
+                        key={draftIndex}
+                        onClick={() => handleDraftClick(draftKey)}
+                        className="cursor-pointer p-2 mb-2 border border-gray-300 rounded hover:bg-gray-100"
+                      >
+                        {`Draft ${draftIndex + 1}`}
+                      </div>
+                    ))
+                  ) : (
+                    <p>No drafts available</p>
+                  )}
+                </div>
+              </>
             )}
           </div>
         </Transition>
