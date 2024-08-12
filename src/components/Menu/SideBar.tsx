@@ -31,6 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
   const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
   const [drafts, setDrafts] = useState<{ [key: string]: any }>({}); // State for storing drafts
 
+  const sidebarRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const toggleSection = (index: number) => {
@@ -125,6 +126,19 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
     setNotes(prevNotes => prevNotes.map((note, i) => i === index ? { ...note, expanded: !note.expanded } : note));
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+      setActiveSection(null); // Close the sidebar
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="flex h-screen relative">
       <div className="right-0 flex bg-purple-100 flex-col text-sm z-10 pt-2 justify-evenly items-center mt-48 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
@@ -153,7 +167,7 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
           className="absolute right-0 h-5/6 mt-28 shadow-lg p-4"
           style={{ width: '22rem', background:'#FFF7FC'}}
         >
-          <div>
+          <div ref={sidebarRef}>
             {section.name === 'Document Actions' && (
               <>
                 <h2 className="text-xl font-bold">Document Actions</h2>
@@ -242,20 +256,22 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
               </div>
             )}
             {section.name === 'Drafts' && (
-              <>
-                <h2 className="text-xl pb-4 font-bold">Drafts</h2>
-                <div>
-                  {Object.keys(drafts).map((draftKey) => (
-                    <button
-                      key={draftKey}
+              <div>
+                <h2 className="text-xl font-bold mb-4">Drafts</h2>
+                {Object.keys(drafts).length > 0 ? (
+                  Object.keys(drafts).map((draftKey, draftIndex) => (
+                    <div
+                      key={draftIndex}
+                      className="mb-2 p-2 border border-gray-300 rounded cursor-pointer"
                       onClick={() => handleDraftClick(draftKey)}
-                      className="block py-4  text-black rounded mb-2 w-1/2 text-left"
                     >
-                      {draftKey}
-                    </button>
-                  ))}
-                </div>
-              </>
+                      Draft {draftKey}
+                    </div>
+                  ))
+                ) : (
+                  <p>No drafts available.</p>
+                )}
+              </div>
             )}
           </div>
         </Transition>
