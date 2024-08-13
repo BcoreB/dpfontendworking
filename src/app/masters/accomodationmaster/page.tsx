@@ -12,7 +12,6 @@ import getLanguageByEnglish from '@/utils/languages';
 import Sidebar from '@/components/Menu/SideBar';
 import FormHeader from '@/components/Menu/formHeader';
 import Modal from '@/components/Menu/modal';
-import { getPredefinedData } from '@/components/Menu/data/prefillData';
 
 const AccomodationMaster: React.FC = () => {
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
@@ -23,28 +22,10 @@ const AccomodationMaster: React.FC = () => {
 
   const form = InitializeForm();
 
-  const fillFormWithPredefinedData = (docCd: number, docKey: number) => {
-    const data = getPredefinedData(docCd, docKey);
-    if (data) {
-      form.setValue("accocode", data.accocode);
-      form.setValue("accname", data.accname);
-      form.setValue("buildno", data.buildno);
-      form.setValue("roadno", data.roadno);
-      form.setValue("accotype", data.accotype);
-      form.setValue("blockno", data.blockno);
-      form.setValue("flatno", data.flatno);
-      form.setValue("area", data.area);
-      form.setValue("remarks", data.remarks);
-    }
-  };
-
- 
-
   return (
     <div className='w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8'>
       <div className='absolute top-0 right-0 z-5'>
         <Sidebar
-          fillFormWithPredefinedData={() => fillFormWithPredefinedData(docCd, docKey)}
           docCd={docCd}
           docKey={docKey}
           form={form}

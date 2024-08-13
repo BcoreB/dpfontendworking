@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { Transition } from '@headlessui/react';
 import { getNotes, addNote } from './data/notes';
 import Cookies from 'js-cookie';
+import { getPredefinedData } from '@/components/Menu/data/prefillData' // Import the utility function for predefined data
 
 interface Section {
   name: string;
@@ -16,13 +17,12 @@ const sections: Section[] = [
 ];
 
 interface SidebarProps {
-  fillFormWithPredefinedData: () => void;
   docCd: number;
   docKey: number;
   form: any; // Replace with actual type
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, docKey, form }) => {
+const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState<string>('');
@@ -120,6 +120,15 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
     }
   };
 
+  const handlePredefinedData = () => {
+    const predefinedData = getPredefinedData(docCd, docKey);
+    if (predefinedData) {
+      Object.entries(predefinedData).forEach(([field, value]) => {
+        form.setValue(field, value);
+      });
+    }
+  };
+
   useEffect(() => {
     if (activeSection === 1) { // If Notes section is active
       fetchNotes();
@@ -182,10 +191,10 @@ const Sidebar: React.FC<SidebarProps> = ({ fillFormWithPredefinedData, docCd, do
               <>
                 <h2 className="text-xl font-bold">Document Actions</h2>
                 <button
-                  onClick={fillFormWithPredefinedData}
+                  onClick={handlePredefinedData}
                   className="mb-4 mt-5 px-4 py-2 bg-blue-500 text-white rounded"
                 >
-                  Fill Form 
+                  Fill Form
                 </button>
               </>
             )}
