@@ -29,6 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
   const [drafts, setDrafts] = useState<{ [key: string]: any }>({}); // State for storing drafts
+  const [selectedDraftKey, setSelectedDraftKey] = useState<string | null>(null); // State for selected draft
 
   const sidebarRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -38,6 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
   };
 
   const handleDraftClick = (draftKey: string) => {
+    setSelectedDraftKey(draftKey); // Set the selected draft
     const draftValues = drafts[draftKey];
     if (draftValues) {
       Object.keys(draftValues).forEach((key) => {
@@ -45,6 +47,27 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
       });
     }
   };
+  const handleDeleteDraft = () => {
+    if (selectedDraftKey) {
+      const allDraftsKey = 'allDrafts';
+      const existingDrafts = Cookies.get(allDraftsKey) ? JSON.parse(Cookies.get(allDraftsKey)!) : {};
+      
+      // Delete the draft from the state
+      setDrafts(prevDrafts => {
+        const updatedDrafts = { ...prevDrafts };
+        delete updatedDrafts[selectedDraftKey];
+        return updatedDrafts;
+      });
+
+      // Delete the draft from the cookies
+      delete existingDrafts[selectedDraftKey];
+      Cookies.set(allDraftsKey, JSON.stringify(existingDrafts));
+      
+      // Clear the selected draft
+      setSelectedDraftKey(null);
+    }
+  };
+
 
   const fetchDrafts = () => {
     const allDraftsKey = 'allDrafts';
@@ -277,15 +300,22 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
             {section.name === 'Drafts' && (
               <>
                 <h2 className="text-xl font-bold mb-4">Drafts</h2>
-                {Object.keys(drafts).map((draftKey) => (
+                {Object.keys(drafts).map((draftKey, index) => (
                   <div
                     key={draftKey}
-                    className="mb-2 w-11/12 cursor-pointer border border-gray-300 p-2 rounded hover:bg-gray-200"
+                    className={`mb-2 w-11/12 cursor-pointer border border-gray-300 p-2 rounded hover:bg-gray-200 ${selectedDraftKey === draftKey ? 'bg-blue-100' : ''}`}
                     onClick={() => handleDraftClick(draftKey)}
                   >
-                    {draftKey}
+                    {`Draft ${index + 1}`}
                   </div>
                 ))}
+                <button
+                  className="absolute bottom-4 left-4 px-4 py-2 bg-purple-200 text-black rounded"
+                  onClick={handleDeleteDraft}
+                  disabled={!selectedDraftKey}
+                >
+                  Delete
+                </button>
               </>
             )}
           </div>
