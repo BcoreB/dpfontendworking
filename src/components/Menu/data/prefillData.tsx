@@ -9,6 +9,10 @@ interface PredefinedData {
     flatno: string;
     area: string;
     remarks: string;
+    airseccode:string;
+    airsecname:string;
+    defaultairline:string;
+    cost:string;
   }
   
   const prefillData: Record<number, Record<number, PredefinedData>> = {
@@ -26,6 +30,15 @@ interface PredefinedData {
       },
       // Add more data as needed
     },
+    2: {
+      101: {
+        airseccode: "AIR101",
+        airsecname: "Quatar Airways",
+        defaultairline: "a",
+        cost: "1000",
+        remarks: "Nice flight",
+      }
+    }
     // Add more docCd entries as needed
   };
   
