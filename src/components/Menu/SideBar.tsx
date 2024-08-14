@@ -221,7 +221,7 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
                 </button>
               </>
             )}
-            {section.name === 'Notes' && (
+             {section.name === 'Notes' && (
               <>
                 <textarea
                   value={newNote}
