@@ -1,4 +1,3 @@
-// Modal.tsx
 "use client"
 import React, { useEffect, useState } from 'react';
 import 'devextreme/dist/css/dx.light.css';
@@ -12,30 +11,31 @@ interface ModalProps {
   isVisible: boolean;
   onClose: () => void;
   title: string;
-  docCd: number; // Add docCd prop
+  docCd: number;
 }
 
 const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd }) => {
-  const [data, setData] = useState<any[]>([]); // Store fetched data
+  const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
     if (isVisible) {
-      // Dynamically import the data file based on docCd
-      import(`@/components/menu/data/${docCd}.tsx`)
+      import(`@/components/menu/data/browser-text/${docCd}.tsx`)
         .then(module => setData(module.default))
         .catch(error => {
           console.error("Failed to load data:", error);
-          setData([]); // Handle the error case
+          setData([]);
         });
     }
   }, [isVisible, docCd]);
 
   if (!isVisible) return null;
 
-  const handleRowDblClick = (e: any) => {
-    const rowData = e.data;
-    alert(JSON.stringify(rowData, null, 2)); // Alert the data in JSON format
-    onClose(); // Close the modal
+  const handleCellDblClick = (e: any) => {
+    if (e.column.dataField === "deptHeadCode") {
+      const rowData = e.data;
+      alert(JSON.stringify(rowData, null, 2)); // Alert the data in JSON format
+      onClose(); // Close the modal
+    }
   };
 
   return (
@@ -50,21 +50,12 @@ const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd }) =
             columnAutoWidth={true}
             allowColumnReordering={true}
             dataSource={data}
-            keyExpr="LogId"
-            onRowDblClick={handleRowDblClick} // Handle double-click
+            keyExpr="deptHeadCode"
+            onCellDblClick={handleCellDblClick} // Handle double-click on a specific cell
           >
-            <SearchPanel visible={true} highlightCaseSensitive={true} /> {/* Enable search panel */}
-            {/* Define columns explicitly if needed */}
-            <Column dataField="LogId" caption="Log ID" />
-            <Column dataField="SysTerminal" caption="System Terminal" />
-            <Column dataField="CompId" caption="Company ID" />
-            <Column dataField="SiteId" caption="Site ID" />
-            <Column dataField="UserId" caption="User ID" />
-            <Column dataField="LogAction" caption="Log Action" />
-            <Column dataField="DocCd" caption="Document Code" />
-            <Column dataField="DocKey" caption="Document Key" />
-            <Column dataField="Description" caption="Description" />
-            <Column dataField="LogTime" caption="Log Time" dataType="datetime" />
+            <SearchPanel visible={true} highlightCaseSensitive={true} />
+            <Column dataField="deptHeadCode" caption="Dept Head Code" />
+            <Column dataField="deptHeadName" caption="Dept Head Name" /> 
           </DataGrid>
         </div>
       </div>

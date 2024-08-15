@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import MaxWidthWrapper from '@/components/MaxWidthWrapper'
 
 import DPInput from '@/components/ui/dpinput'
+import DpRadioGroup from '@/components/ui/dpradiogroup'
 import { InitializeForm, formSchema, DisplayForm, saveData, company} from './formSchema'
 import { useRouter , useSearchParams } from 'next/navigation'
 import getLanguageByEnglish from '@/utils/languages'
@@ -18,6 +19,7 @@ import DPComboBox from '@/components/ui/dpcombobox'
 import FormHeader from '@/components/Menu/formHeader';
 import Sidebar from '@/components/Menu/SideBar';
 import Modal from '@/components/Menu/modal';
+import FormModal from '../formModel'
 
 const DepartmentMaster = () => {
   const searchParams = useSearchParams()
@@ -25,6 +27,7 @@ const DepartmentMaster = () => {
   const docKey = 101;
   const [formValues,setFormValues]=useState< z.infer<typeof formSchema>>()
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isFormModalVisible, setFormModalVisible] = useState(false);
   const [type, setType] = useState<{ value: string; label: string }[]>([]);
 
   const router = useRouter();
@@ -32,6 +35,9 @@ const DepartmentMaster = () => {
   const form =  InitializeForm()
     // 2. Define a submit handler.
 
+    const handleOpenModal = () => {
+      setFormModalVisible(true);
+    };
   return (
     <div className='w-full h-full  px-5 py-5  lg:px-20 lg:pb-14 lg:pt-8'>
       <div className='absolute top-0 right-0 z-5'>
@@ -55,7 +61,9 @@ const DepartmentMaster = () => {
                         router={router}
                         getValues={form.getValues}
                       />
-
+                       <Button onClick={handleOpenModal}>
+                          Open Modal
+                        </Button>
                     <div className="grid grid-cols-1 lg:grid-cols-6   gap-4 py-1">
                         
                         <div className="grid gap-1 py-1 lg:col-span-1">
@@ -121,12 +129,16 @@ const DepartmentMaster = () => {
                                               form.setValue("deptHeadName", value)}}  
                                 />
                             </div>
+                            <div className="grid gap-1 py-1 lg:col-span-3">
+                              
+                            </div>
                           
                   </div>
           </form>
         </Form>
       </div>
     </MaxWidthWrapper>
+    <FormModal isVisible={isFormModalVisible} onClose={() => setFormModalVisible(false)} title="Modal Data" docCd={docCd} />
     <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" docCd={docCd} />
     </div>
   )
