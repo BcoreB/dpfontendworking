@@ -50,6 +50,18 @@ const DepartmentMaster = () => {
   };
 
 
+  const [isComboBoxDisabled, setComboBoxDisabled] = useState(true); // Default to disabled
+
+  // Handle the radio group value change
+  const handleRadioChange = (field: string, value: string) => {
+    if (value === 'toplevel') {
+      setComboBoxDisabled(true);
+      form.setValue("departmentType", value);
+    } else {
+      setComboBoxDisabled(false);
+      form.setValue("departmentType", value);
+    }
+  };
 
   return (
     <div className='w-full h-full  px-5 py-5  lg:px-20 lg:pb-14 lg:pt-8'>
@@ -140,17 +152,27 @@ const DepartmentMaster = () => {
                   />
 
                 </div>
-                <div className="grid gap-1 py-1 lg:col-span-3">
-                  <DpRadioGroup
-                    formcontrol={form.control}
-                    name="departmentType" // name should match the field in your schema
-                    labelText={getLanguageByEnglish("Department Type")}
-                    options={radioOptions}
-                    onValueChange={(field, value) => {
-                      form.setValue("departmentType", value)
-                    }}
-                  />
-                </div>
+                <div className="grid gap-1 py-1 lg:col-span-2">
+        <DpRadioGroup
+          formcontrol={form.control}
+          name="departmentType" // name should match the field in your schema
+          labelText={getLanguageByEnglish("Department Type")}
+          options={radioOptions}
+          onValueChange={handleRadioChange} // Use the handler function
+        />
+      </div>
+      <div className="grid gap-1 py-1 lg:col-span-3">
+        <DPComboBox
+          disabled={isComboBoxDisabled} // Disable ComboBox based on state
+          name="departmentType"
+          formcontrol={form.control}
+          labelText={getLanguageByEnglish("Type")}
+          data={company}
+          onValueChange={(field, value) => {
+            form.setValue("departmentType", value);
+          }}
+        />
+      </div>
               </div>
             </form>
           </Form>

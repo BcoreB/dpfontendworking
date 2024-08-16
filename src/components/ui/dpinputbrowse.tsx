@@ -50,7 +50,7 @@ const DPInput: React.FC<DPInputProps> = ({
                   top: "50%",
                   transform: "translateY(-50%)",
                   cursor: "pointer",
-                  fontSize: "20px",
+                  fontSize: "12px",
                   color: "#000", // Icon color (change as needed)
                 }}
               />
