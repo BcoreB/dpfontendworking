@@ -15,12 +15,10 @@ export const formSchema = z.object({
   depname: z.string().min(2, {
     message: "Accomodation name must be at least 2 characters.",
   }),
-  company: z.string().min(2, {
-    message: "Accomodation name must be at least 2 characters.",
-  }),
+  company: z.string().min(1, "Please select a company"),
   deptHeadCode: z.string(),
   deptHeadName:z.string(),
-  
+  departmentType: z.string().min(1, "Please select a department type"),
 });
 
 // Initialize the form with default values
@@ -33,11 +31,15 @@ export const InitializeForm = () => {
       company: '',
       deptHeadCode: '',
       deptHeadName:'',
+      departmentType:'',
       
     },
   });
 };
-
+export const radioOptions = [
+  { value: 'toplevel', label: 'Top Level' },
+  { value: 'sublevel', label: 'Sub Level' },
+];
 export const company = [
   {
     value: "a",
@@ -56,6 +58,7 @@ export type Department = {
   company: string,
   deptHeadCode: string,
   deptHeadName:string,
+  departmentType:string,
   
 };
 

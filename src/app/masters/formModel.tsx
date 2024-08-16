@@ -2,14 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import 'devextreme/dist/css/dx.light.css';
 import {
-    DataGrid,
-    SearchPanel,
-    Column,
+  DataGrid,
+  SearchPanel,
+  Column,
 } from 'devextreme-react/data-grid';
 
 interface ModalProps {
   isVisible: boolean;
-  onClose: () => void;
+  onClose: (data?: any) => void;
   title: string;
   docCd: number;
 }
@@ -31,11 +31,8 @@ const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd }) =
   if (!isVisible) return null;
 
   const handleCellDblClick = (e: any) => {
-    if (e.column.dataField === "deptHeadCode") {
-      const rowData = e.data;
-      alert(JSON.stringify(rowData, null, 2)); // Alert the data in JSON format
-      onClose(); // Close the modal
-    }
+    const selectedData = e.data;
+    onClose(selectedData); // Pass the selected data to the onClose function to update the form
   };
 
   return (
@@ -43,7 +40,7 @@ const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd }) =
       <div className="bg-white rounded-lg p-5 w-5/6 mx-auto">
         <div className="flex modal-header justify-between items-center border-b pb-3">
           <h3 className="text-lg font-semibold">{title}</h3>
-          <button onClick={onClose} className="text-white font-bold">X</button>
+          <button onClick={() => onClose()} className="text-white font-bold">X</button>
         </div>
         <div className="mt-4">
           <DataGrid
@@ -55,7 +52,7 @@ const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd }) =
           >
             <SearchPanel visible={true} highlightCaseSensitive={true} />
             <Column dataField="deptHeadCode" caption="Dept Head Code" />
-            <Column dataField="deptHeadName" caption="Dept Head Name" /> 
+            <Column dataField="deptHeadName" caption="Dept Head Name" />
           </DataGrid>
         </div>
       </div>
