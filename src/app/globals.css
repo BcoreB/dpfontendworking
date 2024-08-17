@@ -168,3 +168,7 @@ input, select
   background-color: #818CF8;
   padding: .5rem 2rem;
 }
+.sidebar-slide
+{
+  z-index: 1 !important;
+}

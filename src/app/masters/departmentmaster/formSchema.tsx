@@ -19,6 +19,7 @@ export const formSchema = z.object({
   deptHeadCode: z.string(),
   deptHeadName:z.string(),
   departmentType: z.string().min(1, "Please select a department type"),
+  sublevelType: z.string(),
 });
 
 // Initialize the form with default values
@@ -32,7 +33,7 @@ export const InitializeForm = () => {
       deptHeadCode: '',
       deptHeadName:'',
       departmentType:'',
-      
+      sublevelType:'',
     },
   });
 };
@@ -51,6 +52,17 @@ export const company = [
   }
 ];
 
+
+export const sublevels = [
+  {
+    value:"production",
+    label:"Production"
+  },
+  {
+    value:"research",
+    label:"Research"
+  }
+]
 export type Department = {
   
   depcode: string,
@@ -59,7 +71,7 @@ export type Department = {
   deptHeadCode: string,
   deptHeadName:string,
   departmentType:string,
-  
+  sublevelTyle:string,
 };
 
 interface FieldType {

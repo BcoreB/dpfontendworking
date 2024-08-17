@@ -8,7 +8,7 @@ import MaxWidthWrapper from '@/components/MaxWidthWrapper'
 
 import DPInput from '@/components/ui/dpinput'
 import DpRadioGroup from '@/components/ui/dpradiogroup'
-import { InitializeForm, formSchema, DisplayForm, saveData, company, radioOptions } from './formSchema'
+import { InitializeForm, formSchema, DisplayForm, saveData, company, radioOptions, sublevels } from './formSchema'
 import { useRouter, useSearchParams } from 'next/navigation'
 import getLanguageByEnglish from '@/utils/languages'
 import { DocStaus } from '@/dptype'
@@ -50,18 +50,26 @@ const DepartmentMaster = () => {
   };
 
 
-  const [isComboBoxDisabled, setComboBoxDisabled] = useState(true); // Default to disabled
+  const [selectedDepartmentType, setSelectedDepartmentType] = useState(''); // Initially no selection
+  const [isComboBoxDisabled, setComboBoxDisabled] = useState(true); // Initially disabled
 
-  // Handle the radio group value change
-  const handleRadioChange = (field: string, value: string) => {
-    if (value === 'toplevel') {
-      setComboBoxDisabled(true);
-      form.setValue("departmentType", value);
-    } else {
-      setComboBoxDisabled(false);
-      form.setValue("departmentType", value);
-    }
+  useEffect(() => {
+    // Disable ComboBox only when "Top Level" is selected
+    setComboBoxDisabled(selectedDepartmentType === 'toplevel');
+  }, [selectedDepartmentType]);
+
+  const handleDepartmentTypeChange = (field, value) => {
+    setSelectedDepartmentType(value);
+    form.setValue(field, value);
   };
+
+
+  // Function to alert form data as JSON
+  const handleAlertFormData = () => {
+    const data = form.getValues(); // Get current form values
+    alert(JSON.stringify(data, null, 2)); // Convert the data to a JSON string and show it in an alert
+  };
+
 
   return (
     <div className='w-full h-full  px-5 py-5  lg:px-20 lg:pb-14 lg:pt-8'>
@@ -72,6 +80,9 @@ const DepartmentMaster = () => {
           form={form}
         />
       </div>
+      <Button type="button" onClick={handleAlertFormData}>
+                Show Form Data
+              </Button>
       <MaxWidthWrapper className='px-5 py-5  lg:px-20 lg:pb-6 lg:pt-20'>
         <div className='border-solid'>
           <Form {...form}>
@@ -153,26 +164,28 @@ const DepartmentMaster = () => {
 
                 </div>
                 <div className="grid gap-1 py-1 lg:col-span-2">
-        <DpRadioGroup
-          formcontrol={form.control}
-          name="departmentType" // name should match the field in your schema
-          labelText={getLanguageByEnglish("Department Type")}
-          options={radioOptions}
-          onValueChange={handleRadioChange} // Use the handler function
-        />
-      </div>
-      <div className="grid gap-1 py-1 lg:col-span-3">
-        <DPComboBox
-          disabled={isComboBoxDisabled} // Disable ComboBox based on state
-          name="departmentType"
-          formcontrol={form.control}
-          labelText={getLanguageByEnglish("Type")}
-          data={company}
-          onValueChange={(field, value) => {
-            form.setValue("departmentType", value);
-          }}
-        />
-      </div>
+                  <DpRadioGroup
+                    formcontrol={form.control}
+                    name="departmentType"
+                    labelText={getLanguageByEnglish("Department Type")}
+                    options={radioOptions}
+                    onValueChange={handleDepartmentTypeChange}
+                  />
+                </div>
+                <div className="grid gap-1 py-1 lg:col-span-3">
+                  <DPComboBox
+                    disabled={isComboBoxDisabled}
+                    name="departmentType"
+                    formcontrol={form.control}
+                    labelText={getLanguageByEnglish("Type")}
+                    data={company}
+                    onValueChange={(field, value) => {
+                      form.setValue(field, value);
+                      // Ensure the radio selection remains intact
+                      form.setValue('departmentType', selectedDepartmentType);
+                    }}
+                  />
+                </div>
               </div>
             </form>
           </Form>

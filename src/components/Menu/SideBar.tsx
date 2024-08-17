@@ -206,8 +206,8 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
           leave="transition-transform duration-300"
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
-          className="absolute right-0 h-5/6 mt-28 shadow-lg p-4"
-          style={{ width: '22rem', background:'#FFF7FC'}}
+          className="sidebar-slide absolute right-0 h-5/6 mt-28 shadow-lg p-4"
+          style={{ width: '22rem', background:'#FFF7FC',}}
         >
           <div ref={sidebarRef}>
             {section.name === 'Document Actions' && (
