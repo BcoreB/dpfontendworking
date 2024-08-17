@@ -51,6 +51,7 @@ const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd }) =
             onCellDblClick={handleCellDblClick} // Handle double-click on a specific cell
           >
             <SearchPanel visible={true} highlightCaseSensitive={true} />
+            
           </DataGrid>
         </div>
       </div>

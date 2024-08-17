@@ -53,16 +53,24 @@ const DepartmentMaster = () => {
   const [selectedDepartmentType, setSelectedDepartmentType] = useState(''); // Initially no selection
   const [isComboBoxDisabled, setComboBoxDisabled] = useState(true); // Initially disabled
 
-  useEffect(() => {
-    // Disable ComboBox only when "Top Level" is selected
-    setComboBoxDisabled(selectedDepartmentType === 'toplevel');
-  }, [selectedDepartmentType]);
+    useEffect(() => {
+      // Disable ComboBox only when "Top Level" is selected
+      setComboBoxDisabled(selectedDepartmentType === 'toplevel');
+    }, [selectedDepartmentType]);
 
-  const handleDepartmentTypeChange = (field, value) => {
-    setSelectedDepartmentType(value);
-    form.setValue(field, value);
-  };
-
+    const handleDepartmentTypeChange = (field, value) => {
+      setSelectedDepartmentType(value);
+      form.setValue(field, value);
+    
+      if (value === 'toplevel') {
+        // If Top Level is selected, set sublevelType to NULL and disable the ComboBox
+        form.setValue('sublevelType', null);
+        setComboBoxDisabled(true);
+      } else if (value === 'sublevel') {
+        // If Sub Level is selected, enable the ComboBox
+        setComboBoxDisabled(false);
+      }
+    };
 
   // Function to alert form data as JSON
   const handleAlertFormData = () => {
@@ -174,16 +182,16 @@ const DepartmentMaster = () => {
                 </div>
                 <div className="grid gap-1 py-1 lg:col-span-3">
                   <DPComboBox
-                    disabled={isComboBoxDisabled}
-                    name="departmentType"
-                    formcontrol={form.control}
-                    labelText={getLanguageByEnglish("Type")}
-                    data={company}
-                    onValueChange={(field, value) => {
-                      form.setValue(field, value);
-                      // Ensure the radio selection remains intact
-                      form.setValue('departmentType', selectedDepartmentType);
-                    }}
+                      disabled={isComboBoxDisabled}
+                      name="sublevelType"
+                      formcontrol={form.control}
+                      labelText={getLanguageByEnglish("Type")}
+                      data={sublevels}  // Assuming 'sublevels' contains the options for sublevelType
+                      onValueChange={(field, value) => {
+                        if (selectedDepartmentType === 'sublevel') {
+                          form.setValue(field, value);
+                        }
+                      }}
                   />
                 </div>
               </div>
