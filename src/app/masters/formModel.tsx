@@ -7,14 +7,21 @@ import {
   Column,
 } from 'devextreme-react/data-grid';
 
+interface ModalFieldMapping {
+  column: string; // The data field in the grid
+  formField: string; // The corresponding field in the form
+}
+
 interface ModalProps {
   isVisible: boolean;
   onClose: (data?: any) => void;
   title: string;
   docCd: number;
+  fieldMapping: ModalFieldMapping[]; // Add the new prop here
 }
 
-const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd }) => {
+
+const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd, fieldMapping  }) => {
   const [data, setData] = useState<any[]>([]);
   const [gridKey, setGridKey] = useState(0); // Key for force re-rendering
 
@@ -36,8 +43,17 @@ const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd }) =
 
   const handleCellDblClick = (e: any) => {
     const selectedData = e.data;
-    onClose(selectedData); // Pass the selected data to the onClose function to update the form
+  
+    const mappedData = fieldMapping.reduce((acc, mapping) => {
+      if (selectedData[mapping.column] !== undefined) {
+        acc[mapping.formField] = selectedData[mapping.column];
+      }
+      return acc;
+    }, {} as any);
+  
+    onClose(mappedData); // Pass the mapped data to the onClose function to update the form
   };
+  
 
   // Dynamically generate columns based on data keys
   const columns = data.length > 0

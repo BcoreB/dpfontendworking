@@ -33,12 +33,11 @@ const DepartmentMaster = () => {
   const form = InitializeForm()
 
   // 2. Handle modal close with automatic field update.
-  const handleModalClose = (data: any) => {
-    if (data) {
-      // Automatically update form fields with the same name as data keys
-      Object.keys(data).forEach((key) => {
+  const handleModalClose = (mappedData: any) => {
+    if (mappedData) {
+      Object.keys(mappedData).forEach((key) => {
         if (form.getValues()[key] !== undefined) {
-          form.setValue(key, data[key]);
+          form.setValue(key, mappedData[key]);
         }
       });
     }
@@ -199,7 +198,17 @@ const DepartmentMaster = () => {
           </Form>
         </div>
       </MaxWidthWrapper>
-      <FormModal isVisible={isFormModalVisible} onClose={handleModalClose} title="Modal Data" docCd={docCd} />
+      <FormModal
+        isVisible={isFormModalVisible}
+        onClose={handleModalClose}
+        title="Modal Data"
+        docCd={docCd}
+        fieldMapping={[
+          { column: 'deptHeadCode', formField: 'deptHeadCode' },
+          { column: 'deptHeadName', formField: 'deptHeadName' },
+          // Add more mappings as needed
+        ]}
+      />
       <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" docCd={docCd} />
     </div>
   )
