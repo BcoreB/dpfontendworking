@@ -5,6 +5,7 @@ import {
   DataGrid,
   SearchPanel,
   Column,
+  Selection
 } from 'devextreme-react/data-grid';
 
 interface ModalFieldMapping {
@@ -20,10 +21,10 @@ interface ModalProps {
   fieldMapping: ModalFieldMapping[]; // Add the new prop here
 }
 
-
-const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd, fieldMapping  }) => {
+const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd, fieldMapping }) => {
   const [data, setData] = useState<any[]>([]);
   const [gridKey, setGridKey] = useState(0); // Key for force re-rendering
+  const [selectedRowData, setSelectedRowData] = useState<any>(null);
 
   useEffect(() => {
     if (isVisible) {
@@ -41,6 +42,11 @@ const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd, fie
 
   if (!isVisible) return null;
 
+  const handleSelectionChanged = (e: any) => {
+    const selectedData = e.selectedRowsData[0];
+    setSelectedRowData(selectedData); // Store selected row data
+  };
+
   const handleCellDblClick = (e: any) => {
     const selectedData = e.data;
   
@@ -53,7 +59,6 @@ const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd, fie
   
     onClose(mappedData); // Pass the mapped data to the onClose function to update the form
   };
-  
 
   // Dynamically generate columns based on data keys
   const columns = data.length > 0
@@ -76,8 +81,10 @@ const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd, fie
             allowColumnReordering={true}
             dataSource={data}
             keyExpr="deptHeadCode"
+            onSelectionChanged={handleSelectionChanged} // Handle row selection
             onCellDblClick={handleCellDblClick} // Handle double-click on a specific cell
           >
+            <Selection mode="single" /> {/* Enable single row selection */}
             <SearchPanel visible={true} highlightCaseSensitive={true} />
             {columns} {/* Render the dynamically generated columns */}
           </DataGrid>
