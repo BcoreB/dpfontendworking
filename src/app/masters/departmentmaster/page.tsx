@@ -1,24 +1,22 @@
 "use client"
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import MaxWidthWrapper from '@/components/MaxWidthWrapper'
-
 import DPInput from '@/components/ui/dpinput'
 import DpRadioGroup from '@/components/ui/dpradiogroup'
 import { InitializeForm, formSchema, DisplayForm, saveData, company, radioOptions, sublevels } from './formSchema'
 import { useRouter, useSearchParams } from 'next/navigation'
 import getLanguageByEnglish from '@/utils/languages'
-import { DocStaus } from '@/dptype'
-import { FaEllipsisH } from 'react-icons/fa';
-import DPComboBox from '@/components/ui/dpcombobox'
 import FormHeader from '@/components/Menu/formHeader';
 import Sidebar from '@/components/Menu/SideBar';
 import Modal from '@/components/Menu/modal';
 import FormModal from '../formModel'
 import DPInputBrowse from '@/components/ui/dpinputbrowse'
+import DPComboBox from '@/components/ui/dpcombobox'
+
 const DepartmentMaster = () => {
   const searchParams = useSearchParams()
   const docCd = 3;
@@ -26,13 +24,13 @@ const DepartmentMaster = () => {
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>()
   const [isModalVisible, setModalVisible] = useState(false);
   const [isFormModalVisible, setFormModalVisible] = useState(false);
-  const [type, setType] = useState<{ value: string; label: string }[]>([]);
+  const [selectedDepartmentType, setSelectedDepartmentType] = useState(''); // Initially no selection
+  const [isComboBoxDisabled, setComboBoxDisabled] = useState(true); // Initially disabled
 
   const router = useRouter();
-  // 1. Define your form.
+
   const form = InitializeForm()
 
-  // 2. Handle modal close with automatic field update.
   const handleModalClose = (mappedData: any) => {
     if (mappedData) {
       Object.keys(mappedData).forEach((key) => {
@@ -48,35 +46,25 @@ const DepartmentMaster = () => {
     setFormModalVisible(true);
   };
 
-
-  const [selectedDepartmentType, setSelectedDepartmentType] = useState(''); // Initially no selection
-  const [isComboBoxDisabled, setComboBoxDisabled] = useState(true); // Initially disabled
-
-    useEffect(() => {
-      // Disable ComboBox only when "Top Level" is selected
-      setComboBoxDisabled(selectedDepartmentType === 'toplevel');
-    }, [selectedDepartmentType]);
-
-    const handleDepartmentTypeChange = (field, value) => {
-      setSelectedDepartmentType(value);
-      form.setValue(field, value);
+  // Handle changes in the radio group
+  const handleDepartmentTypeChange = (field: string, value: string) => {
+    setSelectedDepartmentType(value);
+    form.setValue(field, value);
     
-      if (value === 'toplevel') {
-        // If Top Level is selected, set sublevelType to NULL and disable the ComboBox
-        form.setValue('sublevelType', null);
-        setComboBoxDisabled(true);
-      } else if (value === 'sublevel') {
-        // If Sub Level is selected, enable the ComboBox
-        setComboBoxDisabled(false);
-      }
-    };
+    if (value === 'toplevel') {
+      // Disable ComboBox if Top Level is selected
+      setComboBoxDisabled(true);
+      form.setValue('sublevelType', null); // Reset sublevelType if Top Level is selected
+    } else if (value === 'sublevel') {
+      // Enable ComboBox if Sub Level is selected
+      setComboBoxDisabled(false);
+    }
+  };
 
-  // Function to alert form data as JSON
   const handleAlertFormData = () => {
     const data = form.getValues(); // Get current form values
     alert(JSON.stringify(data, null, 2)); // Convert the data to a JSON string and show it in an alert
   };
-
 
   return (
     <div className='w-full h-full  px-5 py-5  lg:px-20 lg:pb-14 lg:pt-8'>
@@ -88,8 +76,8 @@ const DepartmentMaster = () => {
         />
       </div>
       <Button type="button" onClick={handleAlertFormData}>
-                Show Form Data
-              </Button>
+        Show Form Data
+      </Button>
       <MaxWidthWrapper className='px-5 py-5  lg:px-20 lg:pb-6 lg:pt-20'>
         <div className='border-solid'>
           <Form {...form}>
@@ -166,9 +154,7 @@ const DepartmentMaster = () => {
                     onValueChange={(field, value) => {
                       form.setValue("deptHeadName", value);
                     }}
-                    
                   />
-
                 </div>
                 <div className="grid gap-1 py-1 lg:col-span-2">
                   <DpRadioGroup
@@ -176,21 +162,21 @@ const DepartmentMaster = () => {
                     name="departmentType"
                     labelText={getLanguageByEnglish("Department Type")}
                     options={radioOptions}
-                    onValueChange={handleDepartmentTypeChange}
+                    onValueChange={handleDepartmentTypeChange} // Attach the change handler
                   />
                 </div>
                 <div className="grid gap-1 py-1 lg:col-span-3">
                   <DPComboBox
-                      disabled={isComboBoxDisabled}
-                      name="sublevelType"
-                      formcontrol={form.control}
-                      labelText={getLanguageByEnglish("Type")}
-                      data={sublevels}  // Assuming 'sublevels' contains the options for sublevelType
-                      onValueChange={(field, value) => {
-                        if (selectedDepartmentType === 'sublevel') {
-                          form.setValue(field, value);
-                        }
-                      }}
+                    disabled={isComboBoxDisabled} // Disable or enable based on state
+                    name="sublevelType"
+                    formcontrol={form.control}
+                    labelText={getLanguageByEnglish("Type")}
+                    data={sublevels}
+                    onValueChange={(field, value) => {
+                      if (selectedDepartmentType === 'sublevel') {
+                        form.setValue(field, value);
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -206,7 +192,6 @@ const DepartmentMaster = () => {
         fieldMapping={[
           { column: 'deptHeadCode', formField: 'deptHeadCode' },
           { column: 'deptHeadName', formField: 'deptHeadName' },
-          // Add more mappings as needed
         ]}
       />
       <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" docCd={docCd} />
