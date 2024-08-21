@@ -24,7 +24,7 @@ const AirSectorMaster = () => {
   const docCd = 2;
   const docKey = 101;
   const [formValues,setFormValues]=useState< z.infer<typeof formSchema>>()
-  const [isModalVisible, setModalVisible] = useState(false);
+  
   const [type, setType] = useState<{ value: string; label: string }[]>([]);
 
   const router = useRouter();
@@ -33,58 +33,6 @@ const AirSectorMaster = () => {
     // 2. Define a submit handler.
 
 
-  //  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-  //   setFormValues(values);
-  //   alert(JSON.stringify(values, null, 2)); // Show form values as alert
-  // };
-  //  const addNew = useCallback(() => {
-    
-      
-  //   const url = '/masters/airsectormaster'
-  //   router.push( url);
-  //   alert("Added new")
-  //   window.location.reload()
-    
-  // },[])
-  // const saveData = useCallback(() => {
-    
-      
-  //   const url = '/masters/airsectormaster'
-  //   router.push( url);
-  //   alert("Saved Data")
-  //   window.location.reload()
-    
-  // },[])
-  // const deleteData = useCallback(() => {
-    
-      
-  //   const url = '/masters/airsectormaster'
-  //   router.push( url);
-  //   alert("Saved Data")
-  //   window.location.reload()
-    
-  // },[])
-  // const printData = useCallback(() => {
-    
-      
-  //   const url = '/masters/airsectormaster'
-  //   router.push( url);
-  //   alert("printed Data")
-  //   window.location.reload()
-    
-  // },[])
-  // const onLogClick = useCallback(() => {
-  //   setModalVisible(true);
-  // }, []);
-  // const draftData = useCallback(() => {
-    
-      
-  //   const url = '/masters/airsectormaster'
-  //   router.push( url);
-  //   // alert("drafted data")
-  //   window.location.reload()
-    
-  // },[])
   
   return (
     <div className='w-full h-full  px-5 py-5  lg:px-20 lg:pb-14 lg:pt-8'>
@@ -105,7 +53,7 @@ const AirSectorMaster = () => {
                         setFormValues={setFormValues}
                         docCd={docCd}
                         docKey={docKey}
-                        setModalVisible={setModalVisible}
+                        
                         router={router}
                         getValues={form.getValues}
                       />
@@ -179,7 +127,6 @@ const AirSectorMaster = () => {
         </Form>
       </div>
     </MaxWidthWrapper>
-    <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" docCd={docCd} />
     </div>
   )
   

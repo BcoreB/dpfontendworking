@@ -8,7 +8,7 @@ import Cookies from 'js-cookie';
 interface FormHeaderProps {
   docCd: number;
   docKey: number;
-  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  
   router: AppRouterInstance;
   getValues: UseFormGetValues<any>;
   setFormValues: React.Dispatch<React.SetStateAction<any>>;

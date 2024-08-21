@@ -15,7 +15,7 @@ import Modal from '@/components/Menu/modal';
 
 const AccomodationMaster: React.FC = () => {
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
-  const [isModalVisible, setModalVisible] = useState(false);
+ 
   const [docCd, setDocCd] = useState<number>(1); // Default DocCd
   const [docKey, setDocKey] = useState<number>(101); // Default DocKey
   const router = useRouter();
@@ -39,7 +39,7 @@ const AccomodationMaster: React.FC = () => {
                 setFormValues={setFormValues}
                 docCd={docCd}
                 docKey={docKey}
-                setModalVisible={setModalVisible}
+                
                 router={router}
                 getValues={form.getValues}
               />
@@ -146,7 +146,7 @@ const AccomodationMaster: React.FC = () => {
           </Form>
         </div>
       </MaxWidthWrapper>
-      <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} docCd={docCd} />
+      
     </div>
   );
 };
