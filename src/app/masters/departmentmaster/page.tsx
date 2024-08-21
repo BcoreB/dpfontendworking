@@ -21,7 +21,7 @@ const DepartmentMaster = () => {
   const docCd = 3;
   const docKey = 101;
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
-  const [isModalVisible, setModalVisible] = useState(false);
+  
   const [selectedDepartmentType, setSelectedDepartmentType] = useState(''); // Initially no selection
   const [isComboBoxDisabled, setComboBoxDisabled] = useState(true); // Initially disabled
 
@@ -68,7 +68,6 @@ const DepartmentMaster = () => {
                 setFormValues={setFormValues}
                 docCd={docCd}
                 docKey={docKey}
-                setModalVisible={setModalVisible}
                 router={router}
                 getValues={form.getValues}
               />
@@ -173,6 +172,7 @@ const DepartmentMaster = () => {
           </Form>
         </div>
       </MaxWidthWrapper>
+      
     </div>
   );
 };

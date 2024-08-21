@@ -1,7 +1,8 @@
 "use client";
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { AppRouterInstance } from 'next/dist/shared/lib/router/router';
+import Modal from '@/components/Menu/modal';
 import { UseFormGetValues } from 'react-hook-form';
 import Cookies from 'js-cookie';
 interface FormHeaderProps {
@@ -16,12 +17,12 @@ interface FormHeaderProps {
 const FormHeader: React.FC<FormHeaderProps> = ({
   docCd,
   docKey,
-  setModalVisible,
   router,
   getValues,
   setFormValues,
 }) => {
   const draftAlerted = useRef(false);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const addNew = useCallback(() => {
     const url = '/masters/accomodationmaster';
@@ -108,7 +109,9 @@ const FormHeader: React.FC<FormHeaderProps> = ({
           <Button variant='ghost' type="button" onClick={saveDraft}>Draft</Button>
         </div>
       </div>
+      <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" docCd={docCd} />
     </div>
+    
   );
 };
 
