@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { FormControl, FormField, FormItem, FormLabel } from "./form";
 import { Input } from "./input";
 import { FaEllipsisH } from "react-icons/fa";
+import FormModal from "@/app/masters/formModel"; // Import FormModal
 
-interface DPInputProps {
+interface DPInputBrowseProps {
   formcontrol: any;
   name: string;
   labelText: string;
@@ -11,10 +12,13 @@ interface DPInputProps {
   disabled: boolean;
   type: string;
   onValueChange: (field: string, value: string) => void;
-  onIconClick?: () => void; // Optional prop for icon click handler
+  getValues: () => any; // Add getValues prop
+  setValue: (field: string, value: any) => void; // Add setValue prop
+  docCd: number; // Pass docCd prop
+  fieldMapping: { column: string; formField: string }[]; // Pass fieldMapping prop
 }
 
-const DPInput: React.FC<DPInputProps> = ({
+const DPInputBrowse: React.FC<DPInputBrowseProps> = ({
   formcontrol,
   name,
   labelText,
@@ -22,8 +26,28 @@ const DPInput: React.FC<DPInputProps> = ({
   disabled,
   type,
   onValueChange,
-  onIconClick,
+  getValues, // Destructure getValues prop
+  setValue, // Destructure setValue prop
+  docCd,
+  fieldMapping,
 }) => {
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleModalClose = (mappedData: any) => {
+    if (mappedData) {
+      Object.keys(mappedData).forEach((key) => {
+        if (getValues()[key] !== undefined) { // Use getValues prop
+          setValue(key, mappedData[key]); // Use setValue prop
+        }
+      });
+    }
+    setModalVisible(false);
+  };
+
   return (
     <FormField
       control={formcontrol}
@@ -43,7 +67,7 @@ const DPInput: React.FC<DPInputProps> = ({
                 style={{ paddingRight: "2rem", width: "100%" }} // Ensure the input takes full width
               />
               <FaEllipsisH
-                onClick={onIconClick}
+                onClick={handleOpenModal} // Open modal on icon click
                 style={{
                   position: "absolute",
                   right: "10px",
@@ -56,10 +80,18 @@ const DPInput: React.FC<DPInputProps> = ({
               />
             </div>
           </FormControl>
+          {/* Render FormModal */}
+          <FormModal
+            isVisible={isModalVisible}
+            onClose={handleModalClose}
+            title="Select Data"
+            docCd={docCd}
+            fieldMapping={fieldMapping}
+          />
         </FormItem>
       )}
     />
   );
 };
 
-export default DPInput;
+export default DPInputBrowse;
