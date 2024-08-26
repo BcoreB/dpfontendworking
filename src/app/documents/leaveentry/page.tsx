@@ -16,7 +16,7 @@ import { DocStaus } from '@/dptype'
 import DPComboBox from '@/components/ui/dpcombobox'
 import DocumentHeader from '@/components/Menu/documentHeader'
 import Sidebar from '@/components/Menu/SideBar';
-import LeaveManagementGrid from '../formGrid'
+import LeaveManagementGrid from './formGrid'
 const LeaveEntry = () => {
   const searchParams = useSearchParams()
   const docCd = 5;
@@ -49,7 +49,7 @@ const LeaveEntry = () => {
                         router={router}
                         getValues={form.getValues}
                       />
-    <MaxWidthWrapper className='px-5 py-5  lg:px-20 lg:pb-6 lg:pt-20'>
+    <MaxWidthWrapper className='px-5 py-5  lg:px-10 lg:pb-6 lg:pt-10'>
       
       <div className='border-solid'>
         <Form {...form}>
@@ -146,7 +146,9 @@ const LeaveEntry = () => {
           </form>
         </Form>
       </div>
-      <LeaveManagementGrid/>
+      <div className='mt-10'>
+        <LeaveManagementGrid/>
+      </div>
     </MaxWidthWrapper>
     </div>
   )
