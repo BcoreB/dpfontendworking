@@ -13,14 +13,13 @@ import { InitializeForm, formSchema, DisplayForm, saveData,leaveType } from './f
 import { useRouter , useSearchParams } from 'next/navigation'
 import getLanguageByEnglish from '@/utils/languages'
 import { DocStaus } from '@/dptype'
-
 import DPComboBox from '@/components/ui/dpcombobox'
 import DocumentHeader from '@/components/Menu/documentHeader'
 import Sidebar from '@/components/Menu/SideBar';
-
+import LeaveManagementGrid from '../formGrid'
 const LeaveEntry = () => {
   const searchParams = useSearchParams()
-  const docCd = 2;
+  const docCd = 5;
   const docKey = 101;
   const [formValues,setFormValues]=useState< z.infer<typeof formSchema>>()
   
@@ -147,6 +146,7 @@ const LeaveEntry = () => {
           </form>
         </Form>
       </div>
+      <LeaveManagementGrid/>
     </MaxWidthWrapper>
     </div>
   )
