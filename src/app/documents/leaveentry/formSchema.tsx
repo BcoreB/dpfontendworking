@@ -5,25 +5,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { saveMasterData, updateMasterData } from '../../datalayer/api';
 import DPComboBox from '@/components/ui/dpcombobox'
 
-
 // Define the schema for air sector master
 export const formSchema = z.object({
-  refno:z.string(),
+  refno: z.string(),
   leavetype: z.string().min(1, "Please select a type"),
-  date:z.date(),
+  date: z.date(),
   payrolperiod: z.string().min(1, "Please select a type"),
-  fromdate:z.string(),
-  todate:z.string(),
-  empcode:z.string(),
-  empname:z.string(),
-  cpr:z.string(),
-  empfromdate:z.string(),
-  emptodate:z.string(),
-  numberofdays:z.string(),
-  entitled:z.string(),
-  remarks:z.string(),
-  npbalance:z.string(),
-  leavetyle:z.string(),
+  fromdate: z.date(),
+  todate: z.date(),
+  empcode: z.string(),
+  empname: z.string(),
+  cpr: z.string(),
+  empfromdate: z.date(),
+  emptodate: z.date(),
+  numberofdays: z.string(),
+  entitled: z.string(),
+  remarks: z.string(),
+  npbalance: z.string(),
+  leavetyle: z.string(),
 });
 
 // Initialize the form with default values
@@ -31,24 +30,44 @@ export const InitializeForm = () => {
   return useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-        refno:'',
-        leavetype:'',
-        date:'',
+        refno: '',
+        leavetype: '',
+        date: undefined,
         payrolperiod: '',
-        fromdate:'',
-        todate:'',
-        empcode:'',
-        empname:'',
-        cpr:'',
-        empfromdate:'',
-        emptodate:'',
-        numberofdays:'',
-        entitled:'',
-        remarks:'',
-        npbalance:'',
-        leavetyle:'',
+        fromdate: undefined,
+        todate: undefined,
+        empcode: '',
+        empname: '',
+        cpr: '',
+        empfromdate: undefined,
+        emptodate: undefined,
+        numberofdays: '',
+        entitled: '',
+        remarks: '',
+        npbalance: '',
+        leavetyle: '',
     },
   });
+};
+
+// Define the leave entry type with date fields as Date
+export type leavenetry = {
+  refno: string;
+  leavetype: string;
+  date: Date;
+  payrolperiod: string;
+  fromdate: Date;
+  todate: Date;
+  empcode: string;
+  empname: string;
+  cpr: string;
+  empfromdate: Date;
+  emptodate: Date;
+  numberofdays: string;
+  entitled: string;
+  remarks: string;
+  npbalance: string;
+  leavetyle: string;
 };
 export const leaveType = [
   {
@@ -62,26 +81,6 @@ export const leaveType = [
 ];
 
 
-
-export type leavenetry = {
-  
-  refno:string
-  leavetype: string,
-  date:string,
-  payrolperiod: string
-  fromdate:string
-  todate:string
-  empcode:string
-  empname:string
-  cpr:string
-  empfromdate:string
-  emptodate:string
-  numberofdays:string
-  entitled:string
-  remarks:string
-  npbalance:string
-  leavetyle:string
-};
 
 interface FieldType {
   fieldName: string;
