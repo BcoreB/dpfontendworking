@@ -1,14 +1,14 @@
 "use client";
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { AppRouterInstance } from 'next/dist/shared/lib/router/router';
+import Modal from '@/components/Menu/modal'; // Import Modal component
 import { UseFormGetValues } from 'react-hook-form';
 import Cookies from 'js-cookie';
 
 interface FormHeaderProps {
   docCd: number;
   docKey: number;
-  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   router: AppRouterInstance;
   getValues: UseFormGetValues<any>;
   setFormValues: React.Dispatch<React.SetStateAction<any>>;
@@ -17,12 +17,12 @@ interface FormHeaderProps {
 const DocumentHeader: React.FC<FormHeaderProps> = ({
   docCd,
   docKey,
-  setModalVisible,
   router,
   getValues,
   setFormValues,
 }) => {
   const draftAlerted = useRef(false);
+  const [isModalVisible, setModalVisible] = useState(false); // State to control modal visibility
 
   const addNew = useCallback(() => {
     const url = '/masters/accomodationmaster';
@@ -83,7 +83,7 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
 
   const onLogClick = useCallback(() => {
     setModalVisible(true);
-  }, [setModalVisible]);
+  }, []);
 
   // Move the onSubmit function here
   const onSubmit = useCallback(async () => {
@@ -98,25 +98,8 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
   return (
     <div className="form-header">
       <div className="flex justify-between items-center bg-purple-100 mb-5 p-4">
-        <div className="flex items-center space-x-4">
-          <label>
-            Document Number:
-            <input
-              type="text"
-              name="documentNumber"
-              className="ml-2 p-2 border rounded"
-            />
-          </label>
-          <label>
-            Document Date:
-            <input
-              type="date"
-              name="documentDate"
-              className="ml-2 p-2 border rounded"
-            />
-          </label>
-        </div>
-        <div className="flex space-x-4">
+        
+        <div className="flex space-x-2">
           <Button variant='ghost' type="button" onClick={addNew}>New</Button>
           <Button variant='ghost' type="submit" onClick={onSubmit}>Save</Button>
           <Button variant='ghost' type="button" onClick={deleteData}>Delete</Button>
@@ -124,7 +107,37 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
           <Button variant='ghost' type="button" onClick={onLogClick}>Log</Button>
           <Button variant='ghost' type="button" onClick={saveDraft}>Draft</Button>
         </div>
+        <div className="flex items-center space-x-2">
+          <div>
+            <label className='px-2'>
+              Doc No:
+            </label>
+            <input
+                type="text"
+                name="documentNumber"
+                className="p-1 border rounded"
+              />
+          </div>
+          <div>
+            <label className='px-2'>
+              Doc Date:
+            </label>
+            <input
+                type="date"
+                name="documentDate"
+                className="p-1 border rounded"
+              />
+          </div>
+        </div>
       </div>
+
+      {/* Modal Component */}
+      <Modal
+        isVisible={isModalVisible}
+        onClose={() => setModalVisible(false)}
+        title="Log Data"
+        docCd={docCd} // Passing docCd to Modal
+      />
     </div>
   );
 };

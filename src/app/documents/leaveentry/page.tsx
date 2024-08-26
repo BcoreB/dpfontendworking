@@ -17,7 +17,6 @@ import { DocStaus } from '@/dptype'
 import DPComboBox from '@/components/ui/dpcombobox'
 import DocumentHeader from '@/components/Menu/documentHeader'
 import Sidebar from '@/components/Menu/SideBar';
-import Modal from '@/components/Menu/modal';
 
 const LeaveEntry = () => {
   const searchParams = useSearchParams()
@@ -43,13 +42,7 @@ const LeaveEntry = () => {
           form={form}
         />
       </div>
-    <MaxWidthWrapper className='px-5 py-5  lg:px-20 lg:pb-6 lg:pt-20'>
-      
-      <div className='border-solid'>
-        <Form {...form}>
-        <form onSubmit={form.handleSubmit(() => {})} className="space-y-8">
-                      {/* <NasterHeader onNewButtonClicked={addNew} onSaveButtonClicked={onSubmit}/> */}
-                      <DocumentHeader
+      <DocumentHeader
                         setFormValues={setFormValues}
                         docCd={docCd}
                         docKey={docKey}
@@ -57,6 +50,14 @@ const LeaveEntry = () => {
                         router={router}
                         getValues={form.getValues}
                       />
+    <MaxWidthWrapper className='px-5 py-5  lg:px-20 lg:pb-6 lg:pt-20'>
+      
+      <div className='border-solid'>
+        <Form {...form}>
+        
+        <form onSubmit={form.handleSubmit(() => {})} className="space-y-8">
+                      {/* <NasterHeader onNewButtonClicked={addNew} onSaveButtonClicked={onSubmit}/> */}
+                      
 
                     <div className="grid grid-cols-1 lg:grid-cols-6   gap-4 py-1">
                         
