@@ -29,23 +29,26 @@ const LeaveManagementGrid: React.FC = () => {
     // Add more employee data as needed
   ];
 
-  // Handle selection change in the Lookup to populate other fields
-  const handleSelectionChange = (selectedData: any) => {
-    const newRow: LeaveData = {
-      id: nextId,
-      EmpCode: selectedData.EmpCode,
-      Employee: selectedData.Employee,
-      CPR: selectedData.CPR,
-      FromDate: null,
-      ToDate: null,
-      NoDays: null,
-      Entitled: null,
-      Remarks: null,
-      NPBalance: selectedData.NPBalance,
-      LeaveType: selectedData.LeaveType,
-    };
-    setDataSource([...dataSource, newRow]);
-    setNextId(nextId + 1); // Increment id for the next new row
+  // Handle row click to add a new row
+  const handleRowClick = (e: any) => {
+    const selectedData = e.data;
+    if (selectedData && selectedData.EmpCode) {
+      const newRow: LeaveData = {
+        id: nextId,
+        EmpCode: selectedData.EmpCode,
+        Employee: selectedData.Employee,
+        CPR: selectedData.CPR,
+        FromDate: null,
+        ToDate: null,
+        NoDays: null,
+        Entitled: null,
+        Remarks: null,
+        NPBalance: selectedData.NPBalance,
+        LeaveType: selectedData.LeaveType,
+      };
+      setDataSource([...dataSource, newRow]);
+      setNextId(nextId + 1); // Increment id for the next new row
+    }
   };
 
   return (
@@ -54,9 +57,7 @@ const LeaveManagementGrid: React.FC = () => {
         dataSource={dataSource}
         showBorders={true}
         keyExpr="id"  // Ensure a unique key expression
-        onRowInserted={() => {
-          // Ensure a new row is added to the dataSource when a new row is inserted
-        }}
+        onRowClick={handleRowClick} // Handle row click event
         onEditorPreparing={(e) => {
           if (e.dataField === 'EmpCode') {
             e.editorOptions.dataSource = empDataSource;
@@ -72,15 +73,6 @@ const LeaveManagementGrid: React.FC = () => {
               { dataField: 'NPBalance', caption: 'NP Balance' },
               { dataField: 'LeaveType', caption: 'Leave Type' },
             ];
-
-            e.editorOptions.onValueChanged = (args: any) => {
-              const selectedData = empDataSource.find(
-                (emp) => emp.EmpCode === args.value
-              );
-              if (selectedData) {
-                handleSelectionChange(selectedData);
-              }
-            };
           }
         }}
       >
