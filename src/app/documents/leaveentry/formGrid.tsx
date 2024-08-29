@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { DataGrid, Column, Editing } from 'devextreme-react/data-grid';
 import 'devextreme/dist/css/dx.light.css';
 
-// Define the type for a row in the data grid
 interface LeaveData {
-  id: number; // Unique identifier for each row
+  id: number;
   EmpCode: number | null;
   Employee: string | null;
   CPR: string | null;
@@ -18,36 +17,53 @@ interface LeaveData {
 }
 
 const LeaveManagementGrid: React.FC = () => {
-  const [dataSource, setDataSource] = useState<LeaveData[]>([]);
-  const [nextId, setNextId] = useState<number>(1); // Track the next id for new rows
+  const [dataSource, setDataSource] = useState<LeaveData[]>([
+    {
+      id: 0, // Default blank row with id 0
+      EmpCode: null,
+      Employee: null,
+      CPR: null,
+      FromDate: null,
+      ToDate: null,
+      NoDays: null,
+      Entitled: null,
+      Remarks: null,
+      NPBalance: null,
+      LeaveType: null,
+    },
+  ]);
+  const [nextId, setNextId] = useState<number>(1);
 
-  // Example data for the Lookup grid
   const empDataSource = [
     { EmpCode: 1, Employee: 'John Doe', CPR: '123456', NPBalance: '10', LeaveType: 'Annual' },
     { EmpCode: 2, Employee: 'Jane Smith', CPR: '654321', NPBalance: '15', LeaveType: 'Sick' },
     { EmpCode: 3, Employee: 'Alice Johnson', CPR: '789012', NPBalance: '8', LeaveType: 'Annual' },
-    // Add more employee data as needed
   ];
 
-  // Handle row click to add a new row
-  const handleRowClick = (e: any) => {
-    const selectedData = e.data;
-    if (selectedData && selectedData.EmpCode) {
+  const handleValueSelect = (rowData: LeaveData, value: number) => {
+    const selectedData = empDataSource.find(emp => emp.EmpCode === value);
+    if (selectedData) {
+      rowData.EmpCode = selectedData.EmpCode;
+      rowData.Employee = selectedData.Employee;
+      rowData.CPR = selectedData.CPR;
+      rowData.NPBalance = selectedData.NPBalance;
+      rowData.LeaveType = selectedData.LeaveType;
+
       const newRow: LeaveData = {
         id: nextId,
-        EmpCode: selectedData.EmpCode,
-        Employee: selectedData.Employee,
-        CPR: selectedData.CPR,
+        EmpCode: null,
+        Employee: null,
+        CPR: null,
         FromDate: null,
         ToDate: null,
         NoDays: null,
         Entitled: null,
         Remarks: null,
-        NPBalance: selectedData.NPBalance,
-        LeaveType: selectedData.LeaveType,
+        NPBalance: null,
+        LeaveType: null,
       };
-      setDataSource([...dataSource, newRow]);
-      setNextId(nextId + 1); // Increment id for the next new row
+      setDataSource([newRow, ...dataSource]);
+      setNextId(nextId + 1);
     }
   };
 
@@ -56,30 +72,12 @@ const LeaveManagementGrid: React.FC = () => {
       <DataGrid
         dataSource={dataSource}
         showBorders={true}
-        keyExpr="id"  // Ensure a unique key expression
-        onRowClick={handleRowClick} // Handle row click event
-        onEditorPreparing={(e) => {
-          if (e.dataField === 'EmpCode') {
-            e.editorOptions.dataSource = empDataSource;
-            e.editorOptions.valueExpr = 'EmpCode';
-            e.editorOptions.displayExpr = 'EmpCode';
-            e.editorOptions.showDropDownButton = true;
-            e.editorOptions.searchEnabled = true;
-
-            e.editorOptions.columns = [
-              { dataField: 'EmpCode', caption: 'Emp Code' },
-              { dataField: 'Employee', caption: 'Employee' },
-              { dataField: 'CPR', caption: 'CPR' },
-              { dataField: 'NPBalance', caption: 'NP Balance' },
-              { dataField: 'LeaveType', caption: 'Leave Type' },
-            ];
-          }
-        }}
+        keyExpr="id"
       >
         <Editing
           mode="cell"
           allowUpdating={true}
-          allowAdding={true}
+          allowAdding={false}  // Disable adding new rows via the "+" button
           allowDeleting={true}
           useIcons={true}
         />
@@ -88,14 +86,7 @@ const LeaveManagementGrid: React.FC = () => {
           dataField="EmpCode"
           caption="Emp code"
           setCellValue={(rowData: LeaveData, value: number) => {
-            const selectedData = empDataSource.find(emp => emp.EmpCode === value);
-            if (selectedData) {
-              rowData.EmpCode = selectedData.EmpCode;
-              rowData.Employee = selectedData.Employee;
-              rowData.CPR = selectedData.CPR;
-              rowData.NPBalance = selectedData.NPBalance;
-              rowData.LeaveType = selectedData.LeaveType;
-            }
+            handleValueSelect(rowData, value);
           }}
           lookup={{
             dataSource: empDataSource,
