@@ -48,22 +48,34 @@ const LeaveManagementGrid: React.FC = () => {
       rowData.CPR = selectedData.CPR;
       rowData.NPBalance = selectedData.NPBalance;
       rowData.LeaveType = selectedData.LeaveType;
+    }
+  };
 
-      const newRow: LeaveData = {
-        id: nextId,
-        EmpCode: null,
-        Employee: null,
-        CPR: null,
-        FromDate: null,
-        ToDate: null,
-        NoDays: null,
-        Entitled: null,
-        Remarks: null,
-        NPBalance: null,
-        LeaveType: null,
+  const addNewRow = () => {
+    const newRow: LeaveData = {
+      id: nextId,
+      EmpCode: null,
+      Employee: null,
+      CPR: null,
+      FromDate: null,
+      ToDate: null,
+      NoDays: null,
+      Entitled: null,
+      Remarks: null,
+      NPBalance: null,
+      LeaveType: null,
+    };
+    setDataSource([newRow, ...dataSource]); // Prepend the new row to the top
+    setNextId(nextId + 1);
+  };
+
+  const handleEditorPreparing = (e: any) => {
+    if (e.parentType === 'dataRow' && e.dataField === 'LeaveType') {
+      e.editorOptions.onKeyDown = (args: any) => {
+        if (args.event.key === 'Enter') {
+          addNewRow();
+        }
       };
-      setDataSource([newRow, ...dataSource]);
-      setNextId(nextId + 1);
     }
   };
 
@@ -73,6 +85,7 @@ const LeaveManagementGrid: React.FC = () => {
         dataSource={dataSource}
         showBorders={true}
         keyExpr="id"
+        onEditorPreparing={handleEditorPreparing}
       >
         <Editing
           mode="cell"
@@ -103,7 +116,10 @@ const LeaveManagementGrid: React.FC = () => {
         <Column dataField="Entitled" caption="Entitled" />
         <Column dataField="Remarks" caption="Remarks" />
         <Column dataField="NPBalance" caption="NP Balance" />
-        <Column dataField="LeaveType" caption="Leave Type" />
+        <Column
+          dataField="LeaveType"
+          caption="Leave Type"
+        />
       </DataGrid>
     </div>
   );
