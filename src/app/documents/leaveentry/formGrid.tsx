@@ -169,16 +169,17 @@ const LeaveManagementGrid: React.FC = () => {
           }}
           title="Select Employee"
           width={600}
-          height={400}
+          height={'max-content'}
           showCloseButton={true}
           // Position the popup relative to the icon
           position={iconRef.current ? { my: 'top left', at: 'bottom left', of: iconRef.current } : undefined}
         >
           <div>
-            <div style={{ display: 'flex', marginBottom: '10px' }}>
+            <div style={{ display: 'flex', marginBottom: '10px', justifyContent:'space-between' }}>
               <TextBox
                 placeholder="Search..."
                 onValueChanged={(e) => handleSearchChange(e.value)}
+                className='w-1/2'
               />
               <Button
                 text="Search"
@@ -191,6 +192,7 @@ const LeaveManagementGrid: React.FC = () => {
               />
               <Button
                 text="Clear"
+                style={{background:'red', fontWeight:600,}}
                 onClick={() => {
                   const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
                   if (input) {
