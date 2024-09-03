@@ -145,11 +145,6 @@ const LeaveManagementGrid: React.FC = () => {
             <Column dataField="LeaveType" caption="Leave Type" />
           </DataGrid>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
       </Modal>
     </div>
   );
