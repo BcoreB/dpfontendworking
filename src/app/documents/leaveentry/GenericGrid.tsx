@@ -95,60 +95,82 @@ const GenericGrid = <T extends { id: number }>({
       </DataGrid>
 
       {showLookupGrid && selectedRowData && (
-        <Popup
-          visible={true}
-          onHiding={() => {
-            setShowLookupGrid(false);
-            iconRef.current = null;
-          }}
-          title="Select Employee"
-          width={600}
-          height={'max-content'}
-          showCloseButton={true}
-          position={iconRef.current ? { my: 'top left', at: 'bottom left', of: iconRef.current } : undefined}
-        >
-          <div>
-            <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
-              <TextBox
-                placeholder="Search..."
-                onValueChanged={(e) => handleSearchChange(e.value)}
-              />
-              <Button
-                text="Search"
-                onClick={() => {
-                  const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
-                  if (input) {
-                    handleSearchChange(input.value);
-                  }
+        <>
+          {/* Modal Overlay */}
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark transparent overlay
+              zIndex: 999, // Make sure it's above everything
+            }}
+            onClick={() => {
+              setShowLookupGrid(false);
+              iconRef.current = null;
+            }}
+          />
+          {/* Popup as Modal */}
+          <Popup
+            visible={true}
+            onHiding={() => {
+              setShowLookupGrid(false);
+              iconRef.current = null;
+            }}
+            title="Select Employee"
+            width={600}
+            height={'max-content'}
+            showCloseButton={true}
+            dragEnabled={true}
+            position={
+              iconRef.current
+                ? { my: 'bottom center', at: 'top center', of: iconRef.current } // Position above the icon
+                : undefined
+            }
+            style={{ zIndex: 1000 }} // Ensure it appears above the overlay
+          >
+            <div>
+              <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
+                <TextBox placeholder="Search..." onValueChanged={(e) => handleSearchChange(e.value)} />
+                <Button
+                  text="Search"
+                  onClick={() => {
+                    const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
+                    if (input) {
+                      handleSearchChange(input.value);
+                    }
+                  }}
+                />
+                <Button
+                  text="Clear"
+                  style={{ background: 'red', fontWeight: 600 }}
+                  onClick={() => {
+                    const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
+                    if (input) {
+                      input.value = '';
+                      handleSearchChange('');
+                    }
+                  }}
+                />
+              </div>
+              <DataGrid
+                dataSource={filteredLookupDataSource}
+                showBorders={true}
+                onRowClick={(e: any) => {
+                  onValueSelect(selectedRowData, e.data);
+                  setDataSource([...dataSource]);
+                  setShowLookupGrid(false);
                 }}
-              />
-              <Button
-                text="Clear"
-                style={{ background: 'red', fontWeight: 600 }}
-                onClick={() => {
-                  const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
-                  if (input) {
-                    input.value = '';
-                    handleSearchChange('');
-                  }
-                }}
-              />
+              >
+                {popupColumns.map((column) => (
+                  <Column key={String(column.dataField)} dataField={String(column.dataField)} caption={column.caption} />
+                ))}
+              </DataGrid>
             </div>
-            <DataGrid
-              dataSource={filteredLookupDataSource}
-              showBorders={true}
-              onRowClick={(e: any) => {
-                onValueSelect(selectedRowData, e.data);
-                setDataSource([...dataSource]);
-                setShowLookupGrid(false);
-              }}
-            >
-              {popupColumns.map((column) => (
-                <Column key={String(column.dataField)} dataField={String(column.dataField)} caption={column.caption} />
-              ))}
-            </DataGrid>
-          </div>
-        </Popup>
+          </Popup>
+        </>
       )}
     </div>
   );
