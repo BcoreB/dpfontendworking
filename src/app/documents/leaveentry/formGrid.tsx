@@ -58,6 +58,7 @@ const LeaveManagement = () => {
         dataSource={leaveData}
         lookupDataSource={lookupData}
         onValueSelect={handleValueSelect}
+        lastColumn='LeaveType'
       />
     </div>
   );

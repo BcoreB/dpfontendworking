@@ -11,20 +11,41 @@ interface GridProps<T> {
   dataSource: T[];
   lookupDataSource: T[];
   onValueSelect: (row: T, selectedValue: T) => void;
+  lastColumn: keyof T; // Prop for the last column
 }
 
-const GenericGrid = <T extends { id: number }>({ 
-  columns, 
-  popupColumns, 
-  dataSource: initialDataSource, 
-  lookupDataSource, 
-  onValueSelect 
+const GenericGrid = <T extends { id: number }>({
+  columns,
+  popupColumns,
+  dataSource: initialDataSource,
+  lookupDataSource,
+  onValueSelect,
+  lastColumn, // Destructure lastColumn prop
 }: GridProps<T>) => {
   const [dataSource, setDataSource] = useState<T[]>(initialDataSource);
   const [filteredLookupDataSource, setFilteredLookupDataSource] = useState(lookupDataSource);
   const [showLookupGrid, setShowLookupGrid] = useState<boolean>(false);
   const [selectedRowData, setSelectedRowData] = useState<T | null>(null);
   const iconRef = useRef<HTMLElement | null>(null);
+
+  // Function to add a new row
+  const addNewRow = () => {
+    const newRow: T = {
+      id: Math.max(...dataSource.map((item) => item.id)) + 1, // Generate new unique ID
+    } as unknown as T;
+    setDataSource([newRow, ...dataSource]); // Add the new row to the top
+  };
+
+  // Handle the editor preparation and listen for Enter key on the last column
+  const handleEditorPreparing = (e: any) => {
+    if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
+      e.editorOptions.onKeyDown = (args: any) => {
+        if (args.event.key === 'Enter') {
+          addNewRow(); // Call the function to add a new row when Enter is pressed
+        }
+      };
+    }
+  };
 
   const handleIconClick = (e: React.MouseEvent, rowData: T) => {
     e.stopPropagation();
@@ -36,7 +57,7 @@ const GenericGrid = <T extends { id: number }>({
   const handleSearchChange = (value: string) => {
     if (value) {
       const filteredData = lookupDataSource.filter((emp: any) =>
-        Object.values(emp).some(v => String(v).toLowerCase().includes(value.toLowerCase()))
+        Object.values(emp).some((v) => String(v).toLowerCase().includes(value.toLowerCase()))
       );
       setFilteredLookupDataSource(filteredData);
     } else {
@@ -60,9 +81,10 @@ const GenericGrid = <T extends { id: number }>({
         dataSource={dataSource}
         showBorders={true}
         keyExpr="id"
+        onEditorPreparing={handleEditorPreparing} // Attach the event handler
       >
         <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
-        {columns.map(column => (
+        {columns.map((column) => (
           <Column
             key={String(column.dataField)}
             dataField={String(column.dataField)}
@@ -121,7 +143,7 @@ const GenericGrid = <T extends { id: number }>({
                 setShowLookupGrid(false);
               }}
             >
-              {popupColumns.map(column => (
+              {popupColumns.map((column) => (
                 <Column key={String(column.dataField)} dataField={String(column.dataField)} caption={column.caption} />
               ))}
             </DataGrid>
