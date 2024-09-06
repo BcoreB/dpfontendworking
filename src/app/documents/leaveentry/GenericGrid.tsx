@@ -55,15 +55,21 @@ const GenericGrid = <T extends { id: number }>({
   };
 
   const handleSearchChange = (value: string) => {
-    if (value) {
-      const filteredData = lookupDataSource.filter((emp: any) =>
-        Object.values(emp).some((v) => String(v).toLowerCase().includes(value.toLowerCase()))
-      );
-      setFilteredLookupDataSource(filteredData);
-    } else {
-      setFilteredLookupDataSource(lookupDataSource);
-    }
+    const searchValue = value.toLowerCase();
+    // console.log("Search Value:", searchValue);
+  
+    const filteredData = lookupDataSource.filter((item: any) => {
+      return Object.values(item).some((v) => {
+        const stringValue = String(v).toLowerCase();
+        // console.log("Checking value:", stringValue);
+        return stringValue.includes(searchValue);
+      });
+    });
+  
+    // console.log("Filtered Data:", filteredData);
+    setFilteredLookupDataSource(filteredData);
   };
+  
 
   const renderCellWithIcon = (cellInfo: any) => (
     <div style={{ display: 'flex', alignItems: 'center' }}>

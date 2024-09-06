@@ -41,7 +41,15 @@ const LeaveEntry = () => {
           form={form}
         />
       </div>
-      <DocumentHeader
+      
+    <MaxWidthWrapper className='px-5 py-5  lg:px-10 lg:pb-6 lg:pt-10'>
+      
+      <div className='border-solid'>
+        <Form {...form}>
+        
+        <form onSubmit={form.handleSubmit(() => {})} className="space-y-8">
+                    
+                      <DocumentHeader
                         setFormValues={setFormValues}
                         docCd={docCd}
                         docKey={docKey}
@@ -49,15 +57,6 @@ const LeaveEntry = () => {
                         router={router}
                         getValues={form.getValues}
                       />
-    <MaxWidthWrapper className='px-5 py-5  lg:px-10 lg:pb-6 lg:pt-10'>
-      
-      <div className='border-solid'>
-        <Form {...form}>
-        
-        <form onSubmit={form.handleSubmit(() => {})} className="space-y-8">
-                      {/* <NasterHeader onNewButtonClicked={addNew} onSaveButtonClicked={onSubmit}/> */}
-                      
-
                     <div className="grid grid-cols-1 lg:grid-cols-6   gap-4 py-1">
                         
                         <div className="grid gap-1 py-1 lg:col-span-1">
