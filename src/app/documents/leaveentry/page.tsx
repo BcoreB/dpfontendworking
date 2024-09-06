@@ -85,18 +85,18 @@ const LeaveEntry = () => {
                                     />
                           </div>
                         <div className="grid gap-1 py-1 lg:col-span-1">
-                            <DPInput
-                                formcontrol={form.control}
-                                name="date"
-                                disabled={false}
-                                type="date"
-                                labelText={getLanguageByEnglish("Date")}
-                                placeholder={getLanguageByEnglish("")}
-                                onValueChange={(field, value) => {
-                                    const dateValue = new Date(value);
-                                    form.setValue("date", dateValue);
-                                }}
-                            />
+                          <DPInput
+                            formcontrol={form.control}
+                            name="date"
+                            disabled={false}
+                            type="date"
+                            labelText={getLanguageByEnglish("Date")}
+                            placeholder={getLanguageByEnglish("")}
+                            onValueChange={(field, value) => {
+                              const dateValue = value instanceof Date ? value.toISOString().substring(0, 10) : value;
+                              form.setValue("date", dateValue);
+                            }}
+                          />
                         </div>
                         
                           <div className="grid gap-1 py-1 lg:col-span-3">
@@ -114,32 +114,33 @@ const LeaveEntry = () => {
                           </div>
                           <div className="grid gap-1 py-1 lg:col-span-1">
                             <DPInput
-                                formcontrol={form.control}
-                                name="fromdate"
-                                disabled={false}
-                                type="date"
-                                labelText={getLanguageByEnglish("Attendance from Date")}
-                                placeholder={getLanguageByEnglish("")}
-                                onValueChange={(field, value) => {
-                                    const dateValue = new Date(value);
-                                    form.setValue("fromdate", dateValue);
-                                }}
+                              formcontrol={form.control}
+                              name="fromdate"
+                              disabled={false}
+                              type="date"
+                              labelText={getLanguageByEnglish("Attendance from Date")}
+                              placeholder={getLanguageByEnglish("")}
+                              onValueChange={(field, value) => {
+                                const dateValue = value instanceof Date ? value.toISOString().substring(0, 10) : value;
+                                form.setValue("fromdate", dateValue);
+                              }}
                             />
-                        </div>
-                        <div className="grid gap-1 py-1 lg:col-span-1">
+                          </div>
+                          <div className="grid gap-1 py-1 lg:col-span-1">
                             <DPInput
-                                formcontrol={form.control}
-                                name="fromdate"
-                                disabled={false}
-                                type="date"
-                                labelText={getLanguageByEnglish("To Date")}
-                                placeholder={getLanguageByEnglish("")}
-                                onValueChange={(field, value) => {
-                                    const dateValue = new Date(value);
-                                    form.setValue("fromdate", dateValue);
-                                }}
+                              formcontrol={form.control}
+                              name="todate"
+                              disabled={false}
+                              type="date"
+                              labelText={getLanguageByEnglish("To Date")}
+                              placeholder={getLanguageByEnglish("")}
+                              onValueChange={(field, value) => {
+                                const dateValue = value instanceof Date ? value.toISOString().substring(0, 10) : value;
+                                form.setValue("todate", dateValue);
+                              }}
                             />
-                        </div>
+                          </div>
+
                           
                   </div>
           </form>
