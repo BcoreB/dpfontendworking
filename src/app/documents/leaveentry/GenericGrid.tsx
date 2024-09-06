@@ -28,7 +28,6 @@ const GenericGrid = <T extends { id: number }>({
   const [selectedRowData, setSelectedRowData] = useState<T | null>(null);
   const iconRef = useRef<HTMLElement | null>(null);
 
-  // Function to add a new row
   const addNewRow = () => {
     const newRow: T = {
       id: Math.max(...dataSource.map((item) => item.id)) + 1, // Generate new unique ID
@@ -36,7 +35,6 @@ const GenericGrid = <T extends { id: number }>({
     setDataSource([newRow, ...dataSource]); // Add the new row to the top
   };
 
-  // Handle the editor preparation and listen for Enter key on the last column
   const handleEditorPreparing = (e: any) => {
     if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
       e.editorOptions.onKeyDown = (args: any) => {
@@ -56,20 +54,14 @@ const GenericGrid = <T extends { id: number }>({
 
   const handleSearchChange = (value: string) => {
     const searchValue = value.toLowerCase();
-    // console.log("Search Value:", searchValue);
-  
     const filteredData = lookupDataSource.filter((item: any) => {
       return Object.values(item).some((v) => {
         const stringValue = String(v).toLowerCase();
-        // console.log("Checking value:", stringValue);
         return stringValue.includes(searchValue);
       });
     });
-  
-    // console.log("Filtered Data:", filteredData);
     setFilteredLookupDataSource(filteredData);
   };
-  
 
   const renderCellWithIcon = (cellInfo: any) => (
     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -82,23 +74,31 @@ const GenericGrid = <T extends { id: number }>({
   );
 
   return (
-    <div style={{ width: '100%', margin: '0 auto' }}>
-      <DataGrid
-        dataSource={dataSource}
-        showBorders={true}
-        keyExpr="id"
-        onEditorPreparing={handleEditorPreparing} // Attach the event handler
+    <>
+      <div
+        style={{
+          width: '100%',
+          margin: '0 auto',
+          pointerEvents: showLookupGrid ? 'none' : 'auto', // Disable all background elements when popup is open
+        }}
       >
-        <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
-        {columns.map((column) => (
-          <Column
-            key={String(column.dataField)}
-            dataField={String(column.dataField)}
-            caption={column.caption}
-            cellRender={column.dataField === 'EmpCode' ? renderCellWithIcon : undefined}
-          />
-        ))}
-      </DataGrid>
+        <DataGrid
+          dataSource={dataSource}
+          showBorders={true}
+          keyExpr="id"
+          onEditorPreparing={handleEditorPreparing} // Attach the event handler
+        >
+          <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
+          {columns.map((column) => (
+            <Column
+              key={String(column.dataField)}
+              dataField={String(column.dataField)}
+              caption={column.caption}
+              cellRender={column.dataField === 'EmpCode' ? renderCellWithIcon : undefined}
+            />
+          ))}
+        </DataGrid>
+      </div>
 
       {showLookupGrid && selectedRowData && (
         <>
@@ -111,11 +111,10 @@ const GenericGrid = <T extends { id: number }>({
               width: '100%',
               height: '100%',
               backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark transparent overlay
-              zIndex: 999, // Make sure it's above everything
+              zIndex: 999, // Ensure it's above everything
             }}
-            onClick={() => {
-              setShowLookupGrid(false);
-              iconRef.current = null;
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent closing popup when clicking on overlay
             }}
           />
           {/* Popup as Modal */}
@@ -135,7 +134,7 @@ const GenericGrid = <T extends { id: number }>({
                 ? { my: 'bottom center', at: 'top center', of: iconRef.current } // Position above the icon
                 : undefined
             }
-            style={{ zIndex: 1000 }} // Ensure it appears above the overlay
+            style={{ zIndex: 1000 }}
           >
             <div>
               <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
@@ -178,7 +177,7 @@ const GenericGrid = <T extends { id: number }>({
           </Popup>
         </>
       )}
-    </div>
+    </>
   );
 };
 
