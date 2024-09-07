@@ -1,61 +1,69 @@
 import React, { useState, useRef } from 'react';
-import { DataGrid, Column, Editing, Selection } from 'devextreme-react/data-grid';
+import { DataGrid, Column, Editing, Selection, Lookup } from 'devextreme-react/data-grid';
 import { TextBox } from 'devextreme-react/text-box';
 import { Popup } from 'devextreme-react/popup';
 import { AiFillCaretDown } from 'react-icons/ai';
 import Button from 'devextreme-react/button';
 
 interface GridProps<T> {
-  columns: { dataField: keyof T, caption: string }[];
-  popupColumns: { dataField: keyof T, caption: string }[];
+  columns: {
+    dataField: keyof T,
+    caption: string,
+    inputType?: 'lookup' | 'combo',
+    dataSource?: T[]
+  }[];
   dataSource: T[];
-  lookupDataSource: T[];
   onValueSelect: (row: T, selectedValue: T) => void;
-  lastColumn: keyof T; // Prop for the last column
+  lastColumn: keyof T;
+  columnMapping: { [popupColumn: string]: keyof T }; // Column mapping between popup grid and DataGrid
 }
 
 const GenericGrid = <T extends { id: number }>({
   columns,
-  popupColumns,
   dataSource: initialDataSource,
-  lookupDataSource,
   onValueSelect,
   lastColumn,
+  columnMapping, // Accept column mapping prop
 }: GridProps<T>) => {
   const [dataSource, setDataSource] = useState<T[]>(initialDataSource);
-  const [filteredLookupDataSource, setFilteredLookupDataSource] = useState(lookupDataSource);
+  const [filteredLookupDataSource, setFilteredLookupDataSource] = useState<T[]>([]);
   const [showLookupGrid, setShowLookupGrid] = useState<boolean>(false);
   const [selectedRowData, setSelectedRowData] = useState<T | null>(null);
-  const [selectedPopupRowData, setSelectedPopupRowData] = useState<T | null>(null); // State for popup selection
+  const [selectedPopupRowData, setSelectedPopupRowData] = useState<T | null>(null);
   const iconRef = useRef<HTMLElement | null>(null);
 
   const addNewRow = () => {
     const newRow: T = {
-      id: Math.max(...dataSource.map((item) => item.id)) + 1, // Generate new unique ID
+      id: Math.max(...dataSource.map((item) => item.id)) + 1,
     } as unknown as T;
-    setDataSource([newRow, ...dataSource]); // Add the new row to the top
+    setDataSource([newRow, ...dataSource]);
   };
 
   const handleEditorPreparing = (e: any) => {
     if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
       e.editorOptions.onKeyDown = (args: any) => {
         if (args.event.key === 'Enter') {
-          addNewRow(); // Call the function to add a new row when Enter is pressed
+          addNewRow();
         }
       };
     }
   };
 
-  const handleIconClick = (e: React.MouseEvent, rowData: T) => {
+  const handleIconClick = (e: React.MouseEvent, rowData: T, columnDataSource?: T[]) => {
     e.stopPropagation();
     setSelectedRowData(rowData);
     iconRef.current = e.currentTarget as HTMLElement;
+
+    if (columnDataSource) {
+      setFilteredLookupDataSource(columnDataSource);
+    }
+
     setShowLookupGrid(true);
   };
 
   const handleSearchChange = (value: string) => {
     const searchValue = value.toLowerCase();
-    const filteredData = lookupDataSource.filter((item: any) => {
+    const filteredData = filteredLookupDataSource.filter((item: any) => {
       return Object.values(item).some((v) => {
         const stringValue = String(v).toLowerCase();
         return stringValue.includes(searchValue);
@@ -64,12 +72,12 @@ const GenericGrid = <T extends { id: number }>({
     setFilteredLookupDataSource(filteredData);
   };
 
-  const renderCellWithIcon = (cellInfo: any) => (
+  const renderCellWithIcon = (cellInfo: any, columnDataSource?: T[]) => (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <span style={{ flexGrow: 1 }}>{cellInfo.value !== undefined ? cellInfo.value : ''}</span>
       <AiFillCaretDown
         style={{ marginLeft: '8px', cursor: 'pointer', flexShrink: 0 }}
-        onClick={(e) => handleIconClick(e, cellInfo.data)}
+        onClick={(e) => handleIconClick(e, cellInfo.data, columnDataSource)}
       />
     </div>
   );
@@ -78,20 +86,40 @@ const GenericGrid = <T extends { id: number }>({
     setSelectedPopupRowData(e.selectedRowsData[0]);
   };
 
+  const handleRowDoubleClick = (e: any) => {
+    if (selectedRowData && e.data) {
+      const popupRow = e.data;
+
+      // Update the selected row in the main grid using the column mapping
+      const updatedRow = { ...selectedRowData };
+      for (const popupColumn in columnMapping) {
+        const gridColumn = columnMapping[popupColumn];
+        updatedRow[gridColumn] = popupRow[popupColumn];
+      }
+
+      // Update the data source with the modified row
+      setDataSource((prevDataSource) =>
+        prevDataSource.map((row) => (row.id === selectedRowData.id ? updatedRow : row))
+      );
+
+      setShowLookupGrid(false); // Close the popup
+    }
+  };
+
   return (
     <>
       <div
         style={{
           width: '100%',
           margin: '0 auto',
-          pointerEvents: showLookupGrid ? 'none' : 'auto', // Disable all background elements when popup is open
+          pointerEvents: showLookupGrid ? 'none' : 'auto',
         }}
       >
         <DataGrid
           dataSource={dataSource}
           showBorders={true}
           keyExpr="id"
-          onEditorPreparing={handleEditorPreparing} // Attach the event handler
+          onEditorPreparing={handleEditorPreparing}
         >
           <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
           {columns.map((column) => (
@@ -99,15 +127,22 @@ const GenericGrid = <T extends { id: number }>({
               key={String(column.dataField)}
               dataField={String(column.dataField)}
               caption={column.caption}
-              cellRender={column.dataField === 'EmpCode' ? renderCellWithIcon : undefined}
-            />
+              cellRender={
+                column.inputType === 'lookup'
+                  ? (cellInfo: any) => renderCellWithIcon(cellInfo, column.dataSource)
+                  : undefined
+              }
+            >
+              {column.inputType === 'combo' && column.dataSource && (
+                <Lookup dataSource={column.dataSource} valueExpr="EmpCode" displayExpr="Employee" />
+              )}
+            </Column>
           ))}
         </DataGrid>
       </div>
 
       {showLookupGrid && selectedRowData && (
         <>
-          {/* Modal Overlay */}
           <div
             style={{
               position: 'fixed',
@@ -115,14 +150,13 @@ const GenericGrid = <T extends { id: number }>({
               left: 0,
               width: '100%',
               height: '100%',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark transparent overlay
-              zIndex: 999, // Ensure it's above everything
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 999,
             }}
             onClick={(e) => {
-              e.stopPropagation(); // Prevent closing popup when clicking on overlay
+              e.stopPropagation();
             }}
           />
-          {/* Popup as Modal */}
           <Popup
             visible={true}
             onHiding={() => {
@@ -136,7 +170,7 @@ const GenericGrid = <T extends { id: number }>({
             dragEnabled={true}
             position={
               iconRef.current
-                ? { my: 'bottom center', at: 'top center', of: iconRef.current } // Position above the icon
+                ? { my: 'bottom center', at: 'top center', of: iconRef.current }
                 : undefined
             }
             style={{ zIndex: 1000 }}
@@ -144,42 +178,18 @@ const GenericGrid = <T extends { id: number }>({
             <div>
               <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
                 <TextBox placeholder="Search..." onValueChanged={(e) => handleSearchChange(e.value)} />
-                <Button
-                  text="Search"
-                  onClick={() => {
-                    const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
-                    if (input) {
-                      handleSearchChange(input.value);
-                    }
-                  }}
-                />
-                <Button
-                  text="Clear"
-                  style={{ background: 'red', fontWeight: 600 }}
-                  onClick={() => {
-                    const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
-                    if (input) {
-                      input.value = '';
-                      handleSearchChange('');
-                    }
-                  }}
-                />
               </div>
               <DataGrid
                 dataSource={filteredLookupDataSource}
                 showBorders={true}
-                selection={{ mode: 'single' }} // Enable row selection
-                onSelectionChanged={handleRowSelection} // Handle row selection change
-                onRowDblClick={(e: any) => {
-                  onValueSelect(selectedRowData, e.data); // Pass the selected value
-                  setDataSource([...dataSource]); // Update dataSource in the main grid
-                  setShowLookupGrid(false);
-                }}
+                selection={{ mode: 'single' }}
+                onSelectionChanged={handleRowSelection}
+                onRowDblClick={handleRowDoubleClick} // Add double-click event for row selection
               >
-                <Selection mode="single" /> {/* Enable single row selection */}
-                {popupColumns.map((column) => (
-                  <Column key={String(column.dataField)} dataField={String(column.dataField)} caption={column.caption} />
-                ))}
+                {filteredLookupDataSource.length > 0 &&
+                  Object.keys(filteredLookupDataSource[0]).map((field) => (
+                    <Column key={field} dataField={field} />
+                  ))}
               </DataGrid>
             </div>
           </Popup>
