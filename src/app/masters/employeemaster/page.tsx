@@ -898,8 +898,8 @@ const getFileExtension = (mime: string) => {
                             <div className="grid gap-1 py-1 lg:col-span-6">
                               {
                                 
-                             <EmployeeContract data={form.getValues('employeecontractdet')} empCode={form.getValues('empcode')} deptcode={form.getValues('deptcode')} 
-                             updateEmployeeContract={updateEmployeeContract}/>
+                                <EmployeeContract data={form.getValues('employeecontractdet')} empCode={form.getValues('empcode')} deptcode={form.getValues('deptcode')} 
+                                updateEmployeeContract={updateEmployeeContract}/>
                               }
                               
                           </div>

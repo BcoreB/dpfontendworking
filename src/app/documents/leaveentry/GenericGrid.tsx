@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { DataGrid, Column, Editing } from 'devextreme-react/data-grid';
+import { DataGrid, Column, Editing, Selection } from 'devextreme-react/data-grid';
 import { TextBox } from 'devextreme-react/text-box';
 import { Popup } from 'devextreme-react/popup';
 import { AiFillCaretDown } from 'react-icons/ai';
@@ -20,12 +20,13 @@ const GenericGrid = <T extends { id: number }>({
   dataSource: initialDataSource,
   lookupDataSource,
   onValueSelect,
-  lastColumn, // Destructure lastColumn prop
+  lastColumn,
 }: GridProps<T>) => {
   const [dataSource, setDataSource] = useState<T[]>(initialDataSource);
   const [filteredLookupDataSource, setFilteredLookupDataSource] = useState(lookupDataSource);
   const [showLookupGrid, setShowLookupGrid] = useState<boolean>(false);
   const [selectedRowData, setSelectedRowData] = useState<T | null>(null);
+  const [selectedPopupRowData, setSelectedPopupRowData] = useState<T | null>(null); // State for popup selection
   const iconRef = useRef<HTMLElement | null>(null);
 
   const addNewRow = () => {
@@ -72,6 +73,10 @@ const GenericGrid = <T extends { id: number }>({
       />
     </div>
   );
+
+  const handleRowSelection = (e: any) => {
+    setSelectedPopupRowData(e.selectedRowsData[0]);
+  };
 
   return (
     <>
@@ -163,12 +168,15 @@ const GenericGrid = <T extends { id: number }>({
               <DataGrid
                 dataSource={filteredLookupDataSource}
                 showBorders={true}
-                onRowClick={(e: any) => {
-                  onValueSelect(selectedRowData, e.data);
-                  setDataSource([...dataSource]);
+                selection={{ mode: 'single' }} // Enable row selection
+                onSelectionChanged={handleRowSelection} // Handle row selection change
+                onRowDblClick={(e: any) => {
+                  onValueSelect(selectedRowData, e.data); // Pass the selected value
+                  setDataSource([...dataSource]); // Update dataSource in the main grid
                   setShowLookupGrid(false);
                 }}
               >
+                <Selection mode="single" /> {/* Enable single row selection */}
                 {popupColumns.map((column) => (
                   <Column key={String(column.dataField)} dataField={String(column.dataField)} caption={column.caption} />
                 ))}

@@ -45,18 +45,20 @@ const LeaveManagement = () => {
           { dataField: 'Entitled', caption: 'Entitled' },
           { dataField: 'Remarks', caption: 'Remarks' },
           { dataField: 'NPBalance', caption: 'NP Balance' },
-          { dataField: 'EmpCode', caption: 'Emp Code' },
+          { dataField: 'EmpCode', caption: 'Emp Code', inputType: 'lookup', lookupSource: 'LookupData' },
           { dataField: 'LeaveType', caption: 'Leave Type' },
+          { dataField: 'Nationality', caption: 'Nationality', inputType:'combo', lookupSource:'NationSource' },
+          
         ]}
-        popupColumns={[
-          { dataField: 'EmpCode', caption: 'Emp Code' },
-          { dataField: 'Employee', caption: 'Employee' },
-          { dataField: 'CPR', caption: 'CPR' },
-          { dataField: 'NPBalance', caption: 'NP Balance' },
-          { dataField: 'LeaveType', caption: 'Leave Type' },
-        ]}
+        // popupColumns={[
+        //   { dataField: 'EmpCode', caption: 'Emp Code' },
+        //   { dataField: 'Employee', caption: 'Employee' },
+        //   { dataField: 'CPR', caption: 'CPR' },
+        //   { dataField: 'NPBalance', caption: 'NP Balance' },
+        //   { dataField: 'LeaveType', caption: 'Leave Type' },
+        // ]}
         dataSource={leaveData}
-        lookupDataSource={lookupData}
+        // lookupDataSource={lookupData}
         onValueSelect={handleValueSelect}
         lastColumn='LeaveType'
       />

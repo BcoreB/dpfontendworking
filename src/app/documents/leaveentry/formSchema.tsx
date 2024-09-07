@@ -5,15 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { saveMasterData, updateMasterData } from '../../datalayer/api';
 import DPComboBox from '@/components/ui/dpcombobox'
 
-// Define the schema for air sector master
-export const formSchema = z.object({
-  refno: z.string(),
-  leavetype: z.string().min(1, "Please select a type"),
-  date: z.date(),
-  payrolperiod: z.string().min(1, "Please select a type"),
-  fromdate: z.date(),
-  todate: z.date(),
-  empcode: z.string(),
+// Define schema for the formGrid elements
+export const formSchemaFormGrid = z.object({
+  empcode:z.string().max(20,{message:'maximum length allowed 20'})
+  .min(5, {
+    message: "empcode must be at least 5 characters.",
+  }),
   empname: z.string(),
   cpr: z.string(),
   empfromdate: z.date(),
@@ -23,19 +20,15 @@ export const formSchema = z.object({
   remarks: z.string(),
   npbalance: z.string(),
   leavetyle: z.string(),
-});
 
-// Initialize the form with default values
-export const InitializeForm = () => {
-  return useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+})
+
+
+// Initialize formGrid with default values
+export const InitializeFormGridForm = () =>{
+  return useForm<z.infer<typeof formSchemaFormGrid>>({
+    resolver: zodResolver(formSchemaFormGrid),
     defaultValues: {
-        refno: '',
-        leavetype: '',
-        date: undefined,
-        payrolperiod: '',
-        fromdate: undefined,
-        todate: undefined,
         empcode: '',
         empname: '',
         cpr: '',
@@ -48,7 +41,37 @@ export const InitializeForm = () => {
         leavetyle: '',
     },
   });
+}
+
+// Initialize the form with default values
+export const InitializeForm = () => {
+  return useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+        refno: '',
+        leavetype: '',
+        date: undefined,
+        payrolperiod: '',
+        fromdate: undefined,
+        todate: undefined,
+       
+    },
+  });
 };
+
+// Define the schema for air sector master
+export const formSchema = z.object({
+  refno: z.string(),
+  leavetype: z.string().min(1, "Please select a type"),
+  date: z.date(),
+  payrolperiod: z.string().min(1, "Please select a type"),
+  fromdate: z.date(),
+  todate: z.date(),
+  employeeData : z.array(
+    formSchemaFormGrid
+  ),
+  
+});
 
 // Define the leave entry type with date fields as Date
 export type leavenetry = {

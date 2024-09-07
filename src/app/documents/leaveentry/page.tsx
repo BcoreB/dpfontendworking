@@ -143,12 +143,13 @@ const LeaveEntry = () => {
 
                           
                   </div>
+                  <div className='mt-10'>
+                    <LeaveManagementGrid/>
+                  </div>
           </form>
         </Form>
       </div>
-      <div className='mt-10'>
-        <LeaveManagementGrid/>
-      </div>
+      
     </MaxWidthWrapper>
     </div>
   )
