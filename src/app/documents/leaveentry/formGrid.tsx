@@ -60,7 +60,7 @@ const LeaveManagement = () => {
           },
           { dataField: 'Employee', caption: 'Employee' },
           { dataField: 'CPR', caption: 'CPR' },
-          { dataField: 'FromDate', caption: 'From Date' },
+          { dataField: 'FromDate', caption: 'From Date', },
           { dataField: 'ToDate', caption: 'To Date' },
           { dataField: 'NoDays', caption: 'No Days' },
           { dataField: 'Entitled', caption: 'Entitled' },
