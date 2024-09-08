@@ -3,24 +3,23 @@ import { DataGrid, Column, Editing, Selection, Lookup } from 'devextreme-react/d
 import { TextBox } from 'devextreme-react/text-box';
 import { Popup } from 'devextreme-react/popup';
 import { AiFillCaretDown } from 'react-icons/ai';
-import Button from 'devextreme-react/button';
-import { DateBox } from 'devextreme-react/date-box'; // Import DateBox for date handling
+import { Button } from 'devextreme-react/button';
+import { DateBox } from 'devextreme-react/date-box';
 
 interface GridProps<T> {
   columns: {
-    dataField: keyof T,
-    caption: string,
-    inputType?: 'lookup' | 'combo',
-    dataSource?: T[],
-    dataType?:string,
+    dataField: keyof T;
+    caption: string;
+    inputType?: 'lookup' | 'combo';
+    dataSource?: T[];
+    dataType?: string;
   }[];
   dataSource: T[];
   onValueSelect: (row: T, selectedValue: T) => void;
   lastColumn: keyof T;
-  columnMapping: { [popupColumn: string]: keyof T }; // Column mapping between popup grid and DataGrid
+  columnMapping: { [popupColumn: string]: keyof T };
 }
 
-// Interface for cellInfo (you can adjust based on your actual data structure)
 interface CellInfo<T> {
   value: any;
   data: T;
@@ -32,7 +31,7 @@ const GenericGrid = <T extends { id: number }>({
   dataSource: initialDataSource,
   onValueSelect,
   lastColumn,
-  columnMapping, // Accept column mapping prop
+  columnMapping,
 }: GridProps<T>) => {
   const [dataSource, setDataSource] = useState<T[]>(initialDataSource);
   const [filteredLookupDataSource, setFilteredLookupDataSource] = useState<T[]>([]);
@@ -67,7 +66,7 @@ const GenericGrid = <T extends { id: number }>({
       setFilteredLookupDataSource(columnDataSource);
     }
 
-    setShowLookupGrid(true);
+    setShowLookupGrid(true); // Open the lookup grid popup
   };
 
   const handleSearchChange = (value: string) => {
@@ -81,7 +80,7 @@ const GenericGrid = <T extends { id: number }>({
     setFilteredLookupDataSource(filteredData);
   };
 
-  const renderCellWithIcon = (cellInfo: any, columnDataSource?: T[]) => (
+  const renderCellWithIcon = (cellInfo: CellInfo<T>, columnDataSource?: T[]) => (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <span style={{ flexGrow: 1 }}>{cellInfo.value !== undefined ? cellInfo.value : ''}</span>
       <AiFillCaretDown
@@ -122,13 +121,7 @@ const GenericGrid = <T extends { id: number }>({
 
   return (
     <>
-      <div
-        style={{
-          width: '100%',
-          margin: '0 auto',
-          pointerEvents: showLookupGrid ? 'none' : 'auto',
-        }}
-      >
+      <div style={{ width: '100%', margin: '0 auto' }}>
         <DataGrid
           dataSource={dataSource}
           showBorders={true}
@@ -136,53 +129,39 @@ const GenericGrid = <T extends { id: number }>({
           onEditorPreparing={handleEditorPreparing}
         >
           <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
-          {columns.map((column) => (
-            <Column
-              key={String(column.dataField)}
-              dataField={String(column.dataField)}
-              caption={column.caption}
-              dataType={column.dataType === 'date' ? 'date' : undefined} // Set dataType for date columns
-              cellRender={
-                column.dataType === 'date'
-                  ? (cellInfo: any) => <span>{formatDate(cellInfo.value)}</span>
-                  : column.inputType === 'lookup'
-                  ? (cellInfo: any) => renderCellWithIcon(cellInfo, column.dataSource)
-                  : undefined
-              }
-            >
-              {column.dataType === 'date' && (
-                <Editing cellRender={(cellInfo: CellInfo<T>) => (
-                  <DateBox
-                    value={cellInfo.value}
-                    onValueChanged={(e) => cellInfo.setValue(e.value)}
-                    displayFormat="MM/dd/yyyy"
-                  />
-                )} />
-              )}
-              {column.inputType === 'combo' && column.dataSource && (
-                <Lookup dataSource={column.dataSource} valueExpr="EmpCode" displayExpr="Employee" />
-              )}
-            </Column>
-          ))}
+          
+          {columns.map((column) => {
+            const isDateColumn = column.dataType === 'date';
+            const isLookupColumn = column.inputType === 'lookup';
+
+            return (
+              <Column
+                key={String(column.dataField)}
+                dataField={String(column.dataField)}
+                caption={column.caption}
+                dataType={isDateColumn ? 'date' : undefined}
+                cellRender={(cellInfo: CellInfo<T>) => {
+                  if (isDateColumn) {
+                    // Render Date
+                    return <span>{formatDate(cellInfo.value)}</span>;
+                  } else if (isLookupColumn) {
+                    // Render Lookup with icon
+                    return renderCellWithIcon(cellInfo, column.dataSource);
+                  }
+                  return <span>{cellInfo.value}</span>;
+                }}
+              >
+                {column.inputType === 'combo' && column.dataSource && (
+                  <Lookup dataSource={column.dataSource} valueExpr="EmpCode" displayExpr="Employee" />
+                )}
+              </Column>
+            );
+          })}
         </DataGrid>
       </div>
 
       {showLookupGrid && selectedRowData && (
         <>
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              zIndex: 999,
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          />
           <Popup
             visible={true}
             onHiding={() => {
@@ -199,7 +178,7 @@ const GenericGrid = <T extends { id: number }>({
                 ? { my: 'bottom center', at: 'top center', of: iconRef.current }
                 : undefined
             }
-            style={{ zIndex: 1000 }}
+            style={{ zIndex: 1000 }} // Ensure popup is on top
           >
             <div>
               <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
@@ -210,7 +189,7 @@ const GenericGrid = <T extends { id: number }>({
                 showBorders={true}
                 selection={{ mode: 'single' }}
                 onSelectionChanged={handleRowSelection}
-                onRowDblClick={handleRowDoubleClick} // Add double-click event for row selection
+                onRowDblClick={handleRowDoubleClick}
               >
                 {filteredLookupDataSource.length > 0 &&
                   Object.keys(filteredLookupDataSource[0]).map((field) => (
