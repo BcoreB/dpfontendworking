@@ -4,18 +4,27 @@ import { TextBox } from 'devextreme-react/text-box';
 import { Popup } from 'devextreme-react/popup';
 import { AiFillCaretDown } from 'react-icons/ai';
 import Button from 'devextreme-react/button';
+import { DateBox } from 'devextreme-react/date-box'; // Import DateBox for date handling
 
 interface GridProps<T> {
   columns: {
     dataField: keyof T,
     caption: string,
     inputType?: 'lookup' | 'combo',
-    dataSource?: T[]
+    dataSource?: T[],
+    dataType?:string,
   }[];
   dataSource: T[];
   onValueSelect: (row: T, selectedValue: T) => void;
   lastColumn: keyof T;
   columnMapping: { [popupColumn: string]: keyof T }; // Column mapping between popup grid and DataGrid
+}
+
+// Interface for cellInfo (you can adjust based on your actual data structure)
+interface CellInfo<T> {
+  value: any;
+  data: T;
+  setValue: (newValue: any) => void;
 }
 
 const GenericGrid = <T extends { id: number }>({
@@ -106,6 +115,11 @@ const GenericGrid = <T extends { id: number }>({
     }
   };
 
+  const formatDate = (date: Date | string | null) => {
+    if (!date) return '';
+    return new Intl.DateTimeFormat('en-US').format(new Date(date));
+  };
+
   return (
     <>
       <div
@@ -127,12 +141,24 @@ const GenericGrid = <T extends { id: number }>({
               key={String(column.dataField)}
               dataField={String(column.dataField)}
               caption={column.caption}
+              dataType={column.dataType === 'date' ? 'date' : undefined} // Set dataType for date columns
               cellRender={
-                column.inputType === 'lookup'
+                column.dataType === 'date'
+                  ? (cellInfo: any) => <span>{formatDate(cellInfo.value)}</span>
+                  : column.inputType === 'lookup'
                   ? (cellInfo: any) => renderCellWithIcon(cellInfo, column.dataSource)
                   : undefined
               }
             >
+              {column.dataType === 'date' && (
+                <Editing cellRender={(cellInfo: CellInfo<T>) => (
+                  <DateBox
+                    value={cellInfo.value}
+                    onValueChanged={(e) => cellInfo.setValue(e.value)}
+                    displayFormat="MM/dd/yyyy"
+                  />
+                )} />
+              )}
               {column.inputType === 'combo' && column.dataSource && (
                 <Lookup dataSource={column.dataSource} valueExpr="EmpCode" displayExpr="Employee" />
               )}
