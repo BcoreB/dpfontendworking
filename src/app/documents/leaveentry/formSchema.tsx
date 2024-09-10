@@ -39,25 +39,11 @@ export const InitializeFormGridForm = () =>{
         remarks: '',
         npbalance: '',
         leavetyle: '',
+
     },
   });
 }
 
-// Initialize the form with default values
-export const InitializeForm = () => {
-  return useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-        refno: '',
-        leavetype: '',
-        date: undefined,
-        payrolperiod: '',
-        fromdate: undefined,
-        todate: undefined,
-       
-    },
-  });
-};
 
 // Define the schema for air sector master
 export const formSchema = z.object({
@@ -73,14 +59,24 @@ export const formSchema = z.object({
   
 });
 
-// Define the leave entry type with date fields as Date
-export type leavenetry = {
-  refno: string;
-  leavetype: string;
-  date: Date;
-  payrolperiod: string;
-  fromdate: Date;
-  todate: Date;
+// Initialize the form with default values
+export const InitializeForm = () => {
+  return useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+        refno: '',
+        leavetype: '',
+        date: undefined,
+        payrolperiod: '',
+        fromdate: undefined,
+        todate: undefined,
+        employeeData: undefined,
+       
+    },
+  });
+};
+
+export type EmployeeData = {
   empcode: string;
   empname: string;
   cpr: string;
@@ -91,6 +87,18 @@ export type leavenetry = {
   remarks: string;
   npbalance: string;
   leavetyle: string;
+  rowid :  number;
+}
+
+// Define the leave entry type with date fields as Date
+export type leavenetry = {
+  refno: string;
+  leavetype: string;
+  date: Date;
+  payrolperiod: string;
+  fromdate: Date;
+  todate: Date;
+  
 };
 export const leaveType = [
   {
