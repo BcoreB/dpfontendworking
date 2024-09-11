@@ -70,13 +70,13 @@ export const InitializeForm = () => {
         payrolperiod: '',
         fromdate: undefined,
         todate: undefined,
-        employeeData: undefined,
+        employeeData: [],
        
     },
   });
 };
 
-export type EmployeeData = {
+export type EmployeeDataType = {
   empcode: string;
   empname: string;
   cpr: string;

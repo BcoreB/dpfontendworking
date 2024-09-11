@@ -47,15 +47,23 @@ const LeaveManagement = ({ data, updateEmployeeData }) => {
   };
 
   const handleValueSelect = (row: any, selectedValue: any) => {
-    row.EmpCode = selectedValue.EmpCode;
-    row.Employee = selectedValue.Employee;
-    row.CPR = selectedValue.CPR;
-    row.NPBalance = selectedValue.NPBalance;
-    row.LeaveType = selectedValue.LeaveType;
-
-    // Update the parent state when the value is selected
-    updateEmployeeData(row); // Update the employee data in parent component
+    const updatedRow = {
+      ...row,
+      EmpCode: selectedValue.EmpCode,
+      Employee: selectedValue.Employee,
+      CPR: selectedValue.CPR,
+      NPBalance: selectedValue.NPBalance,
+      LeaveType: selectedValue.LeaveType,
+    };
+  
+    const updatedLeaveData = leaveData.map(r =>
+      r.id === row.id ? updatedRow : r
+    );
+  
+    setLeaveData(updatedLeaveData);
+    updateEmployeeData(updatedLeaveData); // Update the whole array
   };
+  
 
   return (
     <div className='mt-10'>

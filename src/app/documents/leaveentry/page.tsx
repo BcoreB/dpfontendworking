@@ -28,21 +28,25 @@ const LeaveEntry = () => {
   const form = InitializeForm();
   
   // 2. Define a submit handler.
-  const updateEmployeeData = (uodatedDoc: EmployeeData[]) => {
-    const sortedDocs = [...uodatedDoc].sort((a, b) => a.rowid - b.rowid);
-
+  const updateEmployeeData = (updatedDoc: EmployeeData[]) => {
+    const sortedDocs = [...updatedDoc].sort((a, b) => a.rowid - b.rowid);
+  
     sortedDocs.forEach((doc, index) => {
       doc.rowid = index + 1; // Assuming rowid starts from 1
     });
-    form.setValue('employeeData', sortedDocs);
-    console.log('employeeData', sortedDocs);
+  
+    form.setValue('employeeData', sortedDocs); // This sets the data in the form
+    console.log('Updated employeeData:', form.getValues('employeeData')); // Log the updated data
   };
+  
 
   // Function to handle the button click and alert form values
   const handleAlertFormValues = () => {
     const values = form.getValues();
+    console.log('Form Values:', values); // Debugging line
     alert(JSON.stringify(values, null, 2));
   };
+  console.log('Initial employeeData:', form.getValues('employeeData'));
 
   return (
     <div className='w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8'>
@@ -147,7 +151,11 @@ const LeaveEntry = () => {
                 </div>
               </div>
               <div className='mt-10'>
-                <LeaveManagement data={form.getValues('employeeData')} updateEmployeeData={updateEmployeeData} />
+              <LeaveManagement 
+                data={form.getValues('employeeData')} 
+                updateEmployeeData={updateEmployeeData} 
+              />
+
               </div>
               <div className='mt-5'>
                 <Button onClick={handleAlertFormValues}>Alert Form Values</Button>
