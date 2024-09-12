@@ -1,11 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import GenericGrid from './GenericGrid';
-import { leaveType } from './formSchema';
 
-const LeaveManagement = ({ data, updateEmployeeData }) => {
-  const [leaveData, setLeaveData] = useState([
+interface EmployeeData {
+  id: number;
+  EmpCode: number | null;
+  Employee: string | null;
+  CPR: string | null;
+  FromDate: Date | null;
+  ToDate: Date | null;
+  NoDays: number | null;
+  Entitled: string | null;
+  Remarks: string | null;
+  NPBalance: string | null;
+  LeaveType: string | null;
+}
+
+interface LeaveManagementProps {
+  data: EmployeeData[];
+  updateEmployeeData: (updatedData: EmployeeData[]) => void;
+}
+
+const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => {
+  const [leaveData, setLeaveData] = useState<EmployeeData[]>([
     {
-      id: 0,
+      id: 1,
       EmpCode: null,
       Employee: null,
       CPR: null,
@@ -20,8 +38,8 @@ const LeaveManagement = ({ data, updateEmployeeData }) => {
   ]);
 
   const leaveTypeData = [
-    { leaveType: 'Sick' },
-    { leaveType: 'Annual' },
+    { LeaveType: 'Sick' },
+    { LeaveType: 'Annual' },
   ];
 
   const lookupData = [
@@ -32,7 +50,7 @@ const LeaveManagement = ({ data, updateEmployeeData }) => {
 
   // Update leave data when the incoming prop `data` changes
   useEffect(() => {
-    if (data) {
+    if (data && data.length > 0) {
       setLeaveData(data);
     }
   }, [data]);
@@ -40,34 +58,19 @@ const LeaveManagement = ({ data, updateEmployeeData }) => {
   const columnMapping = {
     EmpCode: 'EmpCode',
     Employee: 'Employee',
-    popupColumn3: 'dataGridColumn3',
     CPR: 'CPR',
     NPBalance: 'NPBalance',
     LeaveType: 'LeaveType',
   };
 
-  const handleValueSelect = (row: any, selectedValue: any) => {
-    const updatedRow = {
-      ...row,
-      EmpCode: selectedValue.EmpCode,
-      Employee: selectedValue.Employee,
-      CPR: selectedValue.CPR,
-      NPBalance: selectedValue.NPBalance,
-      LeaveType: selectedValue.LeaveType,
-    };
-  
-    const updatedLeaveData = leaveData.map(r =>
-      r.id === row.id ? updatedRow : r
-    );
-  
-    setLeaveData(updatedLeaveData);
-    updateEmployeeData(updatedLeaveData); // Update the whole array
+  const handleValueSelect = (updatedData: EmployeeData[]) => {
+    setLeaveData(updatedData);
+    updateEmployeeData(updatedData);
   };
-  
 
   return (
-    <div className='mt-10'>
-      <GenericGrid
+    <div className="mt-10">
+      <GenericGrid<EmployeeData>
         columns={[
           {
             dataField: 'EmpCode',
@@ -93,7 +96,7 @@ const LeaveManagement = ({ data, updateEmployeeData }) => {
         dataSource={leaveData}
         columnMapping={columnMapping} // Pass the column mapping
         onValueSelect={handleValueSelect}
-        lastColumn='LeaveType'
+        lastColumn="LeaveType"
       />
     </div>
   );

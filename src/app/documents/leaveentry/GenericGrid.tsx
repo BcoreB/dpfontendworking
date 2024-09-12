@@ -1,10 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { DataGrid, Column, Editing, Selection, Lookup } from 'devextreme-react/data-grid';
+import { DataGrid, Column, Editing, Lookup } from 'devextreme-react/data-grid';
 import { TextBox } from 'devextreme-react/text-box';
 import { Popup } from 'devextreme-react/popup';
 import { AiFillCaretDown } from 'react-icons/ai';
-import { Button } from 'devextreme-react/button';
-import { DateBox } from 'devextreme-react/date-box';
 
 interface GridProps<T> {
   columns: {
@@ -15,7 +13,7 @@ interface GridProps<T> {
     dataType?: string;
   }[];
   dataSource: T[];
-  onValueSelect: (row: T, selectedValue: T) => void;
+  onValueSelect: (updatedData: T[]) => void;
   lastColumn: keyof T;
   columnMapping: { [popupColumn: string]: keyof T };
 }
@@ -24,6 +22,7 @@ interface CellInfo<T> {
   value: any;
   data: T;
   setValue: (newValue: any) => void;
+  rowIndex: number;
 }
 
 const GenericGrid = <T extends { id: number }>({
@@ -34,17 +33,21 @@ const GenericGrid = <T extends { id: number }>({
   columnMapping,
 }: GridProps<T>) => {
   const [dataSource, setDataSource] = useState<T[]>(initialDataSource);
+  const [lookupDataSource, setLookupDataSource] = useState<T[]>([]);
   const [filteredLookupDataSource, setFilteredLookupDataSource] = useState<T[]>([]);
   const [showLookupGrid, setShowLookupGrid] = useState<boolean>(false);
-  const [selectedRowData, setSelectedRowData] = useState<T | null>(null);
+  const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
   const [selectedPopupRowData, setSelectedPopupRowData] = useState<T | null>(null);
   const iconRef = useRef<HTMLElement | null>(null);
 
   const addNewRow = () => {
+    const newId = dataSource.length > 0 ? Math.max(...dataSource.map((item) => item.id)) + 1 : 1;
     const newRow: T = {
-      id: Math.max(...dataSource.map((item) => item.id)) + 1,
+      id: newId,
     } as unknown as T;
-    setDataSource([newRow, ...dataSource]);
+    const updatedData = [newRow, ...dataSource];
+    setDataSource(updatedData);
+    onValueSelect(updatedData); // Notify parent component
   };
 
   const handleEditorPreparing = (e: any) => {
@@ -57,12 +60,13 @@ const GenericGrid = <T extends { id: number }>({
     }
   };
 
-  const handleIconClick = (e: React.MouseEvent, rowData: T, columnDataSource?: T[]) => {
+  const handleIconClick = (e: React.MouseEvent, rowIndex: number, columnDataSource?: T[]) => {
     e.stopPropagation();
-    setSelectedRowData(rowData);
+    setSelectedRowIndex(rowIndex);
     iconRef.current = e.currentTarget as HTMLElement;
 
     if (columnDataSource) {
+      setLookupDataSource(columnDataSource);
       setFilteredLookupDataSource(columnDataSource);
     }
 
@@ -71,7 +75,7 @@ const GenericGrid = <T extends { id: number }>({
 
   const handleSearchChange = (value: string) => {
     const searchValue = value.toLowerCase();
-    const filteredData = filteredLookupDataSource.filter((item: any) => {
+    const filteredData = lookupDataSource.filter((item: any) => {
       return Object.values(item).some((v) => {
         const stringValue = String(v).toLowerCase();
         return stringValue.includes(searchValue);
@@ -85,33 +89,38 @@ const GenericGrid = <T extends { id: number }>({
       <span style={{ flexGrow: 1 }}>{cellInfo.value !== undefined ? cellInfo.value : ''}</span>
       <AiFillCaretDown
         style={{ marginLeft: '8px', cursor: 'pointer', flexShrink: 0 }}
-        onClick={(e) => handleIconClick(e, cellInfo.data, columnDataSource)}
+        onClick={(e) => handleIconClick(e, cellInfo.rowIndex, columnDataSource)}
       />
     </div>
   );
 
-  const handleRowSelection = (e: any) => {
-    setSelectedPopupRowData(e.selectedRowsData[0]);
-  };
-
   const handleRowDoubleClick = (e: any) => {
-    if (selectedRowData && e.data) {
+    if (selectedRowIndex !== null && e.data) {
       const popupRow = e.data;
 
       // Update the selected row in the main grid using the column mapping
-      const updatedRow = { ...selectedRowData };
+      const updatedRow = { ...dataSource[selectedRowIndex] };
       for (const popupColumn in columnMapping) {
         const gridColumn = columnMapping[popupColumn];
         updatedRow[gridColumn] = popupRow[popupColumn];
       }
 
       // Update the data source with the modified row
-      setDataSource((prevDataSource) =>
-        prevDataSource.map((row) => (row.id === selectedRowData.id ? updatedRow : row))
+      const updatedData = dataSource.map((row, index) =>
+        index === selectedRowIndex ? updatedRow : row
       );
+      setDataSource(updatedData);
+      onValueSelect(updatedData); // Notify parent component
 
       setShowLookupGrid(false); // Close the popup
     }
+  };
+
+  const handleCellValueChanged = (e: any) => {
+    const updatedData = [...dataSource];
+    updatedData[e.rowIndex][e.column.dataField] = e.value;
+    setDataSource(updatedData);
+    onValueSelect(updatedData); // Notify parent component
   };
 
   const formatDate = (date: Date | string | null) => {
@@ -127,9 +136,17 @@ const GenericGrid = <T extends { id: number }>({
           showBorders={true}
           keyExpr="id"
           onEditorPreparing={handleEditorPreparing}
+          onCellValueChanged={handleCellValueChanged}
+          repaintChangesOnly={true}
         >
-          <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
-          
+          <Editing
+            mode="cell"
+            allowUpdating={true}
+            allowAdding={false}
+            allowDeleting={true}
+            useIcons={true}
+          />
+
           {columns.map((column) => {
             const isDateColumn = column.dataType === 'date';
             const isLookupColumn = column.inputType === 'lookup';
@@ -160,45 +177,42 @@ const GenericGrid = <T extends { id: number }>({
         </DataGrid>
       </div>
 
-      {showLookupGrid && selectedRowData && (
-        <>
-          <Popup
-            visible={true}
-            onHiding={() => {
-              setShowLookupGrid(false);
-              iconRef.current = null;
-            }}
-            title="Select Employee"
-            width={600}
-            height={'max-content'}
-            showCloseButton={true}
-            dragEnabled={true}
-            position={
-              iconRef.current
-                ? { my: 'bottom center', at: 'top center', of: iconRef.current }
-                : undefined
-            }
-            style={{ zIndex: 1000 }} // Ensure popup is on top
-          >
-            <div>
-              <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
-                <TextBox placeholder="Search..." onValueChanged={(e) => handleSearchChange(e.value)} />
-              </div>
-              <DataGrid
-                dataSource={filteredLookupDataSource}
-                showBorders={true}
-                selection={{ mode: 'single' }}
-                onSelectionChanged={handleRowSelection}
-                onRowDblClick={handleRowDoubleClick}
-              >
-                {filteredLookupDataSource.length > 0 &&
-                  Object.keys(filteredLookupDataSource[0]).map((field) => (
-                    <Column key={field} dataField={field} />
-                  ))}
-              </DataGrid>
+      {showLookupGrid && (
+        <Popup
+          visible={true}
+          onHiding={() => {
+            setShowLookupGrid(false);
+            iconRef.current = null;
+          }}
+          title="Select Employee"
+          width={600}
+          height={'max-content'}
+          showCloseButton={true}
+          dragEnabled={true}
+          position={
+            iconRef.current
+              ? { my: 'bottom center', at: 'top center', of: iconRef.current }
+              : undefined
+          }
+          style={{ zIndex: 1000 }} // Ensure popup is on top
+        >
+          <div>
+            <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
+              <TextBox placeholder="Search..." onValueChanged={(e) => handleSearchChange(e.value)} />
             </div>
-          </Popup>
-        </>
+            <DataGrid
+              dataSource={filteredLookupDataSource}
+              showBorders={true}
+              selection={{ mode: 'single' }}
+              onRowDblClick={handleRowDoubleClick}
+            >
+              {filteredLookupDataSource.length > 0 &&
+                Object.keys(filteredLookupDataSource[0]).map((field) => (
+                  <Column key={field} dataField={field} />
+                ))}
+            </DataGrid>
+          </div>
+        </Popup>
       )}
     </>
   );

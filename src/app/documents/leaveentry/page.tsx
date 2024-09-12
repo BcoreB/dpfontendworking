@@ -1,65 +1,54 @@
 "use client";
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import DPInput from '@/components/ui/dpinput';
-import { InitializeForm, formSchema, DisplayForm, saveData, leaveType, EmployeeData } from './formSchema';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { InitializeForm, formSchema, EmployeeData } from './formSchema';
+import { useRouter } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
-import { DocStaus } from '@/dptype';
 import DPComboBox from '@/components/ui/dpcombobox';
 import DocumentHeader from '@/components/Menu/documentHeader';
 import Sidebar from '@/components/Menu/SideBar';
 import LeaveManagement from './formGrid';
 
 const LeaveEntry = () => {
-  const searchParams = useSearchParams();
   const docCd = 5;
   const docKey = 101;
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
-  
-  const [type, setType] = useState<{ value: string; label: string }[]>([]);
+  const [employeeData, setEmployeeData] = useState<EmployeeData[]>([]);
   const router = useRouter();
-  
-  // 1. Define your form.
+
+  // Initialize the form
   const form = InitializeForm();
-  
-  // 2. Define a submit handler.
-  const updateEmployeeData = (updatedDoc: EmployeeData[]) => {
-    const sortedDocs = [...updatedDoc].sort((a, b) => a.rowid - b.rowid);
-  
-    sortedDocs.forEach((doc, index) => {
-      doc.rowid = index + 1; // Assuming rowid starts from 1
-    });
-  
-    form.setValue('employeeData', sortedDocs); // This sets the data in the form
-    console.log('Updated employeeData:', form.getValues('employeeData')); // Log the updated data
+
+  // Update form values when employeeData changes
+  useEffect(() => {
+    form.setValue('employeeData', employeeData);
+    console.log('Updated form employeeData:', form.getValues('employeeData'));
+  }, [employeeData]);
+
+  // Callback to handle updating the employee data in LeaveManagement component
+  const updateEmployeeData = (updatedData: EmployeeData[]) => {
+    setEmployeeData(updatedData);
   };
-  
 
   // Function to handle the button click and alert form values
   const handleAlertFormValues = () => {
     const values = form.getValues();
-    console.log('Form Values:', values); // Debugging line
+    console.log('Form Values:', values);
     alert(JSON.stringify(values, null, 2));
   };
-  console.log('Initial employeeData:', form.getValues('employeeData'));
 
   return (
-    <div className='w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8'>
-      <div className='absolute top-0 right-0 z-5'>
-        <Sidebar
-          docCd={docCd}
-          docKey={docKey}
-          form={form}
-        />
+    <div className="w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8">
+      <div className="absolute top-0 right-0 z-5">
+        <Sidebar docCd={docCd} docKey={docKey} form={form} />
       </div>
-      
-      <MaxWidthWrapper className='px-5 py-5 lg:px-10 lg:pb-6 lg:pt-10'>
-        <div className='border-solid'>
+
+      <MaxWidthWrapper className="px-5 py-5 lg:px-10 lg:pb-6 lg:pt-10">
+        <div className="border-solid">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(() => {})} className="space-y-8">
               <DocumentHeader
@@ -80,16 +69,16 @@ const LeaveEntry = () => {
                     placeholder={getLanguageByEnglish("00000")}
                     onValueChange={(field, value) => {
                       form.setValue("refno", value);
-                    }}  
+                    }}
                   />
                 </div>
                 <div className="grid gap-1 py-1 lg:col-span-3">
-                  <DPComboBox 
+                  <DPComboBox
                     disabled={false}
                     name="leavetype"
-                    formcontrol={form.control} 
+                    formcontrol={form.control}
                     labelText={getLanguageByEnglish("Leave Type")}
-                    data={leaveType}
+                    data={[]} // You can populate this with actual data
                     onValueChange={(field, value) => {
                       form.setValue("leavetype", value);
                     }}
@@ -110,12 +99,12 @@ const LeaveEntry = () => {
                   />
                 </div>
                 <div className="grid gap-1 py-1 lg:col-span-3">
-                  <DPComboBox 
+                  <DPComboBox
                     disabled={false}
                     name="payroleperiod"
-                    formcontrol={form.control} 
+                    formcontrol={form.control}
                     labelText={getLanguageByEnglish("Payrole Period")}
-                    data={leaveType}
+                    data={[]} // You can populate this with actual data
                     onValueChange={(field, value) => {
                       form.setValue("payroleperiod", value);
                     }}
@@ -150,14 +139,8 @@ const LeaveEntry = () => {
                   />
                 </div>
               </div>
-              <div className='mt-10'>
-              <LeaveManagement 
-                data={form.getValues('employeeData')} 
-                updateEmployeeData={updateEmployeeData} 
-              />
-
-              </div>
-              <div className='mt-5'>
+              <LeaveManagement data={employeeData} updateEmployeeData={updateEmployeeData} />
+              <div className="mt-5">
                 <Button onClick={handleAlertFormValues}>Alert Form Values</Button>
               </div>
             </form>
