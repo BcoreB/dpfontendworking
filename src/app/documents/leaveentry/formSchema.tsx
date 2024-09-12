@@ -53,7 +53,7 @@ export const formSchema = z.object({
   payrolperiod: z.string().min(1, "Please select a type"),
   fromdate: z.date(),
   todate: z.date({
-    required_error: "A date of joining is required.",
+    required_error: "Please pick a date.",
   }),
   employeeData : z.array(
     formSchemaFormGrid

@@ -87,18 +87,6 @@ const LeaveEntry = () => {
                   />
                 </div>
                 <div className="grid gap-1 py-1 lg:col-span-1">
-                  {/* <DPInput
-                    formcontrol={form.control}
-                    name="date"
-                    disabled={false}
-                    type="date"
-                    labelText={getLanguageByEnglish("Date")}
-                    placeholder={getLanguageByEnglish("")}
-                    onValueChange={(field, value) => {
-                      const dateValue = value instanceof Date ? value.toISOString().substring(0, 10) : value;
-                      form.setValue("date", dateValue);
-                    }}
-                  /> */}
                   <DPDatePicker 
                     name="date"
                     formcontrol={form.control} 
@@ -108,28 +96,17 @@ const LeaveEntry = () => {
                 <div className="grid gap-1 py-1 lg:col-span-3">
                   <DPComboBox
                     disabled={false}
-                    name="payroleperiod"
+                    name="payrolperiod"
                     formcontrol={form.control}
                     labelText={getLanguageByEnglish("Payrole Period")}
                     data={payrolPeriod} // You can populate this with actual data
                     onValueChange={(field, value) => {
-                      form.setValue("payroleperiod", value);
+                      form.setValue("payrolperiod", value);
                     }}
                   />
                 </div>
                 <div className="grid gap-1 py-1 lg:col-span-1">
-                  {/* <DPInput
-                    formcontrol={form.control}
-                    name="fromdate"
-                    disabled={false}
-                    type="date"
-                    labelText={getLanguageByEnglish("Attendance from Date")}
-                    placeholder={getLanguageByEnglish("")}
-                    onValueChange={(field, value) => {
-                      const dateValue = value instanceof Date ? value.toISOString().substring(0, 10) : value;
-                      form.setValue("fromdate", dateValue);
-                    }}
-                  /> */}
+                  
                   <DPDatePicker 
                     name="fromdate"
                     formcontrol={form.control} 
@@ -137,18 +114,7 @@ const LeaveEntry = () => {
                   />
                 </div>
                 <div className="grid gap-1 py-1 lg:col-span-1">
-                  {/* <DPInput
-                    formcontrol={form.control}
-                    name="todate"
-                    disabled={false}
-                    type="date"
-                    labelText={getLanguageByEnglish("To Date")}
-                    placeholder={getLanguageByEnglish("")}
-                    onValueChange={(field, value) => {
-                      const dateValue = value instanceof Date ? value.toISOString().substring(0, 10) : value;
-                      form.setValue("todate", dateValue);
-                    }}
-                  /> */}
+                  
                   <DPDatePicker 
                     name="todate"
                     formcontrol={form.control} 
