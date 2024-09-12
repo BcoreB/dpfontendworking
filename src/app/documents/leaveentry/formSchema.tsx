@@ -52,7 +52,9 @@ export const formSchema = z.object({
   date: z.date(),
   payrolperiod: z.string().min(1, "Please select a type"),
   fromdate: z.date(),
-  todate: z.date(),
+  todate: z.date({
+    required_error: "A date of joining is required.",
+  }),
   employeeData : z.array(
     formSchemaFormGrid
   ),
@@ -101,6 +103,16 @@ export type leavenetry = {
   
 };
 export const leaveType = [
+  {
+    value: "a",
+    label: "A",
+  },
+  {
+    value: "b",
+    label: "B",
+  }
+];
+export const payrolPeriod = [
   {
     value: "a",
     label: "A",

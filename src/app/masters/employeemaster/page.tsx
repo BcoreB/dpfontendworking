@@ -414,6 +414,7 @@ const getFileExtension = (mime: string) => {
                             
                                     
                                 />
+                                
                             </div>
                             <div className="grid gap-1 py-1"></div>
                             <div className="grid gap-1 py-1 lg:col-span-1">
