@@ -179,40 +179,42 @@ const GenericGrid = <T extends { id: number }>({
 
       {showLookupGrid && (
         <Popup
-          visible={true}
-          onHiding={() => {
-            setShowLookupGrid(false);
-            iconRef.current = null;
-          }}
-          title="Select Employee"
-          width={600}
-          height={'max-content'}
-          showCloseButton={true}
-          dragEnabled={true}
-          position={
-            iconRef.current
-              ? { my: 'bottom center', at: 'top center', of: iconRef.current }
-              : undefined
-          }
-          style={{ zIndex: 1000 }} // Ensure popup is on top
-        >
-          <div>
-            <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
-              <TextBox placeholder="Search..." onValueChanged={(e) => handleSearchChange(e.value)} />
-            </div>
-            <DataGrid
-              dataSource={filteredLookupDataSource}
-              showBorders={true}
-              selection={{ mode: 'single' }}
-              onRowDblClick={handleRowDoubleClick}
-            >
-              {filteredLookupDataSource.length > 0 &&
-                Object.keys(filteredLookupDataSource[0]).map((field) => (
-                  <Column key={field} dataField={field} />
-                ))}
-            </DataGrid>
+        visible={true}
+        onHiding={() => {
+          setShowLookupGrid(false);
+          iconRef.current = null;
+        }}
+        title="Select Employee"
+        width={600}
+        height={'max-content'}
+        showCloseButton={true}
+        dragEnabled={true}
+        position={
+          iconRef.current
+            ? { my: 'bottom center', at: 'top center', of: iconRef.current }
+            : undefined
+        }
+        style={{ zIndex: 1000, userSelect: 'none' }} // Ensure popup is on top and disable text selection
+      >
+        <div>
+          <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
+            <TextBox placeholder="Search..." onValueChanged={(e) => handleSearchChange(e.value)} />
           </div>
-        </Popup>
+          <DataGrid
+            dataSource={filteredLookupDataSource}
+            showBorders={true}
+            selection={{ mode: 'single' }}
+            onRowDblClick={handleRowDoubleClick}
+            style={{ userSelect: 'none' }} // Disable text selection in the grid
+          >
+            {filteredLookupDataSource.length > 0 &&
+              Object.keys(filteredLookupDataSource[0]).map((field) => (
+                <Column key={field} dataField={field} />
+              ))}
+          </DataGrid>
+        </div>
+      </Popup>
+      
       )}
     </>
   );
