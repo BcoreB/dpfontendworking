@@ -89,8 +89,6 @@ const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
           {
             dataField: 'LeaveType',
             caption: 'Leave Type',
-            inputType: 'combo', // Optional attribute
-            dataSource: leaveTypeData, // Optional data source for combo
           },
         ]}
         dataSource={leaveData}

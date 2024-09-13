@@ -41,24 +41,49 @@ const GenericGrid = <T extends { id: number }>({
   const iconRef = useRef<HTMLElement | null>(null);
 
   const addNewRow = () => {
-    const newId = dataSource.length > 0 ? Math.max(...dataSource.map((item) => item.id)) + 1 : 1;
-    const newRow: T = {
-      id: newId,
-    } as unknown as T;
-    const updatedData = [newRow, ...dataSource];
-    setDataSource(updatedData);
-    onValueSelect(updatedData); // Notify parent component
+    // Check if there is an empty row (ignoring the 'id' field)
+    const isEmptyRowPresent = dataSource.some((row) => {
+      return columns.some((column) => {
+        const value = row[column.dataField as keyof T];
+        return column.dataField !== 'id' && (value === null || value === undefined || value === '');
+      });
+    });
+  
+    // If no empty row exists, add a new row at the bottom
+    if (!isEmptyRowPresent) {
+      const newId = dataSource.length > 0 ? Math.max(...dataSource.map((item) => item.id)) + 1 : 1;
+      const newRow: T = {
+        id: newId,
+      } as unknown as T;
+  
+      // Append the new row at the end
+      const updatedData = [...dataSource, newRow];
+      setDataSource(updatedData);
+      onValueSelect(updatedData); // Notify parent component
+    }
   };
-
+  
+  
   const handleEditorPreparing = (e: any) => {
     if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
       e.editorOptions.onKeyDown = (args: any) => {
         if (args.event.key === 'Enter') {
-          addNewRow();
+          // Check if there's any empty row before adding a new one
+          const isEmptyRowPresent = dataSource.some((row) => {
+            return Object.keys(row).some((key) => key !== 'id') && 
+                   Object.values(row).slice(1).every((value) => value === null || value === undefined || value === '');
+          });
+  
+          // Add a new row only if no empty row is present
+          if (!isEmptyRowPresent) {
+            addNewRow();
+          }
         }
       };
     }
   };
+  
+  
 
   const handleIconClick = (e: React.MouseEvent, rowIndex: number, columnDataSource?: T[]) => {
     e.stopPropagation();
