@@ -214,11 +214,41 @@ const GenericGrid = <T extends { id: number }>({
         height={'max-content'}
         showCloseButton={true}
         dragEnabled={true}
-        position={
-          iconRef.current
-            ? { my: 'bottom center', at: 'top center', of: iconRef.current }
-            : undefined
-        }
+        position={() => {
+          if (!iconRef.current) return;
+          
+          // Get the DataGrid container element
+          const dataGridContainer = iconRef.current.closest('.dx-datagrid');
+      
+          if (dataGridContainer) {
+            const gridRect = dataGridContainer.getBoundingClientRect();
+            const iconRect = iconRef.current.getBoundingClientRect();
+            const popupWidth = 600;
+      
+            let my = 'bottom left';
+            let at = 'top left';
+      
+            // Calculate the popup's horizontal position, ensuring it doesn't exceed DataGrid boundaries
+            let left = iconRect.left - popupWidth / 2;
+            let rightBoundary = gridRect.right - popupWidth;
+      
+            // Adjust the popup position if it goes beyond the DataGrid's left or right boundary
+            if (left < gridRect.left) {
+              left = gridRect.left; // Snap to the left boundary of DataGrid
+            } else if (left > rightBoundary) {
+              left = rightBoundary; // Snap to the right boundary of DataGrid
+            }
+      
+            return {
+              my: my,
+              at: at,
+              of: iconRef.current,
+              offset: { x: left - iconRect.left, y: 0 }, // Adjust offset based on calculated position
+            };
+          }
+      
+          return { my: 'bottom center', at: 'top center', of: iconRef.current };
+        }}
         style={{ zIndex: 1000, userSelect: 'none' }} // Ensure popup is on top and disable text selection
       >
         <div>
@@ -239,6 +269,7 @@ const GenericGrid = <T extends { id: number }>({
           </DataGrid>
         </div>
       </Popup>
+      
       
       )}
     </>
