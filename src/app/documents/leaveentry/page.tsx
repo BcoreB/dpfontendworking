@@ -11,9 +11,9 @@ import getLanguageByEnglish from '@/utils/languages';
 import DPComboBox from '@/components/ui/dpcombobox';
 import DocumentHeader from '@/components/Menu/documentHeader';
 import Sidebar from '@/components/Menu/SideBar';
-import LeaveManagement from './formGrid';
+import TrailManagement from './trailGrid';
 import DPDatePicker from '@/components/ui/dpdatepicker';
-
+import LeaveManagement from './formGrid';
 const LeaveEntry = () => {
   const docCd = 5;
   const docKey = 101;
@@ -122,10 +122,11 @@ const LeaveEntry = () => {
                   />
                 </div>
               </div>
-              <LeaveManagement data={employeeData} updateEmployeeData={updateEmployeeData} />
-              {/* <div className="mt-5">
+              <TrailManagement data={employeeData} updateEmployeeData={updateEmployeeData} />
+              
+              <div className="mt-5">
                 <Button onClick={handleAlertFormValues}>Alert Form Values</Button>
-              </div> */}
+              </div>
             </form>
           </Form>
         </div>
