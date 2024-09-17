@@ -123,9 +123,9 @@ const LeaveEntry = () => {
                 </div>
               </div>
               <LeaveManagement data={employeeData} updateEmployeeData={updateEmployeeData} />
-              <div className="mt-5">
+              {/* <div className="mt-5">
                 <Button onClick={handleAlertFormValues}>Alert Form Values</Button>
-              </div>
+              </div> */}
             </form>
           </Form>
         </div>

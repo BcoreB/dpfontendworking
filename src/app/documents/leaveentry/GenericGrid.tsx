@@ -226,7 +226,7 @@ const GenericGrid = <T extends { id: number }>({
             const popupWidth = 600;
       
             let my = 'bottom left';
-            let at = 'top left';
+            let at = 'bottom left';
       
             // Calculate the popup's horizontal position, ensuring it doesn't exceed DataGrid boundaries
             let left = iconRect.left - popupWidth / 2;
