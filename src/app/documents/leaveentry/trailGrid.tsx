@@ -96,6 +96,7 @@ const TrailManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
             dataField: 'Amount',
             caption: 'Amount',
             disabled: true, // Disable the Amount field
+            formula: 'Price * Count', // Passing the formula prop
             calculateCellValue: (rowData: EmployeeData) => calculateAmount(rowData.Price, rowData.Count), // Calculate Amount
           },
           { dataField: 'Entitled', caption: 'Entitled' },

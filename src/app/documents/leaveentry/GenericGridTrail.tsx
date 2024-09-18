@@ -62,15 +62,15 @@ const GenericGrid = <T extends { id: number }>({
     }
   };
 
-  const handleEditorPreparing = (e: any) => {
-    if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
-      e.editorOptions.onKeyDown = (args: any) => {
-        if (args.event.key === 'Enter') {
-          addNewRow();
-        }
-      };
-    }
-  };
+  // const handleEditorPreparing = (e: any) => {
+  //   if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
+  //     e.editorOptions.onKeyDown = (args: any) => {
+  //       if (args.event.key === 'Enter') {
+  //         addNewRow();
+  //       }
+  //     };
+  //   }
+  // };
 
   const handleIconClick = (e: React.MouseEvent, rowIndex: number, columnDataSource?: T[]) => {
     e.stopPropagation();
@@ -130,20 +130,86 @@ const GenericGrid = <T extends { id: number }>({
     return (price ?? 0) * (count ?? 0);
   };
 
-  const handleCellValueChanged = (e: any) => {
-    const updatedData = [...dataSource];
-    const updatedRow = { ...updatedData[e.rowIndex], [e.column.dataField]: e.value };
+//   const handleCellValueChanged = (e: any) => {
+//     const updatedData = [...dataSource];
+//     const updatedRow = { ...updatedData[e.rowIndex], [e.column.dataField]: e.value };
 
-    if (e.column.dataField === 'Price' || e.column.dataField === 'Count') {
-      const price = updatedRow['Price'];
-      const count = updatedRow['Count'];
-      updatedRow['Amount'] = calculateAmount(price, count);
-    }
+//     if (e.column.dataField === 'Price' || e.column.dataField === 'Count') {
+//         // Get the new Price and Count values
+//         const price = updatedRow['Price'] ?? 0;
+//         const count = updatedRow['Count'] ?? 0;
 
-    updatedData[e.rowIndex] = updatedRow;
-    setDataSource(updatedData);
-    onValueSelect(updatedData);
-  };
+//         // Calculate and update the Amount field
+//         updatedRow['Amount'] = price * count;
+//     }
+
+//     // Update the row in the data source
+//     updatedData[e.rowIndex] = updatedRow;
+//     setDataSource(updatedData);
+
+//     // Call the value select handler with the updated data
+//     onValueSelect(updatedData);
+// };
+
+const handleEditorPreparing = (e: any) => {
+  if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
+      e.editorOptions.onKeyDown = (args: any) => {
+          if (args.event.key === 'Enter') {
+              // Add a new row when pressing Enter on the last column
+              
+
+              // Get the current row data
+              const updatedData = [...dataSource];
+              const currentRow = updatedData[e.row.rowIndex];
+              
+              // Calculate the Amount based on Price and Count
+              const price = currentRow['Price'];
+              const count = currentRow['Count'];
+
+              // Check if both price and count are valid numbers
+              
+              // Valid numbers, calculate the amount
+              const amount = price * count;
+              if (typeof amount === 'number') {
+                  currentRow['Amount'] = amount;
+              } else {
+                  // Invalid input, show Null
+                  currentRow['Amount'] = "NaN";
+              }
+
+              // Update the data source with the modified row
+              updatedData[e.row.rowIndex] = currentRow;
+              setDataSource(updatedData);
+
+              // Trigger the value select handler with updated data
+              onValueSelect(updatedData);
+
+
+              addNewRow();
+          }
+      };
+  }
+};
+
+const handleCellValueChanged = (e: any) => {
+  const updatedData = [...dataSource];
+  const updatedRow = { ...updatedData[e.rowIndex], [e.column.dataField]: e.value };
+
+  // Update the Amount if Price or Count changes
+  if (e.column.dataField === 'Price' || e.column.dataField === 'Count') {
+      const price = updatedRow['Price'] ?? 0;
+      const count = updatedRow['Count'] ?? 0;
+      updatedRow['Amount'] = price * count;
+  }
+
+  // Update the row in the data source
+  updatedData[e.rowIndex] = updatedRow;
+  setDataSource(updatedData);
+  
+  // Call the value select handler with updated data
+  onValueSelect(updatedData);
+};
+
 
   return (
     <>
@@ -153,7 +219,7 @@ const GenericGrid = <T extends { id: number }>({
           showBorders={true}
           keyExpr="id"
           onEditorPreparing={handleEditorPreparing}
-          onCellValueChanged={handleCellValueChanged}
+          onCellValueChanged={handleCellValueChanged} // This is crucial for tracking changes
           repaintChangesOnly={true}
         >
           <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
