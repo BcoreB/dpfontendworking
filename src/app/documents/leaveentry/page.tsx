@@ -27,7 +27,7 @@ const LeaveEntry = () => {
   // Update form values when employeeData changes
   useEffect(() => {
     form.setValue('employeeData', employeeData);
-    console.log('Updated form employeeData:', form.getValues('employeeData'));
+    // console.log('Updated form employeeData:', form.getValues('employeeData'));
   }, [employeeData]);
 
   // Callback to handle updating the employee data in LeaveManagement component

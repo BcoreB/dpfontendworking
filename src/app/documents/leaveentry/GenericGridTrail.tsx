@@ -232,12 +232,12 @@ const handleCellValueChanged = (e: any) => {
 
     // Handle date calculations separately
     if (formulaColumn.dataField === 'NoDays') {
-      const startDate = new Date('2025-07-19'); // YYYY-MM-DD format
-      const endDate = new Date('2025-07-25');   // YYYY-MM-DD format
+      const startDate = new Date(updatedRow['FromDate']);
+      const endDate = new Date(updatedRow['ToDate']);
 
       if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
         console.error('Invalid dates:', startDate, endDate);
-        updatedRow['NoDays'] = 'Invalid Dates';
+        updatedRow['NoDays'] = 'NaN';
       } else {
         const diffInTime = endDate.getTime() - startDate.getTime();
         const diffInDays = diffInTime / (1000 * 3600 * 24); // Difference in days
@@ -266,17 +266,7 @@ const handleCellValueChanged = (e: any) => {
   onValueSelect(updatedData);
 };
 
-// Helper function to identify date fields
-const isDateField = (field: string) => {
-  // Assuming your column definitions have a type property, you can check if it's a date type
-  const column = columns.find(col => col.dataField === field);
-  return column?.dataType === 'date';
-};
 
-// Helper function to determine if the formula involves date fields
-const isDateFormula = (fields: string[]) => {
-  return fields.every(isDateField);
-};
 
 
   return (
