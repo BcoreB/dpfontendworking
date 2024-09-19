@@ -13,6 +13,9 @@ interface EmployeeData {
   Remarks: string | null;
   NPBalance: string | null;
   LeaveType: string | null;
+  FromDate:Date|null;
+  ToDate:Date|null,
+  NoDays:number|null,
 }
 
 interface LeaveManagementProps {
@@ -34,6 +37,9 @@ const TrailManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
       Remarks: null,
       NPBalance: null,
       LeaveType: null,
+      FromDate:null,
+      ToDate:null,
+      NoDays:null,
     },
   ]);
 
@@ -103,6 +109,9 @@ const TrailManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
           { dataField: 'Remarks', caption: 'Remarks' },
           { dataField: 'NPBalance', caption: 'NP Balance' },
           { dataField: 'LeaveType', caption: 'Leave Type' },
+          { dataField: 'FromDate', caption: 'From Date', dataType: 'date' },
+          { dataField: 'ToDate', caption: 'To Date', dataType: 'date' },
+          { dataField: 'NoDays', caption: 'No Days', disabled:true ,formula: 'ToDate - FromDate',  },
         ]}
         dataSource={leaveData}
         columnMapping={columnMapping}

@@ -205,9 +205,9 @@ const handleCellValueChanged = (e: any) => {
 
   // Find the column that has the formula prop
   const formulaColumn = columns.find(col => col.formula);
-  
+
   if (formulaColumn) {
-    const formula = formulaColumn.formula; // e.g., 'Price * Count'
+    const formula = formulaColumn.formula; // e.g., 'Price * Count' or 'EndDate - StartDate'
 
     // Extract the field names from the formula
     const formulaFields = formula.match(/[a-zA-Z]+/g);
@@ -216,15 +216,45 @@ const handleCellValueChanged = (e: any) => {
     let calculatedValue = formula;
 
     formulaFields.forEach(field => {
-      const fieldValue = updatedRow[field] ?? 0;
+      let fieldValue = updatedRow[field] ?? 0;
+
+      // Check if the field is a date, convert it to a Date object
+      if (isDateField(field)) {
+        console.log(`Converting ${field} to Date:`, updatedRow[field]);
+        fieldValue = new Date(updatedRow[field]);
+        console.log(`Converted ${field} to Date object:`, fieldValue);
+      }
+
       calculatedValue = calculatedValue.replace(new RegExp(field, 'g'), fieldValue);
     });
 
-    // Evaluate the calculated expression
-    try {
-      updatedRow[formulaColumn.dataField] = eval(calculatedValue);
-    } catch (error) {
-      updatedRow[formulaColumn.dataField] = 'NaN';
+    console.log('Calculated Value After Replacements:', calculatedValue);
+
+    // Handle date calculations separately
+    if (formulaColumn.dataField === 'NoDays') {
+      const startDate = new Date('2025-07-19'); // YYYY-MM-DD format
+      const endDate = new Date('2025-07-25');   // YYYY-MM-DD format
+
+      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        console.error('Invalid dates:', startDate, endDate);
+        updatedRow['NoDays'] = 'Invalid Dates';
+      } else {
+        const diffInTime = endDate.getTime() - startDate.getTime();
+        const diffInDays = diffInTime / (1000 * 3600 * 24); // Difference in days
+
+        console.log('Difference in Time:', diffInTime);
+        console.log('Difference in Days:', diffInDays);
+        updatedRow[formulaColumn.dataField] = diffInDays;
+      }
+    } else {
+      // Evaluate the calculated expression for non-date formulas
+      try {
+        updatedRow[formulaColumn.dataField] = eval(calculatedValue);
+        
+      } catch (error) {
+        console.error('Error evaluating formula:', error);
+        updatedRow[formulaColumn.dataField] = 'NaN';
+      }
     }
   }
 
@@ -235,6 +265,19 @@ const handleCellValueChanged = (e: any) => {
   // Call the value select handler with updated data
   onValueSelect(updatedData);
 };
+
+// Helper function to identify date fields
+const isDateField = (field: string) => {
+  // Assuming your column definitions have a type property, you can check if it's a date type
+  const column = columns.find(col => col.dataField === field);
+  return column?.dataType === 'date';
+};
+
+// Helper function to determine if the formula involves date fields
+const isDateFormula = (fields: string[]) => {
+  return fields.every(isDateField);
+};
+
 
   return (
     <>
@@ -262,7 +305,9 @@ const handleCellValueChanged = (e: any) => {
                 allowEditing={!column.disabled}
                 cellRender={(cellInfo: CellInfo<T>) => {
                   if (isDateColumn) {
-                    return <span>{new Intl.DateTimeFormat('en-US').format(new Date(cellInfo.value))}</span>;
+                    return <span>
+                    {cellInfo.value ? new Intl.DateTimeFormat('en-US').format(new Date(cellInfo.value)) : ''}
+                  </span>;
                   } else if (isLookupColumn) {
                     return renderCellWithIcon(cellInfo, column.dataSource);
                   }
