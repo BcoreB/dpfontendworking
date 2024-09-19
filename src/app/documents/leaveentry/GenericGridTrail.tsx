@@ -152,64 +152,89 @@ const GenericGrid = <T extends { id: number }>({
 // };
 
 const handleEditorPreparing = (e: any) => {
+  // Find the column with the formula
+  const formulaColumn = columns.find(col => col.formula);
+
   if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
-      e.editorOptions.onKeyDown = (args: any) => {
-          if (args.event.key === 'Enter') {
-              // Add a new row when pressing Enter on the last column
-              
+    e.editorOptions.onKeyDown = (args: any) => {
+      if (args.event.key === 'Enter') {
+        const updatedData = [...dataSource];
+        const currentRow = updatedData[e.row.rowIndex];
 
-              // Get the current row data
-              const updatedData = [...dataSource];
-              const currentRow = updatedData[e.row.rowIndex];
-              
-              // Calculate the Amount based on Price and Count
-              const price = currentRow['Price'];
-              const count = currentRow['Count'];
+        if (formulaColumn && formulaColumn.formula) {
+          const formula = formulaColumn.formula; // Get the formula, e.g., "Price * Count"
 
-              // Check if both price and count are valid numbers
-              
-              // Valid numbers, calculate the amount
-              const amount = price * count;
-              if (typeof amount === 'number') {
-                  currentRow['Amount'] = amount;
-              } else {
-                  // Invalid input, show Null
-                  currentRow['Amount'] = "NaN";
-              }
+          // Extract field names (like Price, Count) from the formula
+          const formulaFields = formula.match(/[a-zA-Z]+/g);
+          let calculatedValue = formula;
 
-              // Update the data source with the modified row
-              updatedData[e.row.rowIndex] = currentRow;
-              setDataSource(updatedData);
+          // Replace the field names with their corresponding values from the row
+          formulaFields.forEach(field => {
+            const fieldValue = currentRow[field] ?? 0;
+            calculatedValue = calculatedValue.replace(new RegExp(field, 'g'), fieldValue);
+          });
 
-              // Trigger the value select handler with updated data
-              onValueSelect(updatedData);
-
-
-              addNewRow();
+          // Evaluate the calculated expression
+          try {
+            // Use the dataField of the formula column to dynamically assign the calculated value
+            currentRow[formulaColumn.dataField] = eval(calculatedValue);
+          } catch (error) {
+            currentRow[formulaColumn.dataField] = 'NaN';
           }
-      };
+        }
+
+        // Update the data source with the modified row
+        updatedData[e.row.rowIndex] = currentRow;
+        setDataSource(updatedData);
+
+        // Trigger the value select handler with updated data
+        onValueSelect(updatedData);
+
+        // Add a new row
+        addNewRow();
+      }
+    };
   }
 };
+
+
 
 const handleCellValueChanged = (e: any) => {
   const updatedData = [...dataSource];
   const updatedRow = { ...updatedData[e.rowIndex], [e.column.dataField]: e.value };
 
-  // Update the Amount if Price or Count changes
-  if (e.column.dataField === 'Price' || e.column.dataField === 'Count') {
-      const price = updatedRow['Price'] ?? 0;
-      const count = updatedRow['Count'] ?? 0;
-      updatedRow['Amount'] = price * count;
+  // Find the column that has the formula prop
+  const formulaColumn = columns.find(col => col.formula);
+  
+  if (formulaColumn) {
+    const formula = formulaColumn.formula; // e.g., 'Price * Count'
+
+    // Extract the field names from the formula
+    const formulaFields = formula.match(/[a-zA-Z]+/g);
+
+    // Dynamically update the fields involved in the formula
+    let calculatedValue = formula;
+
+    formulaFields.forEach(field => {
+      const fieldValue = updatedRow[field] ?? 0;
+      calculatedValue = calculatedValue.replace(new RegExp(field, 'g'), fieldValue);
+    });
+
+    // Evaluate the calculated expression
+    try {
+      updatedRow[formulaColumn.dataField] = eval(calculatedValue);
+    } catch (error) {
+      updatedRow[formulaColumn.dataField] = 'NaN';
+    }
   }
 
   // Update the row in the data source
   updatedData[e.rowIndex] = updatedRow;
   setDataSource(updatedData);
-  
+
   // Call the value select handler with updated data
   onValueSelect(updatedData);
 };
-
 
   return (
     <>
