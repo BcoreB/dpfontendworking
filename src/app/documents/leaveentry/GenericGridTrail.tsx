@@ -34,6 +34,7 @@ const GenericGrid = <T extends { id: number }>({
   columnMapping,
 }: GridProps<T>) => {
   const [dataSource, setDataSource] = useState<T[]>(initialDataSource);
+  const [gridData, setGridData] = useState(dataSource);
   const [lookupDataSource, setLookupDataSource] = useState<T[]>([]);
   const [filteredLookupDataSource, setFilteredLookupDataSource] = useState<T[]>([]);
   const [showLookupGrid, setShowLookupGrid] = useState<boolean>(false);
@@ -199,73 +200,77 @@ const handleEditorPreparing = (e: any) => {
 
 
 
-const handleCellValueChanged = (e: any) => {
-  const updatedData = [...dataSource];
-  const updatedRow = { ...updatedData[e.rowIndex], [e.column.dataField]: e.value };
+const handleCellValueChanged = (rowIndex: number, field: string, value: any) => {
+  const updatedGridData = [...gridData];
+  updatedGridData[rowIndex][field] = value;
+  
+  // Execute formula columns after updating a cell's value
+  executeFormulaColumns(formulaColumns, updatedGridData, rowIndex);
 
-  // Find the column that has the formula prop
-  const formulaColumn = columns.find(col => col.formula);
-
-  if (formulaColumn) {
-    const formula = formulaColumn.formula; // e.g., 'Price * Count' or 'EndDate - StartDate'
-
-    // Extract the field names from the formula
-    const formulaFields = formula.match(/[a-zA-Z]+/g);
-
-    // Dynamically update the fields involved in the formula
-    let calculatedValue = formula;
-
-    formulaFields.forEach(field => {
-      let fieldValue = updatedRow[field] ?? 0;
-
-      // Check if the field is a date, convert it to a Date object
-      if (isDateField(field)) {
-        console.log(`Converting ${field} to Date:`, updatedRow[field]);
-        fieldValue = new Date(updatedRow[field]);
-        console.log(`Converted ${field} to Date object:`, fieldValue);
-      }
-
-      calculatedValue = calculatedValue.replace(new RegExp(field, 'g'), fieldValue);
-    });
-
-    console.log('Calculated Value After Replacements:', calculatedValue);
-
-    // Handle date calculations separately
-    if (formulaColumn.dataField === 'NoDays') {
-      const startDate = new Date(updatedRow['FromDate']);
-      const endDate = new Date(updatedRow['ToDate']);
-
-      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-        console.error('Invalid dates:', startDate, endDate);
-        updatedRow['NoDays'] = 'NaN';
-      } else {
-        const diffInTime = endDate.getTime() - startDate.getTime();
-        const diffInDays = diffInTime / (1000 * 3600 * 24); // Difference in days
-
-        console.log('Difference in Time:', diffInTime);
-        console.log('Difference in Days:', diffInDays);
-        updatedRow[formulaColumn.dataField] = diffInDays;
-      }
-    } else {
-      // Evaluate the calculated expression for non-date formulas
-      try {
-        updatedRow[formulaColumn.dataField] = eval(calculatedValue);
-        
-      } catch (error) {
-        console.error('Error evaluating formula:', error);
-        updatedRow[formulaColumn.dataField] = 'NaN';
-      }
-    }
-  }
-
-  // Update the row in the data source
-  updatedData[e.rowIndex] = updatedRow;
-  setDataSource(updatedData);
-
-  // Call the value select handler with updated data
-  onValueSelect(updatedData);
+  setGridData(updatedGridData);
+  onDataSourceChange?.(updatedGridData);
 };
 
+const executeFormulaColumns = (
+  formulaColumns: FormulaColumn[],
+  gridData: any[], // Array representing the grid's data source
+  rowIndex: number
+) => {
+  if (formulaColumns) {
+    formulaColumns.forEach((fc) => {
+      try {
+        let formula = fc.formula;
+
+        // Replace placeholders in the formula with the corresponding cell values
+        columns.forEach((col) => {
+          const placeholder = `<${col.dataField}>`;
+          if (formula.includes(placeholder)) {
+            let colVal = gridData[rowIndex][col.dataField];
+            colVal = colVal === null || colVal === undefined || colVal === "" ? "0" : colVal;
+            formula = formula.replace(new RegExp(placeholder, "g"), colVal.toString());
+          }
+        });
+
+        // Use regex to identify remaining placeholders like <ControlName>
+        const regex = /<(.+?)>/g;
+        const matches = formula.match(regex);
+        if (matches) {
+          matches.forEach((match) => {
+            const controlName = match.replace(/[<>]/g, "").trim();
+            try {
+              const controlValue = findControlValue(controlName); // Custom function to get control value
+              formula = formula.replace(new RegExp(`<${controlName}>`, "g"), controlValue);
+            } catch (error) {
+              console.error("Control not found or error retrieving value for control:", controlName);
+            }
+          });
+        }
+
+        let newColVal: any;
+        try {
+          newColVal = eval(formula); // Careful with eval(), could replace with a safer math parser
+        } catch (error) {
+          console.error("Error evaluating formula:", error);
+          newColVal = "NaN";
+        }
+
+        const gridColumn = columns.find((col) => col.dataField === fc.columnName);
+        if (gridColumn) {
+          gridData[rowIndex][fc.columnName] = newColVal;
+        }
+      } catch (ex) {
+        console.error("Error processing formula column:", ex);
+      }
+    });
+
+    setGridData([...gridData]);
+  }
+};
+
+const findControlValue = (controlName: string): string => {
+  const controlValue = document.querySelector(`[name=${controlName}]`)?.value || "0";
+  return controlValue;
+};
 
 
 
