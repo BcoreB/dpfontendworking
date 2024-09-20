@@ -152,6 +152,7 @@ const GenericGrid = <T extends { id: number }>({
 //     onValueSelect(updatedData);
 // };
 
+
 const handleEditorPreparing = (e: any) => {
   // Find the column with the formula
   const formulaColumn = columns.find(col => col.formula);
@@ -163,25 +164,11 @@ const handleEditorPreparing = (e: any) => {
         const currentRow = updatedData[e.row.rowIndex];
 
         if (formulaColumn && formulaColumn.formula) {
-          const formula = formulaColumn.formula; // Get the formula, e.g., "Price * Count"
-
-          // Extract field names (like Price, Count) from the formula
-          const formulaFields = formula.match(/[a-zA-Z]+/g);
-          let calculatedValue = formula;
-
-          // Replace the field names with their corresponding values from the row
-          formulaFields.forEach(field => {
-            const fieldValue = currentRow[field] ?? 0;
-            calculatedValue = calculatedValue.replace(new RegExp(field, 'g'), fieldValue);
-          });
-
-          // Evaluate the calculated expression
-          try {
-            // Use the dataField of the formula column to dynamically assign the calculated value
-            currentRow[formulaColumn.dataField] = eval(calculatedValue);
-          } catch (error) {
-            currentRow[formulaColumn.dataField] = 'NaN';
-          }
+          // Call executeFormulaColumns and pass the formulaColumn
+          const calculatedValue = executeFormulaColumns([formulaColumn], updatedData, e.row.rowIndex);
+          
+          // Assign the calculated value to the formulaColumn's dataField
+          currentRow[formulaColumn.dataField] = calculatedValue;
         }
 
         // Update the data source with the modified row
@@ -198,24 +185,12 @@ const handleEditorPreparing = (e: any) => {
   }
 };
 
-
-
-const handleCellValueChanged = (rowIndex: number, field: string, value: any) => {
-  const updatedGridData = [...gridData];
-  updatedGridData[rowIndex][field] = value;
-  
-  // Execute formula columns after updating a cell's value
-  executeFormulaColumns(formulaColumns, updatedGridData, rowIndex);
-
-  setGridData(updatedGridData);
-  onDataSourceChange?.(updatedGridData);
-};
-
 const executeFormulaColumns = (
   formulaColumns: FormulaColumn[],
   gridData: any[], // Array representing the grid's data source
   rowIndex: number
 ) => {
+  let finalValue = null; // To store and return the calculated value
   if (formulaColumns) {
     formulaColumns.forEach((fc) => {
       try {
@@ -258,6 +233,10 @@ const executeFormulaColumns = (
         if (gridColumn) {
           gridData[rowIndex][fc.columnName] = newColVal;
         }
+
+        // Set the final value to be returned
+        finalValue = newColVal;
+
       } catch (ex) {
         console.error("Error processing formula column:", ex);
       }
@@ -265,7 +244,22 @@ const executeFormulaColumns = (
 
     setGridData([...gridData]);
   }
+  return finalValue; // Return the calculated value
 };
+
+
+const handleCellValueChanged = (rowIndex: number, field: string, value: any) => {
+  const updatedGridData = [...gridData];
+  updatedGridData[rowIndex][field] = value;
+  
+  // Execute formula columns after updating a cell's value
+  executeFormulaColumns(formulaColumns, updatedGridData, rowIndex);
+
+  setGridData(updatedGridData);
+  onDataSourceChange?.(updatedGridData);
+};
+
+
 
 const findControlValue = (controlName: string): string => {
   const controlValue = document.querySelector(`[name=${controlName}]`)?.value || "0";
