@@ -154,8 +154,7 @@ const GenericGrid = <T extends { id: number }>({
 
 
 const handleEditorPreparing = (e: any) => {
-  // Find the column with the formula
-  const formulaColumn = columns.find(col => col.formula);
+  const formulaColumns = columns.filter(col => col.formula); // Get all columns with formulas
 
   if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
     e.editorOptions.onKeyDown = (args: any) => {
@@ -163,12 +162,12 @@ const handleEditorPreparing = (e: any) => {
         const updatedData = [...dataSource];
         const currentRow = updatedData[e.row.rowIndex];
 
-        if (formulaColumn && formulaColumn.formula) {
-          // Call executeFormulaColumns and pass the formulaColumn
-          const calculatedValue = executeFormulaColumns([formulaColumn], updatedData, e.row.rowIndex);
-          
-          // Assign the calculated value to the formulaColumn's dataField
-          currentRow[formulaColumn.dataField] = calculatedValue;
+        if (formulaColumns.length > 0) {
+          // Call executeFormulaColumns for all formula columns
+          formulaColumns.forEach((formulaColumn) => {
+            const calculatedValue = executeFormulaColumns([formulaColumn], updatedData, e.row.rowIndex);
+            currentRow[formulaColumn.dataField] = calculatedValue;
+          });
         }
 
         // Update the data source with the modified row
@@ -187,10 +186,11 @@ const handleEditorPreparing = (e: any) => {
 
 const executeFormulaColumns = (
   formulaColumns: FormulaColumn[],
-  gridData: any[], // Array representing the grid's data source
+  gridData: any[],
   rowIndex: number
 ) => {
-  let finalValue = null; // To store and return the calculated value
+  let finalValue = null; // Store and return the calculated value
+
   if (formulaColumns) {
     formulaColumns.forEach((fc) => {
       try {
@@ -206,24 +206,22 @@ const executeFormulaColumns = (
           }
         });
 
-        // Use regex to identify remaining placeholders like <ControlName>
-        const regex = /<(.+?)>/g;
-        const matches = formula.match(regex);
-        if (matches) {
-          matches.forEach((match) => {
-            const controlName = match.replace(/[<>]/g, "").trim();
-            try {
-              const controlValue = findControlValue(controlName); // Custom function to get control value
-              formula = formula.replace(new RegExp(`<${controlName}>`, "g"), controlValue);
-            } catch (error) {
-              console.error("Control not found or error retrieving value for control:", controlName);
-            }
-          });
+        // Handle date-specific formulas (like "ToDate - FromDate")
+        if (formula.includes('Date')) {
+          const dateRegex = /<(.+Date)>/g;
+          const dateMatches = formula.match(dateRegex);
+          if (dateMatches && dateMatches.length === 2) {
+            const date1 = new Date(gridData[rowIndex][dateMatches[0].replace(/[<>]/g, "")]);
+            const date2 = new Date(gridData[rowIndex][dateMatches[1].replace(/[<>]/g, "")]);
+            const daysDifference = Math.floor((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
+            formula = formula.replace(dateMatches[0], daysDifference.toString()).replace(dateMatches[1], "0");
+          }
         }
 
+        // Evaluate the formula
         let newColVal: any;
         try {
-          newColVal = eval(formula); // Careful with eval(), could replace with a safer math parser
+          newColVal = eval(formula); // Caution: eval() should be used carefully or replaced with a safer parser
         } catch (error) {
           console.error("Error evaluating formula:", error);
           newColVal = "NaN";
@@ -246,6 +244,7 @@ const executeFormulaColumns = (
   }
   return finalValue; // Return the calculated value
 };
+
 
 
 const handleCellValueChanged = (rowIndex: number, field: string, value: any) => {

@@ -102,7 +102,7 @@ const TrailManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
             dataField: 'Amount',
             caption: 'Amount',
             disabled: true, // Disable the Amount field
-            formula: '<Price> + <Count>',
+            formula: '<Price> * <Count>',
           },
           { dataField: 'Entitled', caption: 'Entitled' },
           { dataField: 'Remarks', caption: 'Remarks' },
