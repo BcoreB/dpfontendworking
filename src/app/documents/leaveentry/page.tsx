@@ -16,11 +16,14 @@ import TrailManagement from './trailGrid';
 import DPDatePicker from '@/components/ui/dpdatepicker';
 import LeaveManagement from './formGrid';
 const LeaveEntry = () => {
-  const docCd = 5;
+  const docCd = 6;
   const docKey = 101;
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
   const [employeeData, setEmployeeData] = useState<EmployeeData[]>([]);
   const router = useRouter();
+
+
+  
 
   // Initialize the form
   const form = InitializeForm();
@@ -35,6 +38,38 @@ const LeaveEntry = () => {
   const updateEmployeeData = (updatedData: EmployeeData[]) => {
     setEmployeeData(updatedData);
   };
+
+   // New state variable to track fromDate and toDate
+   const [fromDate, setFromDate] = useState<Date | null>(null);
+   const [toDate, setToDate] = useState<Date | null>(null);
+ 
+   // Function to calculate number of days
+   const calculateNoDays = (fromDate: Date | null, toDate: Date | null): number | null => {
+     if (fromDate && toDate) {
+       const differenceInTime = toDate.getTime() - fromDate.getTime();
+       const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+       return differenceInDays + 1;  // Add 1 to include both start and end date
+     }
+     return null;
+   };
+ 
+   // Callback function to handle date change
+   const handleDateChange = (field: string, value: Date | null) => {
+     if (field === "fromdate") {
+       setFromDate(value);
+     } else if (field === "todate") {
+       setToDate(value);
+     }
+ 
+     // If both dates are present, calculate the number of days and update employeeData
+     if (fromDate && toDate) {
+       const updatedEmployeeData = employeeData.map((item) => ({
+         ...item,
+         NoDays: calculateNoDays(fromDate, toDate),
+       }));
+       setEmployeeData(updatedEmployeeData);
+     }
+   };
 
   // Function to handle the button click and alert form values
   const handleAlertFormValues = () => {

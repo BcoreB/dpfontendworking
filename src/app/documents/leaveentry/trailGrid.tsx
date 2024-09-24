@@ -53,6 +53,9 @@ const TrailManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
     { EmpCode: 2, Employee: 'Jane Smith', CPR: '654321', NPBalance: '15', LeaveType: 'Sick' },
     { EmpCode: 3, Employee: 'Alice Johnson', CPR: '789012', NPBalance: '8', LeaveType: 'Annual' },
   ];
+  useEffect(() => {
+    setLeaveData(data);  // Update leave data when the parent data changes
+  }, [data]);
 
   // Update leave data when the incoming prop `data` changes
   useEffect(() => {

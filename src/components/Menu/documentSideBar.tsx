@@ -4,6 +4,7 @@ import { getNotes, addNote } from './data/notes';
 import Cookies from 'js-cookie';
 import { getPredefinedData } from '@/components/Menu/data/prefillData' // Import the utility function for predefined data
 import { DataGrid } from 'devextreme-react/data-grid'; // Import DevExpress DataGrid
+import { getReferenceData } from './data/referencesData';
 
 interface Section {
   name: string;
@@ -161,6 +162,16 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
     }
   };
 
+  const handleReferenceData = (refNo) => {
+    const referenceData = getReferenceData(refNo);
+    if (referenceData) {
+      Object.entries(referenceData).forEach(([field, value]) => {
+        form.setValue(field, value);
+      });
+    }
+  };
+  
+
   useEffect(() => {
     if (activeSection === 1) { // If Notes section is active
       fetchNotes();
@@ -192,11 +203,11 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
 
   return (
     <div className="flex h-screen relative">
-      <div className="right-0 flex bg-purple-100 flex-col text-sm z-10 pt-2 justify-evenly items-center mt-48 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
+      <div className="right-0 flex bg-purple-100 h-5/6 flex-col text-sm z-10 pt-2 justify-evenly items-center mt-48 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
         {sections.map((section, index) => (
           <button
             key={index}
-            className={`w-20 bg-purple-200 text-black py-1 rounded-sm hover:text-gray-900 text-center transform origin-center rotate-90 ${section.name === 'Document Actions' ? 'w-36 mb-4' : ''} ${section.name === 'Attachments' ? 'w-28' : ''}`}
+            className={`w-20 bg-purple-200 text-black py-1 rounded-sm hover:text-gray-900 text-center transform origin-center rotate-90 ${section.name === 'Document Actions' ? 'w-36 mb-10' : ''} ${section.name === 'Attachments' ? 'w-28 mt-6' : ''} ${section.name === 'Drafts' ? 'mt-6' : ''}${section.name === 'Notes' ? 'mt-2' : ''}`}
             onClick={() => toggleSection(index)}
           >
             <div className=''>
@@ -215,8 +226,8 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
           leave="transition-transform duration-300"
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
-          className="sidebar-slide absolute right-0 h-5/6 mt-28 shadow-lg p-4"
-          style={{ width: '22rem', background:'#FFF7FC',}}
+          className="sidebar-slide absolute right-0 pr-12 h-5/6 mt-28 shadow-lg p-4"
+          style={{ width: '26rem', background:'#FFF7FC',}}
         >
           <div ref={sidebarRef}>
             {section.name === 'Document Actions' && (
@@ -231,60 +242,91 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
               </>
             )}
             {section.name === 'References' && (
-            <>
-                <h2 className="text-xl font-bold">References</h2>
-                <div className="w-full">
-                    <DataGrid
-                        dataSource={referencesData}
-                        showBorders={true}
-                        keyExpr="DocNo"  // Unique key for the rows
-                        searchPanel={{ visible: true, width: 315, placeholder: 'Search references...' }}
-                        selection={{ mode: 'single' }}  // Enable single row selection
-                        onSelectionChanged={(e) => setSelectedRowData(e.selectedRowsData[0])}  // Store the selected row
-                    />
-                </div>
-                <button
-                    onClick={() => {
-                        if (selectedRowData) {
-                            // Check if the selected row data is present
-                            const newRow = {
-                                DocCd: selectedRowData.DocCd,
-                                CompID: selectedRowData.CompID,
-                                SiteID: selectedRowData.SiteID,
-                                DocNo: selectedRowData.DocNo,
-                                RefNo: selectedRowData.RefNo,
-                                EmpCode: selectedRowData.EmpCode,
-                            };
-                            // Add the selected row to the bottom grid's data
-                            setBottomGridData((prevData) => [...prevData, newRow]);
-                        } else {
-                            alert('No row selected');
-                        }
-                    }}
-                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-                >
-                    Enter
-                </button>
+              
+<>
+    <h2 className="text-xl font-bold">References</h2>
+    <div className="w-full overflow-x-auto">
+        {/* Add horizontal scrolling */}
+        <DataGrid
+            dataSource={referencesData}
+            showBorders={true}
+            keyExpr="DocNo" // Unique key for the rows
+            searchPanel={{ visible: true, width: 315, placeholder: 'Search references...' }}
+            selection={{ mode: 'single' }} // Enable single row selection
+            columnAutoWidth={true} // Auto-adjust column width
+            onSelectionChanged={(e) => setSelectedRowData(e.selectedRowsData[0])} // Store the selected row
+        />
+    </div>
+    <button
+        onClick={() => {
+            if (selectedRowData) {
+                const newRow = {
+                    DocCd: selectedRowData.DocCd,
+                    CompID: selectedRowData.CompID,
+                    SiteID: selectedRowData.SiteID,
+                    DocNo: selectedRowData.DocNo,
+                    RefNo: selectedRowData.RefNo,
+                    EmpCode: selectedRowData.EmpCode,
+                };
+                setBottomGridData((prevData) => [...prevData, newRow]);
+            } else {
+                alert('No row selected');
+            }
+        }}
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+    >
+        Download
+    </button>
 
-                {/* Bottom DataGrid for selected row */}
-                <h2 className="text-xl font-bold mt-8">Selected Row Details</h2>
-                <div className="w-full mt-4">
-                    <DataGrid
-                        dataSource={bottomGridData}  // Data for the bottom grid
-                        showBorders={true}
-                        keyExpr="DocNo"  // Unique key for the rows
-                        columns={[
-                            { dataField: 'DocCd', caption: 'DocCd' },
-                            { dataField: 'CompID', caption: 'CompID' },
-                            { dataField: 'SiteID', caption: 'SiteID' },
-                            { dataField: 'DocNo', caption: 'DocNo' },
-                            { dataField: 'RefNo', caption: 'RefNo' },
-                            { dataField: 'EmpCode', caption: 'EmpCode' },
-                        ]}
-                    />
-                </div>
-            </>
+    {/* Bottom DataGrid for selected row */}
+    <h2 className="text-xl font-bold mt-8">Selected Row Details</h2>
+    <div className="w-full mt-4 overflow-x-auto">
+        {/* Add horizontal scrolling */}
+        <DataGrid
+            dataSource={bottomGridData} // Data for the bottom grid
+            showBorders={true}
+            keyExpr="DocNo" // Unique key for the rows
+            columnAutoWidth={true} // Auto-adjust column width
+            columns={[
+                { dataField: 'DocCd', caption: 'DocCd' },
+                { dataField: 'CompID', caption: 'CompID' },
+                { dataField: 'SiteID', caption: 'SiteID' },
+                { dataField: 'DocNo', caption: 'DocNo' },
+                { dataField: 'RefNo', caption: 'RefNo' },
+                { dataField: 'EmpCode', caption: 'EmpCode' },
+            ]}
+        />
+    </div>
+
+    {/* Buttons to Clear and Ok */}
+    <div className="mt-4 flex justify-end space-x-4">
+        <button
+            onClick={() => {
+                setBottomGridData([]); // Clear the data in the second DataGrid
+            }}
+            className="px-4 py-2 bg-red-500 text-white rounded"
+        >
+            Clear
+        </button>
+        <button
+            onClick={() => {
+                if (bottomGridData.length > 0) {
+                    const currentRowRefNo = bottomGridData[0].RefNo; // Assuming you want the RefNo from the first row
+                    handleReferenceData(currentRowRefNo); // Pass the RefNo to the function
+                } else {
+                    alert('No data in the selected row details');
+                }
+                alert(JSON.stringify(bottomGridData, null, 2)); // Show alert with current data in the second DataGrid
+            }}
+            className="px-4 py-2 bg-green-500 text-white rounded"
+        >
+            Ok
+        </button>
+    </div>
+</>
+
             )}
+
 
              {section.name === 'Notes' && (
               <>
