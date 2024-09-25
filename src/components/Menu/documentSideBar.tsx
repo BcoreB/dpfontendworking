@@ -270,14 +270,18 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
               
 <>
     <h2 className="text-xl font-bold pb-8">References</h2>
-        <select
-          value={selectedDataKey}
-          onChange={handleDataChange}
-          className="mb-4 w-full p-2 mr-4 border border-gray-300 rounded"
-        >
-          <option value="a">Data Set A</option>
-          <option value="b">Data Set B</option>
-        </select>
+      <div className="flex items-center mb-4">
+            <label htmlFor="referenceType" className="mr-2 font-semibold">Reference Type:</label>
+            <select
+                id="referenceType"
+                value={selectedDataKey}
+                onChange={handleDataChange}
+                className="w-2/4 p-2 border border-gray-300 rounded"
+            >
+                <option value="a">Data Set A</option>
+                <option value="b">Data Set B</option>
+            </select>
+        </div>
 
     <div className="w-full overflow-x-auto overflow-y-auto" style={{ height: '220px', overflowY: 'auto' }}>
         {/* Add horizontal scrolling and vertical scrolling */}
@@ -285,7 +289,7 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
             dataSource={referencesData[selectedDataKey]} // Use the selected key to get the right data
             showBorders={true}
             keyExpr={selectedDataKey === 'a' ? "DocNo" : "DocumentID"} // Update keyExpr based on selected data
-            searchPanel={{ visible: true, width: 'full', placeholder: 'Search references...' }}
+            searchPanel={{ visible: true, width: 365, placeholder: 'Search references...' }}
             selection={{ mode: 'multiple', showCheckBoxesMode: 'always' }} // Enable multi-row selection with checkboxes
             columnAutoWidth={true} // Auto-adjust column width
             onSelectionChanged={(e) => setSelectedRowsData(e.selectedRowsData)} // Store the selected rows
