@@ -25,13 +25,20 @@ const fileIcons: { [key: string]: string } = {
   'default': '/fileIcons/default.png',
 };
 
-const referencesData = [
+const referencesData = {
+  a: [
     { DocNo: 'D001', RefNo: 'R1001', EmpCode: 'E123', EmpName: 'John Doe', SettlementName: 'Settlement A' },
     { DocNo: 'D002', RefNo: 'R1002', EmpCode: 'E124', EmpName: 'Jane Smith', SettlementName: 'Settlement B' },
     { DocNo: 'D003', RefNo: 'R1003', EmpCode: 'E125', EmpName: 'Robert Brown', SettlementName: 'Settlement C' },
     { DocNo: 'D004', RefNo: 'R1004', EmpCode: 'E126', EmpName: 'Emily Clark', SettlementName: 'Settlement D' },
-  ];
-
+  ],
+  b: [
+    { DocumentID: 'D001', ReferenceID: 'R2001', EmployeeID: 'E321', EmployeeFullName: 'Alice Johnson', Location: 'Location X' },
+    { DocumentID: 'D002', ReferenceID: 'R2002', EmployeeID: 'E322', EmployeeFullName: 'Michael White', Location: 'Location Y' },
+    { DocumentID: 'D003', ReferenceID: 'R2003', EmployeeID: 'E323', EmployeeFullName: 'Sophia Turner', Location: 'Location Z' },
+    { DocumentID: 'D004', ReferenceID: 'R2004', EmployeeID: 'E324', EmployeeFullName: 'William Davis', Location: 'Location W' },
+  ],
+};
 const sections: Section[] = [
   { name: 'Document Actions', content: '' },
   { name: 'References', content: '' },
@@ -58,6 +65,10 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [bottomGridData, setBottomGridData] = useState([]);
+  const [selectedDataKey, setSelectedDataKey] = useState('a');
+  const handleDataChange = (e) => {
+    setSelectedDataKey(e.target.value);
+  };
   const toggleSection = (index: number) => {
     setActiveSection(activeSection === index ? null : index);
   };
@@ -259,17 +270,26 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
               
 <>
     <h2 className="text-xl font-bold pb-8">References</h2>
-    <div className="w-full overflow-x-auto overflow-y-auto" style={{ height: '300px', overflowY: 'auto' }}>
+        <select
+          value={selectedDataKey}
+          onChange={handleDataChange}
+          className="mb-4 w-full p-2 mr-4 border border-gray-300 rounded"
+        >
+          <option value="a">Data Set A</option>
+          <option value="b">Data Set B</option>
+        </select>
+
+    <div className="w-full overflow-x-auto overflow-y-auto" style={{ height: '220px', overflowY: 'auto' }}>
         {/* Add horizontal scrolling and vertical scrolling */}
         <DataGrid
-            dataSource={referencesData}
+            dataSource={referencesData[selectedDataKey]} // Use the selected key to get the right data
             showBorders={true}
-            keyExpr="DocNo" // Unique key for the rows
+            keyExpr={selectedDataKey === 'a' ? "DocNo" : "DocumentID"} // Update keyExpr based on selected data
             searchPanel={{ visible: true, width: 'full', placeholder: 'Search references...' }}
             selection={{ mode: 'multiple', showCheckBoxesMode: 'always' }} // Enable multi-row selection with checkboxes
             columnAutoWidth={true} // Auto-adjust column width
             onSelectionChanged={(e) => setSelectedRowsData(e.selectedRowsData)} // Store the selected rows
-        />
+          />
     </div>
     <button
         onClick={() => {
