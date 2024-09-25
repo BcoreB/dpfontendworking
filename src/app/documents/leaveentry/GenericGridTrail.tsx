@@ -313,34 +313,73 @@ const findControlValue = (controlName: string): string => {
 
       {showLookupGrid && (
         <Popup
-          visible={true}
-          onHiding={() => {
-            setShowLookupGrid(false);
-            iconRef.current = null;
-          }}
-          title="Select Employee"
-          width={600}
-          height={'max-content'}
-          showCloseButton={true}
-          dragEnabled={true}
-        >
-          <div>
-            <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
-              <TextBox placeholder="Search..." onValueChanged={(e) => handleSearchChange(e.value)} />
-            </div>
-            <DataGrid
-              dataSource={filteredLookupDataSource}
-              showBorders={true}
-              selection={{ mode: 'single' }}
-              onRowDblClick={handleRowDoubleClick}
-            >
-              {filteredLookupDataSource.length > 0 &&
-                Object.keys(filteredLookupDataSource[0]).map((field) => (
-                  <Column key={field} dataField={field} />
-                ))}
-            </DataGrid>
+        visible={true}
+        onHiding={() => {
+          setShowLookupGrid(false);
+          iconRef.current = null;
+        }}
+        title="Select Employee"
+        width={600}
+        height={'max-content'}
+        showCloseButton={true}
+        dragEnabled={true}
+        position={() => {
+          if (!iconRef.current) return;
+          
+          // Get the DataGrid container element
+          const dataGridContainer = iconRef.current.closest('.dx-datagrid');
+      
+          if (dataGridContainer) {
+            const gridRect = dataGridContainer.getBoundingClientRect();
+            const iconRect = iconRef.current.getBoundingClientRect();
+            const popupWidth = 600;
+      
+            let my = 'bottom left';
+            let at = 'top left';
+      
+            // Calculate the popup's horizontal position, ensuring it doesn't exceed DataGrid boundaries
+            let left = iconRect.left - popupWidth / 2;
+            let rightBoundary = gridRect.right - popupWidth;
+      
+            // Adjust the popup position if it goes beyond the DataGrid's left or right boundary
+            if (left < gridRect.left) {
+              left = gridRect.left; // Snap to the left boundary of DataGrid
+            } else if (left > rightBoundary) {
+              left = rightBoundary; // Snap to the right boundary of DataGrid
+            }
+      
+            return {
+              my: my,
+              at: at,
+              of: iconRef.current,
+              offset: { x: left - iconRect.left, y: 0 }, // Adjust offset based on calculated position
+            };
+          }
+      
+          return { my: 'bottom center', at: 'top center', of: iconRef.current };
+        }}
+        style={{ zIndex: 1000, userSelect: 'none' }} // Ensure popup is on top and disable text selection
+      >
+        <div>
+          <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
+            <TextBox placeholder="Search..." onValueChanged={(e) => handleSearchChange(e.value)} />
           </div>
-        </Popup>
+          <DataGrid
+            dataSource={filteredLookupDataSource}
+            showBorders={true}
+            selection={{ mode: 'single' }}
+            onRowDblClick={handleRowDoubleClick}
+            style={{ userSelect: 'none' }} // Disable text selection in the grid
+          >
+            {filteredLookupDataSource.length > 0 &&
+              Object.keys(filteredLookupDataSource[0]).map((field) => (
+                <Column key={field} dataField={field} />
+              ))}
+          </DataGrid>
+        </div>
+      </Popup>
+      
+      
       )}
     </>
   );
