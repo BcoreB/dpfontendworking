@@ -5,11 +5,25 @@ import Cookies from 'js-cookie';
 import { getPredefinedData } from '@/components/Menu/data/prefillData' // Import the utility function for predefined data
 import { DataGrid } from 'devextreme-react/data-grid'; // Import DevExpress DataGrid
 import { getReferenceData } from './data/referencesData';
-
+import ComboBox from '../ui/combobox';
 interface Section {
   name: string;
   content: string;
 }
+interface Attachment {
+  file: File;
+  thumbnail: string;
+}
+
+
+const fileIcons: { [key: string]: string } = {
+  'application/pdf': '/fileIcons/pdf.png',
+  'application/msword': '/fileIcons/doc.png',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '/fileIcons/doc.png',
+  'application/vnd.ms-excel': '/fileIcons/excel-icon.png',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '/fileIcons/excel.png',
+  'default': '/fileIcons/default.png',
+};
 
 const referencesData = [
     { DocNo: 'D001', RefNo: 'R1001', EmpCode: 'E123', EmpName: 'John Doe', SettlementName: 'Settlement A' },
@@ -47,7 +61,7 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
   const toggleSection = (index: number) => {
     setActiveSection(activeSection === index ? null : index);
   };
-
+  const [selectedRowsData, setSelectedRowsData] = useState([]);
   const handleDraftClick = (draftKey: string) => {
     setSelectedDraftKey(draftKey); // Set the selected draft
     const draftValues = drafts[draftKey];
@@ -226,8 +240,8 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
           leave="transition-transform duration-300"
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
-          className="sidebar-slide absolute right-0 pr-12 h-5/6 mt-28 shadow-lg p-4"
-          style={{ width: '26rem', background:'#FFF7FC',}}
+          className="sidebar-slide absolute right-0 pr-12 h-5/6 mt-48 shadow-lg p-4"
+          style={{ width: '28rem', background:'#FFF7FC',}}
         >
           <div ref={sidebarRef}>
             {section.name === 'Document Actions' && (
@@ -244,33 +258,33 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
             {section.name === 'References' && (
               
 <>
-    <h2 className="text-xl font-bold">References</h2>
-    <div className="w-full overflow-x-auto">
-        {/* Add horizontal scrolling */}
+    <h2 className="text-xl font-bold pb-8">References</h2>
+    <div className="w-full overflow-x-auto overflow-y-auto" style={{ height: '300px', overflowY: 'auto' }}>
+        {/* Add horizontal scrolling and vertical scrolling */}
         <DataGrid
             dataSource={referencesData}
             showBorders={true}
             keyExpr="DocNo" // Unique key for the rows
-            searchPanel={{ visible: true, width: 315, placeholder: 'Search references...' }}
-            selection={{ mode: 'single' }} // Enable single row selection
+            searchPanel={{ visible: true, width: 'full', placeholder: 'Search references...' }}
+            selection={{ mode: 'multiple', showCheckBoxesMode: 'always' }} // Enable multi-row selection with checkboxes
             columnAutoWidth={true} // Auto-adjust column width
-            onSelectionChanged={(e) => setSelectedRowData(e.selectedRowsData[0])} // Store the selected row
+            onSelectionChanged={(e) => setSelectedRowsData(e.selectedRowsData)} // Store the selected rows
         />
     </div>
     <button
         onClick={() => {
-            if (selectedRowData) {
-                const newRow = {
-                    DocCd: selectedRowData.DocCd,
-                    CompID: selectedRowData.CompID,
-                    SiteID: selectedRowData.SiteID,
-                    DocNo: selectedRowData.DocNo,
-                    RefNo: selectedRowData.RefNo,
-                    EmpCode: selectedRowData.EmpCode,
-                };
-                setBottomGridData((prevData) => [...prevData, newRow]);
+            if (selectedRowsData && selectedRowsData.length > 0) {
+                const selectedData = selectedRowsData.map((row) => ({
+                    DocCd: row.DocCd,
+                    CompID: row.CompID,
+                    SiteID: row.SiteID,
+                    DocNo: row.DocNo,
+                    RefNo: row.RefNo,
+                    EmpCode: row.EmpCode,
+                }));
+                setBottomGridData((prevData) => [...prevData, ...selectedData]);
             } else {
-                alert('No row selected');
+                alert('No rows selected');
             }
         }}
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
@@ -279,9 +293,8 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
     </button>
 
     {/* Bottom DataGrid for selected row */}
-    <h2 className="text-xl font-bold mt-8">Selected Row Details</h2>
-    <div className="w-full mt-4 overflow-x-auto">
-        {/* Add horizontal scrolling */}
+    <div className="w-full mt-4 overflow-x-auto overflow-y-auto" style={{ height: '100px', overflowY: 'auto' }}>
+        {/* Add horizontal scrolling and vertical scrolling */}
         <DataGrid
             dataSource={bottomGridData} // Data for the bottom grid
             showBorders={true}
@@ -310,12 +323,12 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
         </button>
         <button
             onClick={() => {
-                if (bottomGridData.length > 0) {
-                    const currentRowRefNo = bottomGridData[0].RefNo; // Assuming you want the RefNo from the first row
-                    handleReferenceData(currentRowRefNo); // Pass the RefNo to the function
-                } else {
-                    alert('No data in the selected row details');
-                }
+                // if (bottomGridData.length > 0) {
+                //     const currentRowRefNo = bottomGridData[0].RefNo; // Assuming you want the RefNo from the first row
+                //     handleReferenceData(currentRowRefNo); // Pass the RefNo to the function
+                // } else {
+                //     alert('No data in the selected row details');
+                // }
                 alert(JSON.stringify(bottomGridData, null, 2)); // Show alert with current data in the second DataGrid
             }}
             className="px-4 py-2 bg-green-500 text-white rounded"
@@ -324,6 +337,8 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
         </button>
     </div>
 </>
+
+
 
             )}
 
