@@ -3,7 +3,7 @@ import { DataGrid, Column, Editing, Lookup } from 'devextreme-react/data-grid';
 import { TextBox } from 'devextreme-react/text-box';
 import { Popup } from 'devextreme-react/popup';
 import { AiFillCaretDown } from 'react-icons/ai';
-
+import Button from 'devextreme-react/cjs/button';
 interface GridProps<T> {
   columns: {
     dataField: keyof T;
@@ -362,7 +362,31 @@ const findControlValue = (controlName: string): string => {
       >
         <div>
           <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
-            <TextBox placeholder="Search..." onValueChanged={(e) => handleSearchChange(e.value)} />
+          <TextBox
+                placeholder="Search..."
+                onValueChanged={(e) => handleSearchChange(e.value)}
+                className='w-1/2'
+              />
+              <Button
+                text="Search"
+                onClick={() => {
+                  const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
+                  if (input) {
+                    handleSearchChange(input.value);
+                  }
+                }}
+              />
+              <Button
+                text="Clear"
+                style={{background:'red', fontWeight:600,}}
+                onClick={() => {
+                  const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
+                  if (input) {
+                    input.value = '';
+                    handleSearchChange('');
+                  }
+                }}
+              />
           </div>
           <DataGrid
             dataSource={filteredLookupDataSource}
