@@ -202,49 +202,37 @@ const executeFormulaColumns = (
           if (formula.includes(placeholder)) {
             let colVal = gridData[rowIndex][col.dataField];
             colVal = colVal === null || colVal === undefined || colVal === "" ? "0" : colVal;
+
+            // Handle date-specific formulas (like "ToDate - FromDate")
+            if (col.dataField === 'ToDate' || col.dataField === 'FromDate') {
+              colVal = new Date(colVal).getTime(); // Convert to timestamp
+            }
+            
             formula = formula.replace(new RegExp(placeholder, "g"), colVal.toString());
           }
         });
 
-        // Handle date-specific formulas (like "ToDate - FromDate")
-        if (formula.includes('Date')) {
-          const dateRegex = /<(.+Date)>/g;
-          const dateMatches = formula.match(dateRegex);
-          if (dateMatches && dateMatches.length === 2) {
-            const date1 = new Date(gridData[rowIndex][dateMatches[0].replace(/[<>]/g, "")]);
-            const date2 = new Date(gridData[rowIndex][dateMatches[1].replace(/[<>]/g, "")]);
-            const daysDifference = Math.floor((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
-            formula = formula.replace(dateMatches[0], daysDifference.toString()).replace(dateMatches[1], "0");
-          }
+        // Calculate the NoDays if the formula is like "ToDate - FromDate"
+        if (formula.includes('ToDate') && formula.includes('FromDate')) {
+          const toDate = gridData[rowIndex]['ToDate'] ? new Date(gridData[rowIndex]['ToDate']).getTime() : 0;
+          const fromDate = gridData[rowIndex]['FromDate'] ? new Date(gridData[rowIndex]['FromDate']).getTime() : 0;
+          finalValue = (toDate - fromDate) / (1000 * 60 * 60 * 24); // Convert milliseconds to days
+        } else {
+          // Evaluate the formula to get the final value
+          finalValue = eval(formula); // Caution: Use eval carefully in real-world applications
         }
 
-        // Evaluate the formula
-        let newColVal: any;
-        try {
-          newColVal = eval(formula); // Caution: eval() should be used carefully or replaced with a safer parser
-        } catch (error) {
-          console.error("Error evaluating formula:", error);
-          newColVal = "NaN";
+        // Update the NoDays field if the calculated value is defined
+        if (finalValue !== null) {
+          gridData[rowIndex][fc.dataField] = finalValue;
         }
-
-        const gridColumn = columns.find((col) => col.dataField === fc.columnName);
-        if (gridColumn) {
-          gridData[rowIndex][fc.columnName] = newColVal;
-        }
-
-        // Set the final value to be returned
-        finalValue = newColVal;
-
-      } catch (ex) {
-        console.error("Error processing formula column:", ex);
+      } catch (error) {
+        console.error('Error evaluating formula:', error);
       }
     });
-
-    setGridData([...gridData]);
   }
   return finalValue; // Return the calculated value
 };
-
 
 
 const handleCellValueChanged = (rowIndex: number, field: string, value: any) => {
