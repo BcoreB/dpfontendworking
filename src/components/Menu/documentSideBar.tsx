@@ -5,6 +5,9 @@ import Cookies from 'js-cookie';
 import { getPredefinedData } from '@/components/Menu/data/prefillData' // Import the utility function for predefined data
 import { DataGrid } from 'devextreme-react/data-grid'; // Import DevExpress DataGrid
 import { getReferenceData } from './data/referencesData';
+import DateBox from 'devextreme-react/date-box'; // Import DateBox for date selection
+import Button from 'devextreme-react/cjs/button';
+import { sampleDocListData } from './data/docListData';
 import ComboBox from '../ui/combobox';
 interface Section {
   name: string;
@@ -45,6 +48,7 @@ const sections: Section[] = [
   { name: 'Notes', content: '' },
   { name: 'Attachments', content: '' },
   { name: 'Drafts', content: '' },
+  { name: 'Document List', content:'' },
 ];
 
 interface SidebarProps {
@@ -226,6 +230,21 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
     };
   }, []);
 
+
+  const [fromDate, setFromDate] = useState<Date | null>(null);
+    const [toDate, setToDate] = useState<Date | null>(null);
+    const [filteredData, setFilteredData] = useState(sampleDocListData);
+
+  const handleRefresh = () => {
+    // Filter the data based on the selected date range
+    const filtered = sampleDocListData.filter((item) => {
+        const itemDate = new Date(item.date);
+        const isAfterFromDate = fromDate ? itemDate >= fromDate : true;
+        const isBeforeToDate = toDate ? itemDate <= toDate : true;
+        return isAfterFromDate && isBeforeToDate;
+    });
+    setFilteredData(filtered);
+};
   return (
     <div className="flex h-screen relative">
       <div className="right-0 flex bg-purple-100 h-5/6 flex-col text-sm z-10 pt-2 justify-evenly items-center mt-48 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
@@ -464,6 +483,55 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
                 </button>
               </>
             )}
+           {section.name === 'Document List' && (
+                <>
+                    <h2 className="text-xl font-bold">Document List</h2>
+                    <div className="mb-4 mt-5 flex justify-between">
+                        <div className="flex space-x-2">
+                            <DateBox
+                                value={fromDate}
+                                placeholder="From Date"
+                                onValueChanged={(e) => setFromDate(e.value)}
+                                dropDownOptions={{ onHiding: (e) => e.cancel = true }} // Prevent window closing when date is picked
+                            />
+                            <DateBox
+                                value={toDate}
+                                placeholder="To Date"
+                                onValueChanged={(e) => setToDate(e.value)}
+                                dropDownOptions={{ onHiding: (e) => e.cancel = true }} // Prevent window closing when date is picked
+                            />
+                        </div>
+                        <Button
+                            text="Refresh"
+                            onClick={handleRefresh}
+                            type="success"
+                            className="ml-4"
+                        />
+                    </div>
+
+                    {/* Custom styling for smaller text and full-width search bar */}
+                    <div className="data-grid-container" style={{ fontSize: '12px' }}>
+                        <DataGrid
+                            dataSource={sampleDocListData}
+                            showBorders={true}
+                            
+                            searchPanel={{ visible: true, width: '380px', placeholder: 'Search...', highlightSearchText: false }}  // Full-width search bar, no highlight, no search icon
+                            headerFilter={{ visible: false }}  // Removes the search icon from every column
+                            columnAutoWidth={true}  // Ensure the columns auto-resize
+                            
+                        />
+                    </div>
+
+                    <style jsx>{`
+                        .data-grid-container {
+                            font-size: 12px; /* Smaller text for DataGrid */
+                        }
+                        .dx-datagrid-search-panel {
+                            width: 100% !important; /* Full-width search bar */
+                        }
+                    `}</style>
+                </>
+           )}
           </div>
         </Transition>
       ))}
