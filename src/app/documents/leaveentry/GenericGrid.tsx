@@ -3,7 +3,7 @@ import { DataGrid, Column, Editing, Lookup } from 'devextreme-react/data-grid';
 import { TextBox } from 'devextreme-react/text-box';
 import { Popup } from 'devextreme-react/popup';
 import { AiFillCaretDown } from 'react-icons/ai';
-
+import Button from 'devextreme-react/cjs/button';
 interface GridProps<T> {
   columns: {
     dataField: keyof T;
@@ -11,6 +11,7 @@ interface GridProps<T> {
     inputType?: 'lookup' | 'combo';
     dataSource?: T[];
     dataType?: string;
+    disabled?: boolean;
   }[];
   dataSource: T[];
   onValueSelect: (updatedData: T[]) => void;
@@ -33,57 +34,44 @@ const GenericGrid = <T extends { id: number }>({
   columnMapping,
 }: GridProps<T>) => {
   const [dataSource, setDataSource] = useState<T[]>(initialDataSource);
+  const [gridData, setGridData] = useState(dataSource);
   const [lookupDataSource, setLookupDataSource] = useState<T[]>([]);
   const [filteredLookupDataSource, setFilteredLookupDataSource] = useState<T[]>([]);
   const [showLookupGrid, setShowLookupGrid] = useState<boolean>(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
-  const [selectedPopupRowData, setSelectedPopupRowData] = useState<T | null>(null);
   const iconRef = useRef<HTMLElement | null>(null);
 
   const addNewRow = () => {
-    // Check if there is an empty row (ignoring the 'id' field)
-    const isEmptyRowPresent = dataSource.some((row) => {
-      return columns.some((column) => {
-        const value = row[column.dataField as keyof T];
-        return column.dataField !== 'id' && (value === null || value === undefined || value === '');
-      });
-    });
-  
-    // If no empty row exists, add a new row at the bottom
+    const isEmptyRowPresent = dataSource.some((row) =>
+      columns.some((column) => 
+        !column.disabled && column.dataField !== 'id' && (row[column.dataField] === null || row[column.dataField] === '')
+      )
+    );
+
     if (!isEmptyRowPresent) {
       const newId = dataSource.length > 0 ? Math.max(...dataSource.map((item) => item.id)) + 1 : 1;
-      const newRow: T = {
-        id: newId,
-      } as unknown as T;
-  
-      // Append the new row at the end
-      const updatedData = [...dataSource, newRow];
+      const newRow: Partial<T> = { id: newId } as Partial<T>;
+      
+      // Dynamically set up initial values for each column in the new row
+      columns.forEach((column) => {
+        newRow[column.dataField] = column.dataField === 'id' ? newId : null;
+      });
+
+      const updatedData = [...dataSource, newRow as T];
       setDataSource(updatedData);
-      onValueSelect(updatedData); // Notify parent component
+      onValueSelect(updatedData);
     }
   };
-  
-  
-  const handleEditorPreparing = (e: any) => {
-    if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
-      e.editorOptions.onKeyDown = (args: any) => {
-        if (args.event.key === 'Enter') {
-          // Check if there's any empty row before adding a new one
-          const isEmptyRowPresent = dataSource.some((row) => {
-            return Object.keys(row).some((key) => key !== 'id') && 
-                   Object.values(row).slice(1).every((value) => value === null || value === undefined || value === '');
-          });
-  
-          // Add a new row only if no empty row is present
-          if (!isEmptyRowPresent) {
-            addNewRow();
-          }
-        }
-      };
-    }
-  };
-  
-  
+
+  // const handleEditorPreparing = (e: any) => {
+  //   if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
+  //     e.editorOptions.onKeyDown = (args: any) => {
+  //       if (args.event.key === 'Enter') {
+  //         addNewRow();
+  //       }
+  //     };
+  //   }
+  // };
 
   const handleIconClick = (e: React.MouseEvent, rowIndex: number, columnDataSource?: T[]) => {
     e.stopPropagation();
@@ -95,7 +83,7 @@ const GenericGrid = <T extends { id: number }>({
       setFilteredLookupDataSource(columnDataSource);
     }
 
-    setShowLookupGrid(true); // Open the lookup grid popup
+    setShowLookupGrid(true);
   };
 
   const handleSearchChange = (value: string) => {
@@ -123,35 +111,149 @@ const GenericGrid = <T extends { id: number }>({
     if (selectedRowIndex !== null && e.data) {
       const popupRow = e.data;
 
-      // Update the selected row in the main grid using the column mapping
       const updatedRow = { ...dataSource[selectedRowIndex] };
       for (const popupColumn in columnMapping) {
         const gridColumn = columnMapping[popupColumn];
         updatedRow[gridColumn] = popupRow[popupColumn];
       }
 
-      // Update the data source with the modified row
       const updatedData = dataSource.map((row, index) =>
         index === selectedRowIndex ? updatedRow : row
       );
       setDataSource(updatedData);
-      onValueSelect(updatedData); // Notify parent component
+      onValueSelect(updatedData);
 
-      setShowLookupGrid(false); // Close the popup
+      setShowLookupGrid(false);
     }
   };
 
-  const handleCellValueChanged = (e: any) => {
-    const updatedData = [...dataSource];
-    updatedData[e.rowIndex][e.column.dataField] = e.value;
-    setDataSource(updatedData);
-    onValueSelect(updatedData); // Notify parent component
+  const calculateAmount = (price: number | null, count: number | null) => {
+    return (price ?? 0) * (count ?? 0);
   };
 
-  const formatDate = (date: Date | string | null) => {
-    if (!date) return '';
-    return new Intl.DateTimeFormat('en-US').format(new Date(date));
-  };
+//   const handleCellValueChanged = (e: any) => {
+//     const updatedData = [...dataSource];
+//     const updatedRow = { ...updatedData[e.rowIndex], [e.column.dataField]: e.value };
+
+//     if (e.column.dataField === 'Price' || e.column.dataField === 'Count') {
+//         // Get the new Price and Count values
+//         const price = updatedRow['Price'] ?? 0;
+//         const count = updatedRow['Count'] ?? 0;
+
+//         // Calculate and update the Amount field
+//         updatedRow['Amount'] = price * count;
+//     }
+
+//     // Update the row in the data source
+//     updatedData[e.rowIndex] = updatedRow;
+//     setDataSource(updatedData);
+
+//     // Call the value select handler with the updated data
+//     onValueSelect(updatedData);
+// };
+
+
+const handleEditorPreparing = (e: any) => {
+  const formulaColumns = columns.filter(col => col.formula); // Get all columns with formulas
+
+  if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
+    e.editorOptions.onKeyDown = (args: any) => {
+      if (args.event.key === 'Enter') {
+        const updatedData = [...dataSource];
+        const currentRow = updatedData[e.row.rowIndex];
+
+        if (formulaColumns.length > 0) {
+          // Call executeFormulaColumns for all formula columns
+          formulaColumns.forEach((formulaColumn) => {
+            const calculatedValue = executeFormulaColumns([formulaColumn], updatedData, e.row.rowIndex);
+            currentRow[formulaColumn.dataField] = calculatedValue;
+          });
+        }
+
+        // Update the data source with the modified row
+        updatedData[e.row.rowIndex] = currentRow;
+        setDataSource(updatedData);
+
+        // Trigger the value select handler with updated data
+        onValueSelect(updatedData);
+
+        // Add a new row
+        addNewRow();
+      }
+    };
+  }
+};
+
+const executeFormulaColumns = (
+  formulaColumns: FormulaColumn[],
+  gridData: any[],
+  rowIndex: number
+) => {
+  let finalValue = null; // Store and return the calculated value
+
+  if (formulaColumns) {
+    formulaColumns.forEach((fc) => {
+      try {
+        let formula = fc.formula;
+
+        // Replace placeholders in the formula with the corresponding cell values
+        columns.forEach((col) => {
+          const placeholder = `<${col.dataField}>`;
+          if (formula.includes(placeholder)) {
+            let colVal = gridData[rowIndex][col.dataField];
+            colVal = colVal === null || colVal === undefined || colVal === "" ? "0" : colVal;
+
+            // Handle date-specific formulas (like "ToDate - FromDate")
+            if (col.dataField === 'ToDate' || col.dataField === 'FromDate') {
+              colVal = new Date(colVal).getTime(); // Convert to timestamp
+            }
+            
+            formula = formula.replace(new RegExp(placeholder, "g"), colVal.toString());
+          }
+        });
+
+        // Calculate the NoDays if the formula is like "ToDate - FromDate"
+        if (formula.includes('ToDate') && formula.includes('FromDate')) {
+          const toDate = gridData[rowIndex]['ToDate'] ? new Date(gridData[rowIndex]['ToDate']).getTime() : 0;
+          const fromDate = gridData[rowIndex]['FromDate'] ? new Date(gridData[rowIndex]['FromDate']).getTime() : 0;
+          finalValue = (toDate - fromDate) / (1000 * 60 * 60 * 24); // Convert milliseconds to days
+        } else {
+          // Evaluate the formula to get the final value
+          finalValue = eval(formula); // Caution: Use eval carefully in real-world applications
+        }
+
+        // Update the NoDays field if the calculated value is defined
+        if (finalValue !== null) {
+          gridData[rowIndex][fc.dataField] = finalValue;
+        }
+      } catch (error) {
+        console.error('Error evaluating formula:', error);
+      }
+    });
+  }
+  return finalValue; // Return the calculated value
+};
+
+
+const handleCellValueChanged = (rowIndex: number, field: string, value: any) => {
+  const updatedGridData = [...gridData];
+  updatedGridData[rowIndex][field] = value;
+  
+  // Execute formula columns after updating a cell's value
+  executeFormulaColumns(formulaColumns, updatedGridData, rowIndex);
+
+  setGridData(updatedGridData);
+  onDataSourceChange?.(updatedGridData);
+};
+
+
+
+const findControlValue = (controlName: string): string => {
+  const controlValue = document.querySelector(`[name=${controlName}]`)?.value || "0";
+  return controlValue;
+};
+
+
 
   return (
     <>
@@ -161,16 +263,10 @@ const GenericGrid = <T extends { id: number }>({
           showBorders={true}
           keyExpr="id"
           onEditorPreparing={handleEditorPreparing}
-          onCellValueChanged={handleCellValueChanged}
+          onCellValueChanged={handleCellValueChanged} // This is crucial for tracking changes
           repaintChangesOnly={true}
         >
-          <Editing
-            mode="cell"
-            allowUpdating={true}
-            allowAdding={false}
-            allowDeleting={true}
-            useIcons={true}
-          />
+          <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
 
           {columns.map((column) => {
             const isDateColumn = column.dataType === 'date';
@@ -182,12 +278,13 @@ const GenericGrid = <T extends { id: number }>({
                 dataField={String(column.dataField)}
                 caption={column.caption}
                 dataType={isDateColumn ? 'date' : undefined}
+                allowEditing={!column.disabled}
                 cellRender={(cellInfo: CellInfo<T>) => {
                   if (isDateColumn) {
-                    // Render Date
-                    return <span>{formatDate(cellInfo.value)}</span>;
+                    return <span>
+                    {cellInfo.value ? new Intl.DateTimeFormat('en-US').format(new Date(cellInfo.value)) : ''}
+                  </span>;
                   } else if (isLookupColumn) {
-                    // Render Lookup with icon
                     return renderCellWithIcon(cellInfo, column.dataSource);
                   }
                   return <span>{cellInfo.value}</span>;
@@ -226,7 +323,7 @@ const GenericGrid = <T extends { id: number }>({
             const popupWidth = 600;
       
             let my = 'bottom left';
-            let at = 'bottom left';
+            let at = 'top left';
       
             // Calculate the popup's horizontal position, ensuring it doesn't exceed DataGrid boundaries
             let left = iconRect.left - popupWidth / 2;
@@ -253,7 +350,31 @@ const GenericGrid = <T extends { id: number }>({
       >
         <div>
           <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
-            <TextBox placeholder="Search..." onValueChanged={(e) => handleSearchChange(e.value)} />
+          <TextBox
+                placeholder="Search..."
+                onValueChanged={(e) => handleSearchChange(e.value)}
+                className='w-1/2'
+              />
+              <Button
+                text="Search"
+                onClick={() => {
+                  const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
+                  if (input) {
+                    handleSearchChange(input.value);
+                  }
+                }}
+              />
+              <Button
+                text="Clear"
+                style={{background:'red', fontWeight:600,}}
+                onClick={() => {
+                  const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
+                  if (input) {
+                    input.value = '';
+                    handleSearchChange('');
+                  }
+                }}
+              />
           </div>
           <DataGrid
             dataSource={filteredLookupDataSource}

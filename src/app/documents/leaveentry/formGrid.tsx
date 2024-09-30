@@ -82,7 +82,7 @@ const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
           { dataField: 'CPR', caption: 'CPR' },
           { dataField: 'FromDate', caption: 'From Date', dataType: 'date' },
           { dataField: 'ToDate', caption: 'To Date', dataType: 'date' },
-          { dataField: 'NoDays', caption: 'No Days' },
+          { dataField: 'NoDays', caption: 'No Days', disabled:true ,formula: 'ToDate - FromDate',  },
           { dataField: 'Entitled', caption: 'Entitled' },
           { dataField: 'Remarks', caption: 'Remarks' },
           { dataField: 'NPBalance', caption: 'NP Balance' },

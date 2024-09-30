@@ -158,7 +158,7 @@ const LeaveEntry = () => {
                   />
                 </div>
               </div>
-              <TrailManagement data={employeeData} updateEmployeeData={updateEmployeeData} />
+              <LeaveManagement data={employeeData} updateEmployeeData={updateEmployeeData} />
               
               <div className="mt-5">
                 <Button onClick={handleAlertFormValues}>Alert Form Values</Button>

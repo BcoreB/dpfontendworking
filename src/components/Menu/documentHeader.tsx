@@ -90,6 +90,7 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
     try {
       const values = getValues();
       setFormValues(values);
+      console.log(values);
     } catch (error) {
       console.error("Form submission error: ", error);
     }
