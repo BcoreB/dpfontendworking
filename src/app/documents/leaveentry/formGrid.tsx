@@ -68,6 +68,36 @@ const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
     updateEmployeeData(updatedData);
   };
 
+  const handleValuesChange = (changedValues) => {
+    // Alert the updated values
+    if (Object.keys(changedValues).length > 0) {
+
+
+        // Extract FromDate and ToDate from changedValues
+        const fromDateValues = changedValues.FromDate;
+        const toDateValues = changedValues.ToDate;
+
+        // Check if both FromDate and ToDate have valid values
+        if (fromDateValues && toDateValues) {
+            const fromDateStr = fromDateValues[0]; // The most recent value for FromDate
+            const toDateStr = toDateValues[0]; // The most recent value for ToDate
+
+            // Convert the date strings to Date objects
+            const fromDate = new Date(fromDateStr);
+            const toDate = new Date(toDateStr);
+
+            // Calculate the difference in milliseconds
+            const diffTime = Math.abs(toDate - fromDate); 
+            // Convert milliseconds to days
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            // Alert the difference in days
+            alert(`Difference between FromDate and ToDate: ${diffDays} day(s)`);
+        }
+    }
+};
+
+
   return (
     <div className="mt-10">
       <GenericGrid<EmployeeData>
@@ -95,6 +125,8 @@ const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
         columnMapping={columnMapping} // Pass the column mapping
         onValueSelect={handleValueSelect}
         lastColumn="LeaveType"
+        watchColumns={['FromDate','ToDate']}
+        onValuesChange={handleValuesChange}
       />
     </div>
   );

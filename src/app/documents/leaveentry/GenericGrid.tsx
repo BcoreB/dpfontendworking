@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { DataGrid, Column, Editing, Lookup } from 'devextreme-react/data-grid';
 import { TextBox } from 'devextreme-react/text-box';
 import { Popup } from 'devextreme-react/popup';
@@ -17,6 +17,9 @@ interface GridProps<T> {
   onValueSelect: (updatedData: T[]) => void;
   lastColumn: keyof T;
   columnMapping: { [popupColumn: string]: keyof T };
+  watchColumns?: (keyof T)[];  // Accept new watchColumns prop
+  onValuesChange?: (changes: { field: keyof T; currentValues: any[] }) => void; // Add this line
+  
 }
 
 interface CellInfo<T> {
@@ -32,6 +35,8 @@ const GenericGrid = <T extends { id: number }>({
   onValueSelect,
   lastColumn,
   columnMapping,
+  onValuesChange,
+  watchColumns = [], // Initialize watchColumns prop
 }: GridProps<T>) => {
   const [dataSource, setDataSource] = useState<T[]>(initialDataSource);
   const [gridData, setGridData] = useState(dataSource);
@@ -40,6 +45,35 @@ const GenericGrid = <T extends { id: number }>({
   const [showLookupGrid, setShowLookupGrid] = useState<boolean>(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
   const iconRef = useRef<HTMLElement | null>(null);
+  const [prevData, setPrevData] = useState<T[]>(initialDataSource); // To track previous data for comparison
+  
+
+
+  const checkForChanges = () => {
+    const changedValues = {}; // Initialize an object to store changed values
+
+    watchColumns.forEach((field) => {
+        const currentValues = dataSource.map(item => item[field]);
+        const previousValues = prevData.map(item => item[field]);
+
+        // Compare current and previous values
+        if (JSON.stringify(currentValues) !== JSON.stringify(previousValues)) {
+            // Store changed values in the object
+            changedValues[field] = currentValues; // Store the array of current values under the field name
+        }
+    });
+
+    // Call the callback function with the collected changed values if any
+    if (Object.keys(changedValues).length > 0 && onValuesChange) {
+        onValuesChange(changedValues); // Pass the entire object to the callback
+    }
+};
+
+// Effect to check for changes in watched columns
+useEffect(() => {
+    checkForChanges();
+    setPrevData(dataSource); // Update previous data to current
+}, [dataSource, prevData, watchColumns, onValuesChange]);
 
   const addNewRow = () => {
     const isEmptyRowPresent = dataSource.some((row) =>
