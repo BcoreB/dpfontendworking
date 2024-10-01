@@ -203,37 +203,25 @@ const executeFormulaColumns = (
             let colVal = gridData[rowIndex][col.dataField];
             colVal = colVal === null || colVal === undefined || colVal === "" ? "0" : colVal;
 
-            // Handle date-specific formulas (like "ToDate - FromDate")
-            if (col.dataField === 'ToDate' || col.dataField === 'FromDate') {
-              colVal = new Date(colVal).getTime(); // Convert to timestamp
-            }
-            
+            // No date-specific handling, just replace the placeholder with the value
             formula = formula.replace(new RegExp(placeholder, "g"), colVal.toString());
           }
         });
 
-        // Calculate the NoDays if the formula is like "ToDate - FromDate"
-        if (formula.includes('ToDate') && formula.includes('FromDate')) {
-          const toDate = gridData[rowIndex]['ToDate'] ? new Date(gridData[rowIndex]['ToDate']).getTime() : 0;
-          const fromDate = gridData[rowIndex]['FromDate'] ? new Date(gridData[rowIndex]['FromDate']).getTime() : 0;
-          finalValue = (toDate - fromDate) / (1000 * 60 * 60 * 24); // Convert milliseconds to days
-        } else {
-          // Evaluate the formula to get the final value
-          finalValue = eval(formula); // Caution: Use eval carefully in real-world applications
-        }
+        // Evaluate the formula to get the final value
+        finalValue = eval(formula); // Caution: Use eval carefully in real-world applications
 
-        // Update the NoDays field if the calculated value is defined
+        // Update the corresponding field with the calculated value if it's defined
         if (finalValue !== null) {
           gridData[rowIndex][fc.dataField] = finalValue;
         }
       } catch (error) {
-        console.error('Error evaluating formula:', error);
+        console.error("Error evaluating formula:", error);
       }
     });
   }
   return finalValue; // Return the calculated value
 };
-
 
 const handleCellValueChanged = (rowIndex: number, field: string, value: any) => {
   const updatedGridData = [...gridData];
