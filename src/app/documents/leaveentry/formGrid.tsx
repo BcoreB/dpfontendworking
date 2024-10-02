@@ -68,33 +68,29 @@ const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
     updateEmployeeData(updatedData);
   };
 
-  const handleValuesChange = (changedValues) => {
-    // Alert the updated values
-    if (Object.keys(changedValues).length > 0) {
 
+const handleValuesChange = (changedValues) => {
+  // Extract FromDate and ToDate from the currentValues
+  const { FromDate, ToDate } = changedValues.currentValues;
 
-        // Extract FromDate and ToDate from changedValues
-        const fromDateValues = changedValues.FromDate;
-        const toDateValues = changedValues.ToDate;
+  // Check if both FromDate and ToDate are present
+  if (FromDate && ToDate) {
+    // Parse the dates
+    const fromDate = new Date(FromDate);
+    const toDate = new Date(ToDate);
 
-        // Check if both FromDate and ToDate have valid values
-        if (fromDateValues && toDateValues) {
-            const fromDateStr = fromDateValues[0]; // The most recent value for FromDate
-            const toDateStr = toDateValues[0]; // The most recent value for ToDate
+    // Calculate the difference in milliseconds
+    const differenceInTime = toDate.getTime() - fromDate.getTime();
 
-            // Convert the date strings to Date objects
-            const fromDate = new Date(fromDateStr);
-            const toDate = new Date(toDateStr);
+    // Calculate the difference in days
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
 
-            // Calculate the difference in milliseconds
-            const diffTime = Math.abs(toDate - fromDate); 
-            // Convert milliseconds to days
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    // Alert the difference
+    alert(`The difference between FromDate and ToDate is ${differenceInDays} days.`);
+  }
 
-            // Alert the difference in days
-            alert(`Difference between FromDate and ToDate: ${diffDays} day(s)`);
-        }
-    }
+  // Additional logic can be added here if needed
+  // For example, triggering updates, alerts, or other functions
 };
 
 

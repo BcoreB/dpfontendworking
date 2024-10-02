@@ -152,6 +152,17 @@ const GenericGrid = <T extends { id: number }>({
 //     onValueSelect(updatedData);
 // };
 
+const handleCellValueChanged = (rowIndex: number, field: string, value: any) => {
+  const updatedGridData = [...gridData];
+  updatedGridData[rowIndex][field] = value;
+  
+  // Execute formula columns after updating a cell's value
+  executeFormulaColumns(formulaColumns, updatedGridData, rowIndex);
+
+  setGridData(updatedGridData);
+  onDataSourceChange?.(updatedGridData);
+};
+
 
 const handleEditorPreparing = (e: any) => {
   const formulaColumns = columns.filter(col => col.formula); // Get all columns with formulas
@@ -162,13 +173,13 @@ const handleEditorPreparing = (e: any) => {
         const updatedData = [...dataSource];
         const currentRow = updatedData[e.row.rowIndex];
 
-        if (formulaColumns.length > 0) {
-          // Call executeFormulaColumns for all formula columns
-          formulaColumns.forEach((formulaColumn) => {
-            const calculatedValue = executeFormulaColumns([formulaColumn], updatedData, e.row.rowIndex);
-            currentRow[formulaColumn.dataField] = calculatedValue;
-          });
-        }
+        // if (formulaColumns.length > 0) {
+        //   // Call executeFormulaColumns for all formula columns
+        //   formulaColumns.forEach((formulaColumn) => {
+        //     const calculatedValue = executeFormulaColumns([formulaColumn], updatedData, e.row.rowIndex);
+        //     currentRow[formulaColumn.dataField] = calculatedValue;
+        //   });
+        // }
 
         // Update the data source with the modified row
         updatedData[e.row.rowIndex] = currentRow;
@@ -183,6 +194,8 @@ const handleEditorPreparing = (e: any) => {
     };
   }
 };
+
+
 
 const executeFormulaColumns = (
   formulaColumns: FormulaColumn[],
@@ -235,16 +248,6 @@ const executeFormulaColumns = (
 };
 
 
-const handleCellValueChanged = (rowIndex: number, field: string, value: any) => {
-  const updatedGridData = [...gridData];
-  updatedGridData[rowIndex][field] = value;
-  
-  // Execute formula columns after updating a cell's value
-  executeFormulaColumns(formulaColumns, updatedGridData, rowIndex);
-
-  setGridData(updatedGridData);
-  onDataSourceChange?.(updatedGridData);
-};
 
 
 
