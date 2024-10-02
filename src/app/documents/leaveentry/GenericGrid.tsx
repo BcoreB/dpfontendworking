@@ -165,26 +165,34 @@ useEffect(() => {
     return (price ?? 0) * (count ?? 0);
   };
 
-//   const handleCellValueChanged = (e: any) => {
-//     const updatedData = [...dataSource];
-//     const updatedRow = { ...updatedData[e.rowIndex], [e.column.dataField]: e.value };
+  const handleCellValueChanged = (e: any) => {
+    const updatedData = [...dataSource];
+    const updatedRow = { ...updatedData[e.rowIndex], [e.column.dataField]: e.value };
 
-//     if (e.column.dataField === 'Price' || e.column.dataField === 'Count') {
-//         // Get the new Price and Count values
-//         const price = updatedRow['Price'] ?? 0;
-//         const count = updatedRow['Count'] ?? 0;
+    if (e.column.dataField === 'FromDate' || e.column.dataField === 'ToDate') {
+        // Get the new Price and Count values
+        const FromDate = updatedRow['FromDate'] ?? 0;
+        const ToDate = updatedRow['ToDate'] ?? 0;
 
-//         // Calculate and update the Amount field
-//         updatedRow['Amount'] = price * count;
-//     }
+        // Convert the date strings to Date objects
+        const fromDate = new Date(FromDate);
+        const toDate = new Date(ToDate);
 
-//     // Update the row in the data source
-//     updatedData[e.rowIndex] = updatedRow;
-//     setDataSource(updatedData);
+        // Calculate the difference in milliseconds
+        const diffTime = Math.abs(toDate - fromDate); 
+        // Convert milliseconds to days
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        // Calculate and update the Amount field
+        updatedRow['NoDays'] = diffDays;
+    }
 
-//     // Call the value select handler with the updated data
-//     onValueSelect(updatedData);
-// };
+    // Update the row in the data source
+    updatedData[e.rowIndex] = updatedRow;
+    setDataSource(updatedData);
+
+    // Call the value select handler with the updated data
+    onValueSelect(updatedData);
+};
 
 
 const handleEditorPreparing = (e: any) => {
@@ -257,16 +265,16 @@ const executeFormulaColumns = (
   return finalValue; // Return the calculated value
 };
 
-const handleCellValueChanged = (rowIndex: number, field: string, value: any) => {
-  const updatedGridData = [...gridData];
-  updatedGridData[rowIndex][field] = value;
+// const handleCellValueChanged = (rowIndex: number, field: string, value: any) => {
+//   const updatedGridData = [...gridData];
+//   updatedGridData[rowIndex][field] = value;
   
-  // Execute formula columns after updating a cell's value
-  executeFormulaColumns(formulaColumns, updatedGridData, rowIndex);
+//   // Execute formula columns after updating a cell's value
+//   executeFormulaColumns(formulaColumns, updatedGridData, rowIndex);
 
-  setGridData(updatedGridData);
-  onDataSourceChange?.(updatedGridData);
-};
+//   setGridData(updatedGridData);
+//   onDataSourceChange?.(updatedGridData);
+// };
 
 
 
