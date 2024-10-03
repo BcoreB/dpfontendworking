@@ -15,6 +15,15 @@ interface EmployeeData {
   LeaveType: string | null;
 }
 
+// Define a separate interface for the lookup data
+interface LookupData {
+  EmpCode: number;
+  Employee: string;
+  CPR: string;
+  NPBalance: string;
+  LeaveType: string;
+}
+
 interface LeaveManagementProps {
   data: EmployeeData[];
   updateEmployeeData: (updatedData: EmployeeData[]) => void;
@@ -42,7 +51,7 @@ const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
     { LeaveType: 'Annual' },
   ];
 
-  const lookupData = [
+  const lookupData :LookupData[]  = [
     { EmpCode: 1, Employee: 'John Doe', CPR: '123456', NPBalance: '10', LeaveType: 'Annual' },
     { EmpCode: 2, Employee: 'Jane Smith', CPR: '654321', NPBalance: '15', LeaveType: 'Sick' },
     { EmpCode: 3, Employee: 'Alice Johnson', CPR: '789012', NPBalance: '8', LeaveType: 'Annual' },
@@ -68,9 +77,18 @@ const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
     updateEmployeeData(updatedData);
   };
 
+interface CurrentValues {
+    FromDate: Date;
+    ToDate: Date;
+}
 
-const handleValuesChange = (changedValues) => {
+interface changedValueObject {
+    currentValues: CurrentValues;
+    field: string;
+}
+const handleValuesChange = (changedValues:changedValueObject) => {
   // Extract FromDate and ToDate from the currentValues
+  console.log(changedValues)
   const { FromDate, ToDate } = changedValues.currentValues;
 
   // Check if both FromDate and ToDate are present

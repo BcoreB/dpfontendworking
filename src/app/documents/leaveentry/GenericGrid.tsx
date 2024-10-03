@@ -14,8 +14,8 @@ interface GridProps<T> {
     disabled?: boolean;
     formula?:string
   }[];
-  dataSource: T[];
-  onValueSelect: (updatedData: T[]) => void;
+  dataSource: (T | null)[]; // Allow null in the dataSource
+  onValueSelect: (updatedData: (T | null)[]) => void;
   lastColumn: keyof T;
   columnMapping: { [popupColumn: string]: keyof T };
   watchColumns?: (keyof T)[];  // Accept new watchColumns prop
@@ -155,44 +155,44 @@ const handleEditorPreparing = (e: any) => {
 //   }
 // };
 
-const executeFormulaColumns = (
-  formulaColumns: FormulaColumn[],
-  gridData: any[],
-  rowIndex: number
-) => {
-  let finalValue = null; // Store and return the calculated value
+// const executeFormulaColumns = (
+//   formulaColumns: FormulaColumn[],
+//   gridData: any[],
+//   rowIndex: number
+// ) => {
+//   let finalValue = null; // Store and return the calculated value
 
-  if (formulaColumns) {
-    formulaColumns.forEach((fc) => {
-      try {
-        let formula = fc.formula;
+//   if (formulaColumns) {
+//     formulaColumns.forEach((fc) => {
+//       try {
+//         let formula = fc.formula;
 
-        // Replace placeholders in the formula with the corresponding cell values
-        columns.forEach((col) => {
-          const placeholder = `<${col.dataField}>`;
-          if (formula.includes(placeholder)) {
-            let colVal = gridData[rowIndex][col.dataField];
-            colVal = colVal === null || colVal === undefined || colVal === "" ? "0" : colVal;
+//         // Replace placeholders in the formula with the corresponding cell values
+//         columns.forEach((col) => {
+//           const placeholder = `<${col.dataField}>`;
+//           if (formula.includes(placeholder)) {
+//             let colVal = gridData[rowIndex][col.dataField];
+//             colVal = colVal === null || colVal === undefined || colVal === "" ? "0" : colVal;
 
-            // No date-specific handling, just replace the placeholder with the value
-            formula = formula.replace(new RegExp(placeholder, "g"), colVal.toString());
-          }
-        });
+//             // No date-specific handling, just replace the placeholder with the value
+//             formula = formula.replace(new RegExp(placeholder, "g"), colVal.toString());
+//           }
+//         });
 
-        // Evaluate the formula to get the final value
-        finalValue = eval(formula); // Caution: Use eval carefully in real-world applications
+//         // Evaluate the formula to get the final value
+//         finalValue = eval(formula); // Caution: Use eval carefully in real-world applications
 
-        // Update the corresponding field with the calculated value if it's defined
-        if (finalValue !== null) {
-          gridData[rowIndex][fc.dataField] = finalValue;
-        }
-      } catch (error) {
-        console.error("Error evaluating formula:", error);
-      }
-    });
-  }
-  return finalValue; // Return the calculated value
-};
+//         // Update the corresponding field with the calculated value if it's defined
+//         if (finalValue !== null) {
+//           gridData[rowIndex][fc.dataField] = finalValue;
+//         }
+//       } catch (error) {
+//         console.error("Error evaluating formula:", error);
+//       }
+//     });
+//   }
+//   return finalValue; // Return the calculated value
+// };
 
 
 

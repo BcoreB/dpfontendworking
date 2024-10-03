@@ -7,6 +7,7 @@ import { DataGrid } from 'devextreme-react/data-grid'; // Import DevExpress Data
 import { getReferenceData } from './data/referencesData';
 import DateBox from 'devextreme-react/date-box'; // Import DateBox for date selection
 import Button from 'devextreme-react/cjs/button';
+import {SelectBox} from 'devextreme-react'
 import { sampleDocListData } from './data/docListData';
 import ComboBox from '../ui/combobox';
 interface Section {
@@ -17,7 +18,11 @@ interface Attachment {
   file: File;
   thumbnail: string;
 }
-
+interface DocumentListProps {
+  section: {
+    name: string;
+  };
+}
 
 const fileIcons: { [key: string]: string } = {
   'application/pdf': '/fileIcons/pdf.png',
@@ -70,6 +75,34 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [bottomGridData, setBottomGridData] = useState([]);
   const [selectedDataKey, setSelectedDataKey] = useState('a');
+
+  // Document list section
+  const [selectedLeaveType, setSelectedLeaveType] = useState<string | null>(null);
+  const [fromDate, setFromDate] = useState<Date | null>(null);
+  const [toDate, setToDate] = useState<Date | null>(null);
+  const [filteredData, setFilteredData] = useState(sampleDocListData);  // State to store filtered data
+
+  // Function to handle filtering
+  const handleRefresh = () => {
+    let filtered = sampleDocListData;
+
+    // Filter by LeaveType if selected
+    if (selectedLeaveType) {
+      filtered = filtered.filter(item => item.leavetype === selectedLeaveType);
+    }
+
+    // Filter by fromDate and toDate if selected
+    if (fromDate && toDate) {
+      filtered = filtered.filter(
+        item =>
+          item.fromdate >= fromDate && item.todate <= toDate
+      );
+    }
+
+    // Update the filtered data state
+    setFilteredData(filtered);
+  };
+
   const handleDataChange = (e) => {
     setSelectedDataKey(e.target.value);
   };
@@ -231,20 +264,7 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
   }, []);
 
 
-  const [fromDate, setFromDate] = useState<Date | null>(null);
-    const [toDate, setToDate] = useState<Date | null>(null);
-    const [filteredData, setFilteredData] = useState(sampleDocListData);
-
-  const handleRefresh = () => {
-    // Filter the data based on the selected date range
-    const filtered = sampleDocListData.filter((item) => {
-        const itemDate = new Date(item.date);
-        const isAfterFromDate = fromDate ? itemDate >= fromDate : true;
-        const isBeforeToDate = toDate ? itemDate <= toDate : true;
-        return isAfterFromDate && isBeforeToDate;
-    });
-    setFilteredData(filtered);
-};
+  
   return (
     <div className="flex h-screen relative">
       <div className="right-0 flex bg-purple-100 h-full flex-col text-sm z-10 pt-2 justify-evenly items-center mt-16 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
@@ -484,54 +504,66 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
               </>
             )}
            {section.name === 'Document List' && (
-                <>
-                    <h2 className="text-xl font-bold">Document List</h2>
-                    <div className="mb-4 mt-5 flex justify-between">
-                        <div className="flex space-x-2">
-                            <DateBox
-                                value={fromDate}
-                                placeholder="From Date"
-                                onValueChanged={(e) => setFromDate(e.value)}
-                                dropDownOptions={{ onHiding: (e) => e.cancel = true }} // Prevent window closing when date is picked
-                            />
-                            <DateBox
-                                value={toDate}
-                                placeholder="To Date"
-                                onValueChanged={(e) => setToDate(e.value)}
-                                dropDownOptions={{ onHiding: (e) => e.cancel = true }} // Prevent window closing when date is picked
-                            />
-                        </div>
-                        <Button
-                            text="Refresh"
-                            onClick={handleRefresh}
-                            type="success"
-                            className="ml-4"
-                        />
-                    </div>
+        <>
+          <h2 className="text-xl font-bold">Document List</h2>
+          <div className="mb-4 mt-5 flex justify-between">
+            
+            <div className="flex space-x-2">
+              <DateBox
+                value={fromDate}
+                placeholder="From Date"
+                onValueChanged={(e) => setFromDate(e.value)}
+                dropDownOptions={{ onHiding: (e) => e.cancel = true }}  // Prevent window closing when date is picked
+              />
+              <DateBox
+                value={toDate}
+                placeholder="To Date"
+                onValueChanged={(e) => setToDate(e.value)}
+                dropDownOptions={{ onHiding: (e) => e.cancel = true }}  // Prevent window closing when date is picked
+              />
+            </div>
+            
+          </div>
+          <div className="mb-4 mt-5 flex justify-between">
+            {/* SelectBox for Leave Type filtering */}
+            <SelectBox
+              dataSource={['a', 'b']}  // Options for LeaveType
+              placeholder="Select Leave Type"
+              value={selectedLeaveType}  // Current selected leave type
+              onValueChanged={(e) => setSelectedLeaveType(e.value)}  // Set selected leave type
+              searchEnabled={true}
+              className='w-3/4'
+            />
+            {/* Refresh button */}
+            <Button
+              text="Refresh"
+              onClick={handleRefresh}
+              type="success"
+              className="ml-4"
+            />
+          </div>
 
-                    {/* Custom styling for smaller text and full-width search bar */}
-                    <div className="data-grid-container" style={{ fontSize: '12px' }}>
-                        <DataGrid
-                            dataSource={sampleDocListData}
-                            showBorders={true}
-                            
-                            searchPanel={{ visible: true, width: '380px', placeholder: 'Search...', highlightSearchText: false }}  // Full-width search bar, no highlight, no search icon
-                            headerFilter={{ visible: false }}  // Removes the search icon from every column
-                            columnAutoWidth={true}  // Ensure the columns auto-resize
-                            
-                        />
-                    </div>
+          {/* Custom styling for smaller text and full-width search bar */}
+          <div className="data-grid-container" style={{ fontSize: '12px' }}>
+            <DataGrid
+              dataSource={filteredData}  // Use the filtered data
+              showBorders={true}
+              searchPanel={{ visible: true, width: '380px', placeholder: 'Search...', highlightSearchText: false }}  // Full-width search bar
+              headerFilter={{ visible: false }}  // Removes the search icon from every column
+              columnAutoWidth={true}  // Ensure the columns auto-resize
+            />
+          </div>
 
-                    <style jsx>{`
-                        .data-grid-container {
-                            font-size: 12px; /* Smaller text for DataGrid */
-                        }
-                        .dx-datagrid-search-panel {
-                            width: 100% !important; /* Full-width search bar */
-                        }
-                    `}</style>
-                </>
-           )}
+          <style jsx>{`
+            .data-grid-container {
+              font-size: 12px; /* Smaller text for DataGrid */
+            }
+            .dx-datagrid-search-panel {
+              width: 100% !important; /* Full-width search bar */
+            }
+          `}</style>
+        </>
+      )}
           </div>
         </Transition>
       ))}
