@@ -77,49 +77,61 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
   const [selectedDataKey, setSelectedDataKey] = useState('a');
 
   // Document list section
-  const [selectedLeaveType, setSelectedLeaveType] = useState<string | null>(null);
-  const [fromDate, setFromDate] = useState<Date | null>(null);
-  const [toDate, setToDate] = useState<Date | null>(null);
-  const [filteredData, setFilteredData] = useState(sampleDocListData);  // State to store filtered data
-  const [selectedRowData, setSelectedRowData] = useState<any>(null); // Store selected row data
+  // Document list section
+const [selectedLeaveType, setSelectedLeaveType] = useState<string | null>(null);
+const [fromDate, setFromDate] = useState<Date | null>(null);
+const [toDate, setToDate] = useState<Date | null>(null);
+const [filteredData, setFilteredData] = useState(sampleDocListData);  // State to store filtered data
+const [selectedRowData, setSelectedRowData] = useState<any>(null); // Store selected row data
 
-  // Function to handle filtering
-  const handleRefresh = () => {
-    let filtered = sampleDocListData;
-    
-    // Filter by LeaveType if selected
-    if (selectedLeaveType) {
-      filtered = filtered.filter(item => item.leavetype === selectedLeaveType);
-    }
-  
-    // Filter by fromDate and toDate if both are selected
-    if (fromDate && toDate) {
-      filtered = filtered.filter(item => {
-        const itemDate = new Date(item.date);  // Assuming 'datefield' holds the relevant date value in your data
-        
-        // Ensure valid date comparison: fromDate <= itemDate <= toDate
-        return itemDate >= new Date(fromDate) && itemDate <= new Date(toDate);
-      });
-    }
-  
-    // Update the filtered data state
-    setFilteredData(filtered);
-  };
-  // Handle row selection (single click)
-  const onRowSelectionChanged = (e: any) => {
-    const selectedRow = e.selectedRowsData[0]; // Get the selected row data
-    if (selectedRow) {
-      setSelectedRowData(selectedRow); // Store the selected row
-    }
-  };
+// Function to handle filtering
+const handleRefresh = () => {
+  let filtered = sampleDocListData;
 
-  // Handle double-click event to alert Ref No
-  const onRowDoubleClick = (e: any) => {
-    if (e && e.data && e.data.refno) {  // 'refno' is the correct key based on your data
-      handleReferenceData(e.data.refno); // Pass the RefNo to the function
-    }
-  };
-  
+  // Filter by LeaveType if selected
+  if (selectedLeaveType) {
+    filtered = filtered.filter(item => item.leavetype === selectedLeaveType);
+  }
+
+  // Filter by fromDate and toDate if both are selected
+  if (fromDate && toDate) {
+    filtered = filtered.filter(item => {
+      const itemDate = new Date(item.date);  // Assuming 'datefield' holds the relevant date value in your data
+
+      // Ensure valid date comparison: fromDate <= itemDate <= toDate
+      return itemDate >= new Date(fromDate) && itemDate <= new Date(toDate);
+    });
+  }
+
+  // Update the filtered data state
+  setFilteredData(filtered);
+};
+
+// Handle row selection (single click)
+const onRowSelectionChanged = (e: any) => {
+  const selectedRow = e.selectedRowsData[0]; // Get the selected row data
+  if (selectedRow) {
+    setSelectedRowData(selectedRow); // Store the selected row
+    console.log("Selected Row Data:", selectedRow); // Log selected row data for verification
+  }
+};
+
+// Handle double-click event to alert Ref No
+const onRowDoubleClick = (e: any) => {
+  if (e && e.data && e.data.refno) {  // 'refno' is the correct key based on your data
+    handleReferenceData(e.data.refno); // Pass the RefNo to the function
+  }
+};
+
+// Function to handle the Open button click (same as double-click)
+const handleOpenClick = () => {
+  console.log("Selected Row Data on Open Click:", selectedRowData); // Log selected row data on button click
+  if (selectedRowData && selectedRowData.refno) {
+    handleReferenceData(selectedRowData.refno); // Use the selected row's RefNo
+  } else {
+    alert('Please select a row first');  // In case no row is selected
+  }
+};
 
   const handleDataChange = (e) => {
     setSelectedDataKey(e.target.value);
@@ -522,72 +534,83 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
               </>
             )}
            {section.name === 'Document List' && (
-      <>
-        <h2 className="text-xl font-bold">Document List</h2>
+  <>
+    <h2 className="text-xl font-bold">Document List</h2>
 
-        {/* Date pickers for fromDate and toDate */}
-        <div className="mb-4 mt-5 flex justify-between">
-          <div className="flex space-x-2">
-            <DateBox
-              value={fromDate}
-              placeholder="From Date"
-              onValueChanged={(e) => setFromDate(e.value)}
-              dropDownOptions={{ showCloseButton: true }}
-            />
-            <DateBox
-              value={toDate}
-              placeholder="To Date"
-              onValueChanged={(e) => setToDate(e.value)}
-              dropDownOptions={{ showCloseButton: true }}
-            />
-          </div>
-        </div>
+    {/* Date pickers for fromDate and toDate */}
+    <div className="mb-4 mt-5 flex justify-between">
+      <div className="flex space-x-2">
+        <DateBox
+          value={fromDate}
+          placeholder="From Date"
+          onValueChanged={(e) => setFromDate(e.value)}
+          dropDownOptions={{ showCloseButton: true }}
+        />
+        <DateBox
+          value={toDate}
+          placeholder="To Date"
+          onValueChanged={(e) => setToDate(e.value)}
+          dropDownOptions={{ showCloseButton: true }}
+        />
+      </div>
+    </div>
 
-        {/* SelectBox for LeaveType filtering */}
-        <div className="mb-4 mt-5 flex justify-between">
-          <SelectBox
-            dataSource={['a', 'b']}  // Options for LeaveType
-            placeholder="Select Leave Type"
-            value={selectedLeaveType}
-            onValueChanged={(e) => setSelectedLeaveType(e.value)}
-            searchEnabled={true}
-            className='w-3/4'
-          />
+    {/* SelectBox for LeaveType filtering */}
+    <div className="mb-4 mt-5 flex justify-between">
+      <SelectBox
+        dataSource={['a', 'b']}  // Options for LeaveType
+        placeholder="Select Leave Type"
+        value={selectedLeaveType}
+        onValueChanged={(e) => setSelectedLeaveType(e.value)}
+        searchEnabled={true}
+        className='w-3/4'
+      />
 
-          {/* Refresh button */}
-          <Button
-            text="Refresh"
-            onClick={handleRefresh}
-            type="success"
-            className="ml-4"
-          />
-        </div>
+      {/* Refresh button */}
+      <Button
+        text="Refresh"
+        onClick={handleRefresh}
+        type="success"
+        className="ml-4"
+      />
+    </div>
 
-        {/* DataGrid for displaying filtered data */}
-        <div className="data-grid-container" style={{ fontSize: '12px' }}>
-          <DataGrid
-            dataSource={filteredData}
-            showBorders={true}
-            searchPanel={{ visible: true, width: '380px', placeholder: 'Search...', highlightSearchText: false }}
-            headerFilter={{ visible: false }}
-            columnAutoWidth={true}
-            selection={{ mode: 'single' }}  // Single row selection
-            onRowDblClick={onRowDoubleClick}  // Double-click event to alert row data
-            style={{ userSelect: 'none' }} // Disable text selection in the grid
-          />
-        </div>
+    {/* DataGrid for displaying filtered data */}
+    <div className="data-grid-container" style={{ fontSize: '12px' }}>
+      <DataGrid
+        dataSource={filteredData}
+        showBorders={true}
+        searchPanel={{ visible: true, width: '380px', placeholder: 'Search...', highlightSearchText: false }}
+        headerFilter={{ visible: false }}
+        columnAutoWidth={true}
+        selection={{ mode: 'single' }}  // Single row selection
+        onSelectionChanged={onRowSelectionChanged}  // Single click to select
+        onRowDblClick={onRowDoubleClick}  // Double-click event to alert row data
+        style={{ userSelect: 'none' }} // Disable text selection in the grid
+      />
+    </div>
 
-        {/* Custom styling */}
-        <style jsx>{`
-          .data-grid-container {
-            font-size: 12px; /* Smaller text for DataGrid */
-          }
-          .dx-datagrid-search-panel {
-            width: 100% !important; /* Full-width search bar */
-          }
-        `}</style>
-      </>
-    )}
+    {/* Open button */}
+    <div className="mt-4">
+      <Button
+        text="Open"
+        onClick={handleOpenClick}
+        type="default"
+        className="w-full"
+      />
+    </div>
+
+    {/* Custom styling */}
+    <style jsx>{`
+      .data-grid-container {
+        font-size: 12px; /* Smaller text for DataGrid */
+      }
+      .dx-datagrid-search-panel {
+        width: 100% !important; /* Full-width search bar */
+      }
+    `}</style>
+  </>
+)}
 
           </div>
         </Transition>
