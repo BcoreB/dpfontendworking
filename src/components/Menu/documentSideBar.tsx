@@ -115,8 +115,8 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
 
   // Handle double-click event to alert Ref No
   const onRowDoubleClick = (e: any) => {
-    if (selectedRowData && selectedRowData.refNo) {
-      alert(`Ref No: ${selectedRowData.refNo}`); // Alert Ref No on double click
+    if (e && e.data && e.data.refno) {  // 'refno' is the correct key based on your data
+      handleReferenceData(e.data.refno); // Pass the RefNo to the function
     }
   };
   
@@ -522,69 +522,72 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
               </>
             )}
            {section.name === 'Document List' && (
-  <>
-    <h2 className="text-xl font-bold">Document List</h2>
+      <>
+        <h2 className="text-xl font-bold">Document List</h2>
 
-    {/* Date pickers for fromDate and toDate */}
-    <div className="mb-4 mt-5 flex justify-between">
-      <div className="flex space-x-2">
-        <DateBox
-          value={fromDate}
-          placeholder="From Date"
-          onValueChanged={(e) => setFromDate(e.value)}
-          dropDownOptions={{ showCloseButton: true }}  // Enable clearing dates, if needed
-        />
-        <DateBox
-          value={toDate}
-          placeholder="To Date"
-          onValueChanged={(e) => setToDate(e.value)}
-          dropDownOptions={{ showCloseButton: true }}  // Enable clearing dates, if needed
-        />
-      </div>
-    </div>
+        {/* Date pickers for fromDate and toDate */}
+        <div className="mb-4 mt-5 flex justify-between">
+          <div className="flex space-x-2">
+            <DateBox
+              value={fromDate}
+              placeholder="From Date"
+              onValueChanged={(e) => setFromDate(e.value)}
+              dropDownOptions={{ showCloseButton: true }}
+            />
+            <DateBox
+              value={toDate}
+              placeholder="To Date"
+              onValueChanged={(e) => setToDate(e.value)}
+              dropDownOptions={{ showCloseButton: true }}
+            />
+          </div>
+        </div>
 
-    {/* SelectBox for LeaveType filtering */}
-    <div className="mb-4 mt-5 flex justify-between">
-      <SelectBox
-        dataSource={['a', 'b']}  // Options for LeaveType
-        placeholder="Select Leave Type"
-        value={selectedLeaveType}  // Current selected leave type
-        onValueChanged={(e) => setSelectedLeaveType(e.value)}  // Set selected leave type
-        searchEnabled={true}
-        className='w-3/4'
-      />
-      
-      {/* Refresh button */}
-      <Button
-        text="Refresh"
-        onClick={handleRefresh}
-        type="success"
-        className="ml-4"
-      />
-    </div>
+        {/* SelectBox for LeaveType filtering */}
+        <div className="mb-4 mt-5 flex justify-between">
+          <SelectBox
+            dataSource={['a', 'b']}  // Options for LeaveType
+            placeholder="Select Leave Type"
+            value={selectedLeaveType}
+            onValueChanged={(e) => setSelectedLeaveType(e.value)}
+            searchEnabled={true}
+            className='w-3/4'
+          />
 
-    {/* DataGrid for displaying filtered data */}
-    <div className="data-grid-container" style={{ fontSize: '12px' }}>
-      <DataGrid
-        dataSource={filteredData}  // Use the filtered data
-        showBorders={true}
-        searchPanel={{ visible: true, width: '380px', placeholder: 'Search...', highlightSearchText: false }}  // Full-width search bar
-        headerFilter={{ visible: false }}  // Removes the search icon from every column
-        columnAutoWidth={true}  // Ensure the columns auto-resize
-      />
-    </div>
+          {/* Refresh button */}
+          <Button
+            text="Refresh"
+            onClick={handleRefresh}
+            type="success"
+            className="ml-4"
+          />
+        </div>
 
-    {/* Custom styling */}
-    <style jsx>{`
-      .data-grid-container {
-        font-size: 12px; /* Smaller text for DataGrid */
-      }
-      .dx-datagrid-search-panel {
-        width: 100% !important; /* Full-width search bar */
-      }
-    `}</style>
-  </>
-)}
+        {/* DataGrid for displaying filtered data */}
+        <div className="data-grid-container" style={{ fontSize: '12px' }}>
+          <DataGrid
+            dataSource={filteredData}
+            showBorders={true}
+            searchPanel={{ visible: true, width: '380px', placeholder: 'Search...', highlightSearchText: false }}
+            headerFilter={{ visible: false }}
+            columnAutoWidth={true}
+            selection={{ mode: 'single' }}  // Single row selection
+            onRowDblClick={onRowDoubleClick}  // Double-click event to alert row data
+            style={{ userSelect: 'none' }} // Disable text selection in the grid
+          />
+        </div>
+
+        {/* Custom styling */}
+        <style jsx>{`
+          .data-grid-container {
+            font-size: 12px; /* Smaller text for DataGrid */
+          }
+          .dx-datagrid-search-panel {
+            width: 100% !important; /* Full-width search bar */
+          }
+        `}</style>
+      </>
+    )}
 
           </div>
         </Transition>
