@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
   const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
   const [drafts, setDrafts] = useState<{ [key: string]: any }>({}); // State for storing drafts
   const [selectedDraftKey, setSelectedDraftKey] = useState<string | null>(null); // State for selected draft
-  const [selectedRowData, setSelectedRowData] = useState(null);
+  
   const sidebarRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [bottomGridData, setBottomGridData] = useState([]);
@@ -81,27 +81,45 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
   const [fromDate, setFromDate] = useState<Date | null>(null);
   const [toDate, setToDate] = useState<Date | null>(null);
   const [filteredData, setFilteredData] = useState(sampleDocListData);  // State to store filtered data
+  const [selectedRowData, setSelectedRowData] = useState<any>(null); // Store selected row data
 
   // Function to handle filtering
   const handleRefresh = () => {
     let filtered = sampleDocListData;
-
+    
     // Filter by LeaveType if selected
     if (selectedLeaveType) {
       filtered = filtered.filter(item => item.leavetype === selectedLeaveType);
     }
-
-    // Filter by fromDate and toDate if selected
+  
+    // Filter by fromDate and toDate if both are selected
     if (fromDate && toDate) {
-      filtered = filtered.filter(
-        item =>
-          item.fromdate >= fromDate && item.todate <= toDate
-      );
+      filtered = filtered.filter(item => {
+        const itemDate = new Date(item.date);  // Assuming 'datefield' holds the relevant date value in your data
+        
+        // Ensure valid date comparison: fromDate <= itemDate <= toDate
+        return itemDate >= new Date(fromDate) && itemDate <= new Date(toDate);
+      });
     }
-
+  
     // Update the filtered data state
     setFilteredData(filtered);
   };
+  // Handle row selection (single click)
+  const onRowSelectionChanged = (e: any) => {
+    const selectedRow = e.selectedRowsData[0]; // Get the selected row data
+    if (selectedRow) {
+      setSelectedRowData(selectedRow); // Store the selected row
+    }
+  };
+
+  // Handle double-click event to alert Ref No
+  const onRowDoubleClick = (e: any) => {
+    if (selectedRowData && selectedRowData.refNo) {
+      alert(`Ref No: ${selectedRowData.refNo}`); // Alert Ref No on double click
+    }
+  };
+  
 
   const handleDataChange = (e) => {
     setSelectedDataKey(e.target.value);
@@ -251,9 +269,9 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-      setActiveSection(null); // Close the sidebar
-    }
+    // if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+    //   setActiveSection(null); // Close the sidebar
+    // }
   };
 
   useEffect(() => {
@@ -504,66 +522,70 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
               </>
             )}
            {section.name === 'Document List' && (
-        <>
-          <h2 className="text-xl font-bold">Document List</h2>
-          <div className="mb-4 mt-5 flex justify-between">
-            
-            <div className="flex space-x-2">
-              <DateBox
-                value={fromDate}
-                placeholder="From Date"
-                onValueChanged={(e) => setFromDate(e.value)}
-                dropDownOptions={{ onHiding: (e) => e.cancel = true }}  // Prevent window closing when date is picked
-              />
-              <DateBox
-                value={toDate}
-                placeholder="To Date"
-                onValueChanged={(e) => setToDate(e.value)}
-                dropDownOptions={{ onHiding: (e) => e.cancel = true }}  // Prevent window closing when date is picked
-              />
-            </div>
-            
-          </div>
-          <div className="mb-4 mt-5 flex justify-between">
-            {/* SelectBox for Leave Type filtering */}
-            <SelectBox
-              dataSource={['a', 'b']}  // Options for LeaveType
-              placeholder="Select Leave Type"
-              value={selectedLeaveType}  // Current selected leave type
-              onValueChanged={(e) => setSelectedLeaveType(e.value)}  // Set selected leave type
-              searchEnabled={true}
-              className='w-3/4'
-            />
-            {/* Refresh button */}
-            <Button
-              text="Refresh"
-              onClick={handleRefresh}
-              type="success"
-              className="ml-4"
-            />
-          </div>
+  <>
+    <h2 className="text-xl font-bold">Document List</h2>
 
-          {/* Custom styling for smaller text and full-width search bar */}
-          <div className="data-grid-container" style={{ fontSize: '12px' }}>
-            <DataGrid
-              dataSource={filteredData}  // Use the filtered data
-              showBorders={true}
-              searchPanel={{ visible: true, width: '380px', placeholder: 'Search...', highlightSearchText: false }}  // Full-width search bar
-              headerFilter={{ visible: false }}  // Removes the search icon from every column
-              columnAutoWidth={true}  // Ensure the columns auto-resize
-            />
-          </div>
+    {/* Date pickers for fromDate and toDate */}
+    <div className="mb-4 mt-5 flex justify-between">
+      <div className="flex space-x-2">
+        <DateBox
+          value={fromDate}
+          placeholder="From Date"
+          onValueChanged={(e) => setFromDate(e.value)}
+          dropDownOptions={{ showCloseButton: true }}  // Enable clearing dates, if needed
+        />
+        <DateBox
+          value={toDate}
+          placeholder="To Date"
+          onValueChanged={(e) => setToDate(e.value)}
+          dropDownOptions={{ showCloseButton: true }}  // Enable clearing dates, if needed
+        />
+      </div>
+    </div>
 
-          <style jsx>{`
-            .data-grid-container {
-              font-size: 12px; /* Smaller text for DataGrid */
-            }
-            .dx-datagrid-search-panel {
-              width: 100% !important; /* Full-width search bar */
-            }
-          `}</style>
-        </>
-      )}
+    {/* SelectBox for LeaveType filtering */}
+    <div className="mb-4 mt-5 flex justify-between">
+      <SelectBox
+        dataSource={['a', 'b']}  // Options for LeaveType
+        placeholder="Select Leave Type"
+        value={selectedLeaveType}  // Current selected leave type
+        onValueChanged={(e) => setSelectedLeaveType(e.value)}  // Set selected leave type
+        searchEnabled={true}
+        className='w-3/4'
+      />
+      
+      {/* Refresh button */}
+      <Button
+        text="Refresh"
+        onClick={handleRefresh}
+        type="success"
+        className="ml-4"
+      />
+    </div>
+
+    {/* DataGrid for displaying filtered data */}
+    <div className="data-grid-container" style={{ fontSize: '12px' }}>
+      <DataGrid
+        dataSource={filteredData}  // Use the filtered data
+        showBorders={true}
+        searchPanel={{ visible: true, width: '380px', placeholder: 'Search...', highlightSearchText: false }}  // Full-width search bar
+        headerFilter={{ visible: false }}  // Removes the search icon from every column
+        columnAutoWidth={true}  // Ensure the columns auto-resize
+      />
+    </div>
+
+    {/* Custom styling */}
+    <style jsx>{`
+      .data-grid-container {
+        font-size: 12px; /* Smaller text for DataGrid */
+      }
+      .dx-datagrid-search-panel {
+        width: 100% !important; /* Full-width search bar */
+      }
+    `}</style>
+  </>
+)}
+
           </div>
         </Transition>
       ))}
