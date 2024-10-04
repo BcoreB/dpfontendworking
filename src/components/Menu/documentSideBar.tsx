@@ -545,13 +545,13 @@ const handleOpenClick = () => {
     <div className="mb-4 mt-5 flex justify-between">
       <div className="flex space-x-2">
         <DateBox
-          value={fromDate}
+          value={fromDate ?? undefined}
           placeholder="From Date"
           onValueChanged={(e) => setFromDate(e.value)}
           dropDownOptions={{ showCloseButton: true }}
         />
         <DateBox
-          value={toDate}
+          value={toDate ?? undefined} 
           placeholder="To Date"
           onValueChanged={(e) => setToDate(e.value)}
           dropDownOptions={{ showCloseButton: true }}
