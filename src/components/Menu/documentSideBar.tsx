@@ -281,9 +281,13 @@ const handleOpenClick = () => {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    // if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-    //   setActiveSection(null); // Close the sidebar
-    // }
+    if (sidebarRef.current) {
+      const sidebarRect = sidebarRef.current.getBoundingClientRect();
+      // Check if the click is outside the left boundary of the sidebar
+      if (event.clientX < sidebarRect.left) {
+        setActiveSection(null); // Close the sidebar
+      }
+    }
   };
 
   useEffect(() => {
@@ -591,12 +595,13 @@ const handleOpenClick = () => {
     </div>
 
     {/* Open button */}
-    <div className="mt-4">
+    <div className="absolute bottom-4 right-4">
       <Button
         text="Open"
         onClick={handleOpenClick}
         type="default"
-        className="w-full"
+        className="w-full max-w-xs mr-8"  // max-w-xs sets the max width to 4rem
+        style={{ maxWidth: '4rem' }}  // Ensure the width doesn't exceed 4rem
       />
     </div>
 

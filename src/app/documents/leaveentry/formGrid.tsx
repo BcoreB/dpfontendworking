@@ -45,6 +45,7 @@ const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
       LeaveType: null,
     },
   ]);
+  
 
   const leaveTypeData = [
     { LeaveType: 'Sick' },
