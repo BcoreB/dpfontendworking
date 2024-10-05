@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import DPInput from '@/components/ui/dpinput';
-import { InitializeForm, formSchema, EmployeeLeaveDet, leaveType, payrolPeriod } from './formSchema';
+import { InitializeForm,EmployeeLeaveDetMin, formSchema, EmployeeLeaveDet, leaveType, payrolPeriod } from './formSchema';
 import { useRouter } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
 import DPComboBox from '@/components/ui/dpcombobox';
@@ -14,12 +14,12 @@ import DocumentHeader from '@/components/Menu/documentHeader';
 import Sidebar from '@/components/Menu/documentSideBar';
 import TrailManagement from './trailGrid';
 import DPDatePicker from '@/components/ui/dpdatepicker';
-import LeaveManagement from './formGrid';
+import LeaveManagement from './LeaveDetails';
 const LeaveEntry = () => {
   const docCd = 6;
   const docKey = 101;
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
-  const [employeeData, setEmployeeData] = useState<EmployeeLeaveDet[]>([]);
+  const [employeeLeaveDetails, setEmployeeLeaveDetails] = useState<EmployeeLeaveDet[]>([]);
   const router = useRouter();
 
 
@@ -28,15 +28,56 @@ const LeaveEntry = () => {
   // Initialize the form
   const form = InitializeForm();
 
+  useEffect(()=>{
+    
+
+    // console.log('data',data)
+  
+       
+      const fetchData=async ()=>{
+          if(employeeLeaveDetails)
+            {
+              const newData = employeeLeaveDetails.map((doc, index) => (
+            
+                {
+
+                  id : doc.id,
+                  empcode : doc.EmpCode,
+                  empfromdate: doc.FromDate,
+                  emptodate : doc.ToDate,
+                  remarks : doc.Remarks,
+                  rowid : doc.RowId,
+                  leavetypecode:doc.LeaveType,
+ 
+                })) as unknown as EmployeeLeaveDetMin[]  ;
+                form.setValue('employeeLeaveDet', newData);
+    
+
+            }
+             
+          }
+ 
+
+
+        
+        
+        fetchData();
+  
+  
+ 
+ 
+
+ },[employeeLeaveDetails])
+
   // Update form values when employeeData changes
   useEffect(() => {
-    form.setValue('employeeLeaveDet', employeeData);
+    form.setValue('employeeLeaveDet', employeeLeaveDetails);
     // console.log('Updated form employeeData:', form.getValues('employeeData'));
-  }, [employeeData]);
+  }, [employeeLeaveDetails]);
 
   // Callback to handle updating the employee data in LeaveManagement component
-  const updateEmployeeData = (updatedData: EmployeeData[]) => {
-    setEmployeeData(updatedData);
+  const updateEmployeeData = (updatedData: EmployeeLeaveDet[]) => {
+    setEmployeeLeaveDetails(updatedData);
   };
 
    // New state variable to track fromDate and toDate
@@ -63,11 +104,11 @@ const LeaveEntry = () => {
  
      // If both dates are present, calculate the number of days and update employeeData
      if (fromDate && toDate) {
-       const updatedEmployeeData = employeeData.map((item) => ({
+       const updatedEmployeeData = employeeLeaveDetails.map((item) => ({
          ...item,
          NoDays: calculateNoDays(fromDate, toDate),
        }));
-       setEmployeeData(updatedEmployeeData);
+       setEmployeeLeaveDetails(updatedEmployeeData);
      }
    };
 
@@ -158,8 +199,8 @@ const LeaveEntry = () => {
                   />
                 </div>
               </div>
-              <LeaveManagement data={employeeData} updateEmployeeData={updateEmployeeData} />
-              
+              <LeaveManagement data={employeeLeaveDetails} updateEmployeeData={updateEmployeeData} />
+        
               {/* <div className="mt-5">
                 <Button onClick={handleAlertFormValues}>Alert Form Values</Button>
               </div> */}

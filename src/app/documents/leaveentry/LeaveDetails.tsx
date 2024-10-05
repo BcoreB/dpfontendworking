@@ -122,7 +122,13 @@ const handleValuesChange = (changedValues:changedValueObject) => {
             caption: 'Emp Code',
             inputType: 'lookup', // Optional attribute
             dataSource: lookupData, // Optional data source for lookup
-            columnMapping={columnMapping} // Pass the column mapping
+            columnMapping: { // Pass column mapping directly within EmpCode column
+              EmpCode: 'EmpCode',
+              Employee: 'Employee',
+              CPR: 'CPR',
+              NPBalance: 'NPBalance',
+              LeaveType: 'LeaveType',
+            },
           },
           { dataField: 'Employee', caption: 'Employee' },
           { dataField: 'CPR', caption: 'CPR' },
@@ -137,6 +143,7 @@ const handleValuesChange = (changedValues:changedValueObject) => {
             caption: 'Leave Type',
           },
         ]}
+        
         dataSource={leaveData}
         
         onValueSelect={handleValueSelect}

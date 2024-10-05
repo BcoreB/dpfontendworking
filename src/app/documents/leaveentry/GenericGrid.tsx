@@ -13,11 +13,11 @@ interface GridProps<T> {
     dataType?: string;
     disabled?: boolean;
     formula?:string
+    columnMapping?: { [key: string]: keyof T }; // Include columnMapping here
   }[];
   dataSource: (T | null)[]; // Allow null in the dataSource
   onValueSelect: (updatedData: (T | null)[]) => void;
   lastColumn: keyof T;
-  columnMapping: { [popupColumn: string]: keyof T };
   watchColumns?: (keyof T)[];  // Accept new watchColumns prop
   onValuesChange?: (changes: { field: keyof T; currentValues: any[] }) => void; // Add this line
   
@@ -35,7 +35,7 @@ const GenericGrid = <T extends { id: number }>({
   dataSource: initialDataSource,
   onValueSelect,
   lastColumn,
-  columnMapping,
+  
   onValuesChange,
   watchColumns = [], // Initialize watchColumns prop
 }: GridProps<T>) => {
@@ -239,6 +239,12 @@ const handleRowDoubleClick = (e: any) => {
   if (selectedRowIndex !== null && e.data) {
     const popupRow = e.data;
 
+    // Find the column with `columnMapping` defined dynamically
+    const mappedColumn = columns.find(col => col.columnMapping);
+    if (!mappedColumn) return;
+
+    const columnMapping = mappedColumn.columnMapping; // Get columnMapping from the column
+
     const updatedRow = { ...dataSource[selectedRowIndex] };
     for (const popupColumn in columnMapping) {
       const gridColumn = columnMapping[popupColumn];
@@ -254,7 +260,6 @@ const handleRowDoubleClick = (e: any) => {
     setShowLookupGrid(false);
   }
 };
-
 
 
 

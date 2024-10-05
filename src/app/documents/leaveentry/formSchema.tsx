@@ -7,24 +7,47 @@ import DPComboBox from '@/components/ui/dpcombobox'
 
 // Define schema for the formGrid elements
 export const formSchemaEmployeeLeaveDet = z.object({
+  id:z.string(),
   empcode:z.string().max(20,{message:'maximum length allowed 20'})
   .min(5, {
     message: "empcode must be at least 5 characters.",
   }),
-  empfromdate: z.date(),
-  emptodate: z.date(),
+  fromdate: z.date(),
+  todate: z.date(),
   remarks: z.string(),
-  leavetype: z.string(),
+  leavetypecode: z.string(),
+  rowid:z.number(),
 
 })
 // formSchema.tsx
 export interface EmployeeLeaveDet {
+
   id: number;
-  empcode: number | null;
-  fromdate: Date | null;
-  todate: Date | null;
-  remarks: string | null;
-  leavetype: string | null;
+  EmpCode: number | null;
+  Employee: string | null;
+  CPR: string | null;
+  FromDate: Date | null;
+  ToDate: Date | null;
+  NoDays: number | null;
+  Entitled: string | null;
+  Remarks: string | null;
+  NPBalance: string | null;
+  LeaveType: string | null;
+  RowId:number|null;
+}
+
+// interface for reduced data
+export interface EmployeeLeaveDetMin{
+  id: number;
+  EmpCode: number | null;
+  
+  FromDate: Date | null;
+  ToDate: Date | null;
+  
+  Remarks: string | null;
+  
+  LeaveType: string | null;
+  RowId:number|null;
 }
 
 
@@ -33,11 +56,13 @@ export const InitializeformSchemaEmpLeaveDet = () =>{
   return useForm<z.infer<typeof formSchemaEmployeeLeaveDet>>({
     resolver: zodResolver(formSchemaEmployeeLeaveDet),
     defaultValues: {
+        id:'',
         empcode: '',
-        empfromdate: undefined,
-        emptodate: undefined,
+        fromdate: undefined,
+        todate: undefined,
         remarks: '',
-        leavetype: '',
+        leavetypecode: '',
+        rowid:0,
 
     },
   });
