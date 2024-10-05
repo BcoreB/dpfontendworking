@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import DPInput from '@/components/ui/dpinput';
-import { InitializeForm, formSchema, EmployeeData, leaveType, payrolPeriod } from './formSchema';
+import { InitializeForm, formSchema, EmployeeLeaveDet, leaveType, payrolPeriod } from './formSchema';
 import { useRouter } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
 import DPComboBox from '@/components/ui/dpcombobox';
@@ -19,7 +19,7 @@ const LeaveEntry = () => {
   const docCd = 6;
   const docKey = 101;
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
-  const [employeeData, setEmployeeData] = useState<EmployeeData[]>([]);
+  const [employeeData, setEmployeeData] = useState<EmployeeLeaveDet[]>([]);
   const router = useRouter();
 
 
@@ -30,7 +30,7 @@ const LeaveEntry = () => {
 
   // Update form values when employeeData changes
   useEffect(() => {
-    form.setValue('employeeData', employeeData);
+    form.setValue('employeeLeaveDet', employeeData);
     // console.log('Updated form employeeData:', form.getValues('employeeData'));
   }, [employeeData]);
 

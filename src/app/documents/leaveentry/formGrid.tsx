@@ -122,6 +122,7 @@ const handleValuesChange = (changedValues:changedValueObject) => {
             caption: 'Emp Code',
             inputType: 'lookup', // Optional attribute
             dataSource: lookupData, // Optional data source for lookup
+            columnMapping={columnMapping} // Pass the column mapping
           },
           { dataField: 'Employee', caption: 'Employee' },
           { dataField: 'CPR', caption: 'CPR' },
@@ -137,7 +138,7 @@ const handleValuesChange = (changedValues:changedValueObject) => {
           },
         ]}
         dataSource={leaveData}
-        columnMapping={columnMapping} // Pass the column mapping
+        
         onValueSelect={handleValueSelect}
         lastColumn="LeaveType"
         watchColumns={['FromDate','ToDate']}

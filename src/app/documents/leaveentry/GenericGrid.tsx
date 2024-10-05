@@ -9,7 +9,7 @@ interface GridProps<T> {
     dataField: keyof T;
     caption: string;
     inputType?: 'lookup' | 'combo';
-    dataSource?: T[];
+    dataSource?: any;
     dataType?: string;
     disabled?: boolean;
     formula?:string

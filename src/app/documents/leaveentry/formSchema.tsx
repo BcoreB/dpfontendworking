@@ -6,39 +6,38 @@ import { saveMasterData, updateMasterData } from '../../datalayer/api';
 import DPComboBox from '@/components/ui/dpcombobox'
 
 // Define schema for the formGrid elements
-export const formSchemaFormGrid = z.object({
+export const formSchemaEmployeeLeaveDet = z.object({
   empcode:z.string().max(20,{message:'maximum length allowed 20'})
   .min(5, {
     message: "empcode must be at least 5 characters.",
   }),
-  empname: z.string(),
-  cpr: z.string(),
   empfromdate: z.date(),
   emptodate: z.date(),
-  numberofdays: z.string(),
-  entitled: z.string(),
   remarks: z.string(),
-  npbalance: z.string(),
-  leavetyle: z.string(),
+  leavetype: z.string(),
 
 })
+// formSchema.tsx
+export interface EmployeeLeaveDet {
+  id: number;
+  empcode: number | null;
+  fromdate: Date | null;
+  todate: Date | null;
+  remarks: string | null;
+  leavetype: string | null;
+}
 
 
 // Initialize formGrid with default values
-export const InitializeFormGridForm = () =>{
-  return useForm<z.infer<typeof formSchemaFormGrid>>({
-    resolver: zodResolver(formSchemaFormGrid),
+export const InitializeformSchemaEmpLeaveDet = () =>{
+  return useForm<z.infer<typeof formSchemaEmployeeLeaveDet>>({
+    resolver: zodResolver(formSchemaEmployeeLeaveDet),
     defaultValues: {
         empcode: '',
-        empname: '',
-        cpr: '',
         empfromdate: undefined,
         emptodate: undefined,
-        numberofdays: '',
-        entitled: '',
         remarks: '',
-        npbalance: '',
-        leavetyle: '',
+        leavetype: '',
 
     },
   });
@@ -55,8 +54,8 @@ export const formSchema = z.object({
   todate: z.date({
     required_error: "Please pick a date.",
   }),
-  employeeData : z.array(
-    formSchemaFormGrid
+  employeeLeaveDet : z.array(
+    formSchemaEmployeeLeaveDet
   ),
   
 });
@@ -72,36 +71,23 @@ export const InitializeForm = () => {
         payrolperiod: '',
         fromdate: undefined,
         todate: undefined,
-        employeeData: [],
+        employeeLeaveDet: [],
        
     },
   });
 };
 
-export type EmployeeDataType = {
-  empcode: string;
-  empname: string;
-  cpr: string;
-  empfromdate: Date;
-  emptodate: Date;
-  numberofdays: string;
-  entitled: string;
-  remarks: string;
-  npbalance: string;
-  leavetyle: string;
-  rowid :  number;
-}
 
 // Define the leave entry type with date fields as Date
-export type leavenetry = {
-  refno: string;
-  leavetype: string;
-  date: Date;
-  payrolperiod: string;
-  fromdate: Date;
-  todate: Date;
+// export type EmployeeLeaveHdr = {
+//   refno: string;
+//   leavetype: string;
+//   date: Date;
+//   payrolperiod: string;
+//   fromdate: Date;
+//   todate: Date;
   
-};
+// };
 export const leaveType = [
   {
     value: "a",
