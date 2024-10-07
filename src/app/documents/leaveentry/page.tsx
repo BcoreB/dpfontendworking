@@ -49,7 +49,7 @@ const LeaveEntry = () => {
                   leavetypecode: doc.LeaveType || 'default_code',
                   rowid: doc.RowId || 0,  // Adjust as necessary
  
-                })) as unknown as EmployeeLeaveDetMin[]  ;
+                })) as unknown as EmployeeLeaveDetSave[]  ;
                 form.setValue('employeeLeaveDet', newData);
     
 

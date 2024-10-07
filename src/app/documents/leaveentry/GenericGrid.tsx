@@ -15,7 +15,7 @@ interface GridProps<T> {
     formula?:string
     columnMapping?: { [key: string]: keyof T }; // Include columnMapping here
   }[];
-  dataSource: (T | null)[]; // Allow null in the dataSource
+  dataSource: T[]; // Allow null in the dataSource
   onValueSelect: (updatedData: (T | null)[]) => void;
   lastColumn: keyof T;
   watchColumns?: (keyof T)[];  // Accept new watchColumns prop
@@ -30,7 +30,7 @@ interface CellInfo<T> {
   rowIndex: number;
 }
 
-const GenericGrid = <T extends { id: string }>({
+const GenericGrid = <T extends { id: string, RowId:number }>({
   columns,
   dataSource: initialDataSource,
   onValueSelect,
@@ -54,14 +54,14 @@ const addNewRow = () => {
     );
 
     if (!isEmptyRowPresent) {
-      const newId = dataSource.length > 0 ? Math.max(...dataSource.map((item) => Number(item.id))) + 1 : 1;
-      const newRow: Partial<T> = { RowId: newId } as Partial<T>;
+      const newId = dataSource.length > 0 ? Math.max(...dataSource.map((item) => item.RowId)) + 1 : 1;
+      
       
       // Dynamically set up initial values for each column in the new row
+      const newRow: Partial<T> = { RowId: newId } as Partial<T>;
       columns.forEach((column) => {
-        newRow[column.dataField] = column.dataField === 'id' ? newId : undefined;
+        newRow[column.dataField] = column.dataField === 'RowId' ? (newId as T[keyof T]) : undefined as T[keyof T];
       });
-
       const updatedData = [...dataSource, newRow as T];
       setDataSource(updatedData);
       onValueSelect(updatedData);
@@ -90,21 +90,21 @@ const handleEditorPreparing = (e: any) => {
         const updatedRow = { ...updatedData[rowIndex] };
 
         // Update the field that has changed
-        updatedRow[e.dataField] = args.value;
+        (updatedRow as T)[e.dataField as keyof T] = args.value;
         updatedData[rowIndex] = updatedRow;
 
         // Create an object of key-value pairs where the key is the column and value is the updated value
-        const currentValues = watchColumns.reduce((acc, column) => {
-          acc[column] = updatedRow[column] || ""; // Assign default empty string if value is undefined
+        const currentValues = watchColumns.reduce((acc: Record<string, any>, column: keyof T) => {
+          acc[column as string] = updatedRow[column] || ""; // Assign default empty string if value is undefined
           return acc;
-        }, {} as Record<string, any>);
+        }, {});
 
         // Check if all fields in watchColumns are filled (non-empty)
         const allFieldsFilled = watchColumns.every((column) => updatedRow[column]);
 
         // Only call onValuesChange if all fields in watchColumns are filled
         if (allFieldsFilled) {
-          onValuesChange?.({ field: e.dataField, currentValues });
+          onValuesChange?.({ field: e.dataField, currentValues: Object.values(currentValues) as any[] });
         }
 
         // Update the data source

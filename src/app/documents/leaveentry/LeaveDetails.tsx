@@ -13,7 +13,7 @@ interface EmployeeData {
   Remarks: string | null;
   NPBalance: string | null;
   LeaveType: string | null;
-  RowId:number|null;
+  RowId:number;
 }
 
 // Define a separate interface for the lookup data
@@ -44,7 +44,7 @@ const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
       Remarks: null,
       NPBalance: null,
       LeaveType: null,
-      RowId:null,
+      RowId:0,
     },
   ]);
   
@@ -75,7 +75,7 @@ const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
     LeaveType: 'LeaveType',
   };
 
-  const handleValueSelect = (updatedData: EmployeeData[]) => {
+  const handleValueSelect = (updatedData: any) => {
     setLeaveData(updatedData);
     updateEmployeeData(updatedData);
   };
@@ -85,11 +85,8 @@ interface CurrentValues {
     ToDate: Date;
 }
 
-interface changedValueObject {
-    currentValues: CurrentValues;
-    field: string;
-}
-const handleValuesChange = (changedValues:changedValueObject) => {
+
+const handleValuesChange = (changedValues:any) => {
   // Extract FromDate and ToDate from the currentValues
   console.log(changedValues)
   const { FromDate, ToDate } = changedValues.currentValues;
