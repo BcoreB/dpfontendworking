@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { DataGrid, Column, Editing, Lookup } from 'devextreme-react/data-grid';
+import { EditorPreparingEvent } from 'devextreme/ui/data_grid';
 import { TextBox } from 'devextreme-react/text-box';
 import { Popup } from 'devextreme-react/popup';
 import { AiFillCaretDown } from 'react-icons/ai';
@@ -30,7 +31,7 @@ interface CellInfo<T> {
   rowIndex: number;
 }
 
-const GenericGrid = <T extends { id: string, RowId:number }>({
+const GenericGrid = <T extends {RowId:number }>({
   columns,
   dataSource: initialDataSource,
   onValueSelect,
@@ -80,42 +81,46 @@ const addNewRow = () => {
 //     }
 //   };
 
-const handleEditorPreparing = (e: any) => {
+
+
+const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
   if (e.parentType === 'dataRow') {
     // Check if the column being edited is in the watchColumns array
-    if (watchColumns.includes(e.dataField)) {
-      e.editorOptions.onValueChanged = (args: any) => {
-        const rowIndex = e.row.rowIndex;
-        const updatedData = [...dataSource];
-        const updatedRow = { ...updatedData[rowIndex] };
+    if (watchColumns.includes(e.dataField as keyof T)) {
+      e.editorOptions.onValueChanged = (args: { value: any }) => {
+        const rowIndex = e.row?.rowIndex;
+        if (rowIndex !== undefined) {
+          const updatedData = [...dataSource];
+          const updatedRow = { ...updatedData[rowIndex] };
 
-        // Update the field that has changed
-        (updatedRow as T)[e.dataField as keyof T] = args.value;
-        updatedData[rowIndex] = updatedRow;
+          // Update the field that has changed
+          updatedRow[e.dataField as keyof T] = args.value;
+          updatedData[rowIndex] = updatedRow;
 
-        // Create an object of key-value pairs where the key is the column and value is the updated value
-        const currentValues = watchColumns.reduce((acc: Record<string, any>, column: keyof T) => {
-          acc[column as string] = updatedRow[column] || ""; // Assign default empty string if value is undefined
-          return acc;
-        }, {});
+          // Create an object of key-value pairs where the key is the column and value is the updated value
+          const currentValues = watchColumns.reduce((acc, column) => {
+            acc[column] = updatedRow[column] || ""; // Assign default empty string if value is undefined
+            return acc;
+          }, {} as Record<keyof T, any>);
 
-        // Check if all fields in watchColumns are filled (non-empty)
-        const allFieldsFilled = watchColumns.every((column) => updatedRow[column]);
+          // Check if all fields in watchColumns are filled (non-empty)
+          const allFieldsFilled = watchColumns.every((column) => updatedRow[column]);
 
-        // Only call onValuesChange if all fields in watchColumns are filled
-        if (allFieldsFilled) {
-          onValuesChange?.({ field: e.dataField, currentValues: Object.values(currentValues) as any[] });
+          // Only call onValuesChange if all fields in watchColumns are filled
+          if (allFieldsFilled) {
+            onValuesChange?.({ field: e.dataField as keyof T, currentValues });
+          }
+
+          // Update the data source
+          setDataSource(updatedData);
+          onValueSelect(updatedData);
         }
-
-        // Update the data source
-        setDataSource(updatedData);
-        onValueSelect(updatedData);
       };
     }
 
-    // For handling Enter keypress in the last column to add a new row
+    // Handle the "Enter" keypress to add a new row
     if (e.dataField === lastColumn) {
-      e.editorOptions.onKeyDown = (args: any) => {
+      e.editorOptions.onKeyDown = (args: { event: KeyboardEvent }) => {
         if (args.event.key === 'Enter') {
           addNewRow();
         }
@@ -123,6 +128,7 @@ const handleEditorPreparing = (e: any) => {
     }
   }
 };
+
 
 // const handleEditorPreparing = (e: any) => {
 //   const formulaColumns = columns.filter(col => col.formula); // Get all columns with formulas

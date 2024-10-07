@@ -80,35 +80,20 @@ const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
     updateEmployeeData(updatedData);
   };
 
-interface CurrentValues {
-    FromDate: Date;
-    ToDate: Date;
-}
 
 
 const handleValuesChange = (changedValues:any) => {
-  // Extract FromDate and ToDate from the currentValues
-  console.log(changedValues)
   const { FromDate, ToDate } = changedValues.currentValues;
 
-  // Check if both FromDate and ToDate are present
   if (FromDate && ToDate) {
-    // Parse the dates
     const fromDate = new Date(FromDate);
     const toDate = new Date(ToDate);
 
-    // Calculate the difference in milliseconds
     const differenceInTime = toDate.getTime() - fromDate.getTime();
-
-    // Calculate the difference in days
     const differenceInDays = differenceInTime / (1000 * 3600 * 24);
 
-    // Alert the difference
     alert(`The difference between FromDate and ToDate is ${differenceInDays} days.`);
   }
-
-  // Additional logic can be added here if needed
-  // For example, triggering updates, alerts, or other functions
 };
 
 
