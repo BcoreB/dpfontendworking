@@ -30,7 +30,7 @@ interface CellInfo<T> {
   rowIndex: number;
 }
 
-const GenericGrid = <T extends { id: number }>({
+const GenericGrid = <T extends { id: string }>({
   columns,
   dataSource: initialDataSource,
   onValueSelect,
@@ -54,12 +54,12 @@ const addNewRow = () => {
     );
 
     if (!isEmptyRowPresent) {
-      const newId = dataSource.length > 0 ? Math.max(...dataSource.map((item) => item.id)) + 1 : 1;
-      const newRow: Partial<T> = { id: newId } as Partial<T>;
+      const newId = dataSource.length > 0 ? Math.max(...dataSource.map((item) => Number(item.id))) + 1 : 1;
+      const newRow: Partial<T> = { RowId: newId } as Partial<T>;
       
       // Dynamically set up initial values for each column in the new row
       columns.forEach((column) => {
-        newRow[column.dataField] = column.dataField === 'id' ? newId : null;
+        newRow[column.dataField] = column.dataField === 'id' ? newId : undefined;
       });
 
       const updatedData = [...dataSource, newRow as T];

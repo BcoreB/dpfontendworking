@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import GenericGrid from './GenericGrid';
 
 interface EmployeeData {
-  id: number;
-  EmpCode: number | null;
+  id: string;
+  EmpCode: string | null;
   Employee: string | null;
   CPR: string | null;
   FromDate: Date | null;
@@ -13,6 +13,7 @@ interface EmployeeData {
   Remarks: string | null;
   NPBalance: string | null;
   LeaveType: string | null;
+  RowId:number|null;
 }
 
 // Define a separate interface for the lookup data
@@ -32,7 +33,7 @@ interface LeaveManagementProps {
 const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => {
   const [leaveData, setLeaveData] = useState<EmployeeData[]>([
     {
-      id: 1,
+      id: "1",
       EmpCode: null,
       Employee: null,
       CPR: null,
@@ -43,6 +44,7 @@ const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
       Remarks: null,
       NPBalance: null,
       LeaveType: null,
+      RowId:null,
     },
   ]);
   

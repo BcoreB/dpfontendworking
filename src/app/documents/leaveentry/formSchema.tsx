@@ -22,8 +22,8 @@ export const formSchemaEmployeeLeaveDet = z.object({
 // formSchema.tsx
 export interface EmployeeLeaveDet {
 
-  id: number;
-  EmpCode: number | null;
+  id: string;
+  EmpCode: string | null;
   Employee: string | null;
   CPR: string | null;
   FromDate: Date | null;
@@ -37,19 +37,18 @@ export interface EmployeeLeaveDet {
 }
 
 // interface for reduced data
-export interface EmployeeLeaveDetMin{
-  id: number;
-  EmpCode: number | null;
+export interface EmployeeLeaveDetSave{
+  id: string;
+  empcode: string  ;
   
-  FromDate: Date | null;
-  ToDate: Date | null;
+  fromdate: Date ;
+  todate: Date  ;
   
-  Remarks: string | null;
+  remarks: string  ;
   
-  LeaveType: string | null;
-  RowId:number|null;
+  leavetypecode: string  ;
+  rowid:number ;
 }
-
 
 // Initialize formGrid with default values
 export const InitializeformSchemaEmpLeaveDet = () =>{

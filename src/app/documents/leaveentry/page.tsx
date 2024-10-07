@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import DPInput from '@/components/ui/dpinput';
-import { InitializeForm,EmployeeLeaveDetMin, formSchema, EmployeeLeaveDet, leaveType, payrolPeriod } from './formSchema';
+import { InitializeForm,EmployeeLeaveDetSave, formSchema, EmployeeLeaveDet, leaveType, payrolPeriod } from './formSchema';
 import { useRouter } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
 import DPComboBox from '@/components/ui/dpcombobox';
@@ -41,13 +41,13 @@ const LeaveEntry = () => {
             
                 {
 
-                  id : doc.id,
-                  empcode : doc.EmpCode,
-                  empfromdate: doc.FromDate,
-                  emptodate : doc.ToDate,
-                  remarks : doc.Remarks,
-                  rowid : doc.RowId,
-                  leavetypecode:doc.LeaveType,
+                  fromdate: doc.FromDate || new Date(), // Adjust as necessary
+                  todate: doc.ToDate || new Date(),     // Adjust as necessary
+                  id: doc.id,
+                  empcode: doc.EmpCode || 'default_empcode', // Adjust as necessary
+                  remarks: doc.Remarks || 'default_remarks', // Adjust as necessary
+                  leavetypecode: doc.LeaveType || 'default_code',
+                  rowid: doc.RowId || 0,  // Adjust as necessary
  
                 })) as unknown as EmployeeLeaveDetMin[]  ;
                 form.setValue('employeeLeaveDet', newData);
@@ -56,24 +56,12 @@ const LeaveEntry = () => {
             }
              
           }
- 
-
-
-        
         
         fetchData();
-  
-  
  
  
 
  },[employeeLeaveDetails])
-
-  // Update form values when employeeData changes
-  useEffect(() => {
-    form.setValue('employeeLeaveDet', employeeLeaveDetails);
-    // console.log('Updated form employeeData:', form.getValues('employeeData'));
-  }, [employeeLeaveDetails]);
 
   // Callback to handle updating the employee data in LeaveManagement component
   const updateEmployeeData = (updatedData: EmployeeLeaveDet[]) => {
