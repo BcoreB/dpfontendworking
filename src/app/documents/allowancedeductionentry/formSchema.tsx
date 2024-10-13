@@ -6,33 +6,44 @@ import { saveMasterData, updateMasterData } from '../../datalayer/api';
 import DPComboBox from '@/components/ui/dpcombobox'
 
 // Define schema for the formGrid elements
-export const formSchemaEmpAllowanceDeductionFormulaDet = z.object({
-    alldedcode:z.string().min(2,{message:"Please enter dedCode"}),
-    condition:z.string().min(2,{message:"Please enter dedCode"}),
-    formula:z.string().min(2,{message:"Please enter dedCode"}),
+export const formSchemaEmployeeVariableAllDedDet = z.object({
+    id:z.string(),
+    alldedcode:z.string(),
+    empcode:z.string().min(2,{message:"Please enter empCode"}),
+    inputtypevalue:z.string().min(2,{message:"Please enter dedCode"}),
+    remakrs:z.string().min(2,{message:"Please enter dedCode"}),
     rowid:z.number(),
+    basicsalary:z.string(),
+    formula:z.string(),
 })
 
 // Interface for Grid
-export interface EmpAllowanceDeductionFormulaDet {
+export interface formSchemaEmployeeVariableAllDedDet {
 
-  CompId:string;
-  AlldedCode:string;
-  Condition:string,
-  Formula:string,
-  RowId:string,
+    id:string,
+    alldedcode:string,
+    empcode:string,
+    inputtypevalue:string,
+    remakrs:string,
+    rowid:number,
+    basicsalary:string,
+    formula:string,
 }
 
 
 // Initialize formGrid with default values
-export const InitializeformSchemaEmpAllowanceDeductionFormulaDet = () =>{
-  return useForm<z.infer<typeof  formSchemaEmpAllowanceDeductionFormulaDet>>({
-    resolver: zodResolver( formSchemaEmpAllowanceDeductionFormulaDet),
+export const InitializeformSchemaEmployeeVariableAllDedDet = () =>{
+  return useForm<z.infer<typeof  formSchemaEmployeeVariableAllDedDet>>({
+    resolver: zodResolver( formSchemaEmployeeVariableAllDedDet),
     defaultValues: {
-        alldedcode:'',
-        condition:'',
-        formula:'',
-        rowid:0,
+      id:'',
+      alldedcode:'',
+      empcode:'',
+      inputtypevalue:'',
+      remakrs:'',
+      rowid:0,
+      basicsalary:'',
+      formula:'',
     
     },
   });
@@ -41,22 +52,27 @@ export const InitializeformSchemaEmpAllowanceDeductionFormulaDet = () =>{
 
 // Define the schema for air sector master
 export const formSchema = z.object({
-    alldedcode:z.string().max(20,{message:'maximum length allowed 20'})
+    payrollperiodcode:z.string().max(20,{message:'maximum length allowed 20'})
     .min(5, {
       message: "empcode must be at least 5 characters.",
     }),
-    alldedname:z.string().min(5, {
+    inputtype:z.string().min(5, {
         message: "Ded name must be at least 5 characters.",
       }),
-    alldedshortname:z.string().min(2,{message:"Cannot be null"}),
-    type:z.string(),
-    subtype:z.string(),
-    inputtype:z.string(),
-    seqno:z.number(),
-    EmpAllowanceDeductionFormula : z.array(
-        formSchemaEmpAllowanceDeductionFormulaDet
+    fromdate:z.date(),
+    todate:z.date(),
+    alldedcode:z.string(),
+    nettotal:z.string(),
+    doccd:z.number(),
+    deleted:z.string(),
+    docno:z.number(),
+    docdt:z.date(),
+    empcode:z.string(),
+    empcompid:z.string(),
+    deptcode:z.string(),
+    EmployeeVariableAllDedDet : z.array(
+      formSchemaEmployeeVariableAllDedDet
       ),
-    ledger:z.string(),
 })
 
 // Initialize the form with default values
@@ -64,15 +80,21 @@ export const InitializeForm = () => {
   return useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-        alldedcode: '',
-        alldedname: '',
-        alldedshortname:'',
-        type:'',
-        subtype:'',
+        payrollperiodcode:'',
         inputtype:'',
-        seqno:0,
-        EmpAllowanceDeductionFormula: [],
-        ledger:'',
+        fromdate:undefined,
+        todate:undefined,
+        alldedcode:'',
+        nettotal:'',
+        doccd:0,
+        deleted:'',
+        docno:0,
+        docdt:undefined,
+        empcode:'',
+        empcompid:'',
+        deptcode:'',
+        EmployeeVariableAllDedDet: [],
+       
        
     },
   });

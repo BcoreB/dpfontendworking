@@ -9,17 +9,57 @@ import { InitializeForm,EmpAllowanceDeductionFormulaDet, formSchema, Type, SubTy
 import { useRouter } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
 import DPComboBox from '@/components/ui/dpcombobox';
-import DocumentHeader from '@/components/Menu/documentHeader';
+import DpRadioGroup from '@/components/ui/dpradiogroup';
+import FormHeader from '@/components/Menu/formHeader';
+// Import DataGrid from DevExtreme
+import { DataGrid, Column, Editing, Lookup } from 'devextreme-react/data-grid';
 
-
+export const radioOptions = [
+  { value: 'A', label: 'A' },
+  { value: 'B', label: 'B' },
+];
+export const sublevels = [
+  {
+    value:"c",
+    label:"c"
+  },
+  {
+    value:"d",
+    label:"d"
+  }
+]
 
 const AllowanceDeduction = () => {
     const docCd = 7;
     const docKey = 101;
     const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
     const [allowanceDetails, setallowanceDetails] = useState<EmpAllowanceDeductionFormulaDet[]>([]);
-    const router = useRouter();
+    const [isCompulsoryChecked, setIsCompulsoryChecked] = useState(false);
+    const handleCompulsoryChange = () => {
+        setIsCompulsoryChecked(!isCompulsoryChecked);
+    };
 
+  const [selectedDepartmentType, setSelectedDepartmentType] = useState(''); // Initially no selection
+  const [isComboBoxDisabled, setComboBoxDisabled] = useState(true); // Initially disabled
+
+   // Handle changes in the radio group
+   const handleDepartmentTypeChange = (field: string, value: string) => {
+    setSelectedDepartmentType(value);
+    form.setValue('ledger', value);
+
+    if (value === 'A') {
+      // Disable ComboBox if Top Level is selected
+      setComboBoxDisabled(true);
+      form.setValue('ledger', ' '); // Reset sublevelType if Top Level is selected
+    } else if (value === 'sublevel') {
+      // Enable ComboBox if Sub Level is selected
+      setComboBoxDisabled(false);
+    }
+  };
+    const router = useRouter();
+    const [gridData, setGridData] = useState([
+      { Condition: '', Formula: '' }, // Initial row
+    ]);
     // Initialize the form
     const form = InitializeForm();
     return (
@@ -28,7 +68,7 @@ const AllowanceDeduction = () => {
             <div className="border-solid">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(() => {})} className="space-y-8">
-                  <DocumentHeader
+                  <FormHeader
                     setFormValues={setFormValues}
                     docCd={docCd}
                     docKey={docKey}
@@ -45,7 +85,7 @@ const AllowanceDeduction = () => {
                         labelText={getLanguageByEnglish("AllDed Code")}
                         placeholder={getLanguageByEnglish("00000")}
                         onValueChange={(field, value) => {
-                          form.setValue("AllDedCode", value);
+                          form.setValue("alldedcode", value);
                         }}
                       />
                     </div>
@@ -58,7 +98,7 @@ const AllowanceDeduction = () => {
                         labelText={getLanguageByEnglish("Allded Name")}
                         placeholder={getLanguageByEnglish("ABCD")}
                         onValueChange={(field, value) => {
-                          form.setValue("AlldedName", value);
+                          form.setValue("alldedname", value);
                         }}
                       />
                     </div>
@@ -71,7 +111,7 @@ const AllowanceDeduction = () => {
                         labelText={getLanguageByEnglish("Allded Short Name")}
                         placeholder={getLanguageByEnglish("ABCD")}
                         onValueChange={(field, value) => {
-                          form.setValue("AlldedShortName", value);
+                          form.setValue("alldedshortname", value);
                         }}
                       />
                     </div>
@@ -83,7 +123,7 @@ const AllowanceDeduction = () => {
                         labelText={getLanguageByEnglish("Type")}
                         data={Type} // You can populate this with actual data
                         onValueChange={(field, value) => {
-                          form.setValue("Type", value);
+                          form.setValue("type", value);
                         }}
                       />
                     </div>
@@ -95,7 +135,7 @@ const AllowanceDeduction = () => {
                         labelText={getLanguageByEnglish("Sub Type")}
                         data={SubType} // You can populate this with actual data
                         onValueChange={(field, value) => {
-                          form.setValue("SubType", value);
+                          form.setValue("subtype", value);
                         }}
                       />
                     </div>
@@ -107,7 +147,7 @@ const AllowanceDeduction = () => {
                         labelText={getLanguageByEnglish("Input Type")}
                         data={InputType} // You can populate this with actual data
                         onValueChange={(field, value) => {
-                          form.setValue("InputType", value);
+                          form.setValue("inputtype", value);
                         }}
                       />
                     </div>
@@ -120,7 +160,7 @@ const AllowanceDeduction = () => {
                         labelText={getLanguageByEnglish("SeqNo")}
                         placeholder={'0000'}
                         onValueChange={(field, value) => {
-                          form.setValue("SeqNo", Number(value));
+                          form.setValue("seqno", Number(value));
                         }}
                       />
                     </div>
@@ -129,6 +169,55 @@ const AllowanceDeduction = () => {
                 </form>
               </Form>
             </div>
+            {/* DevExtreme DataGrid for Condition and Formula */}
+        <div className="mt-5">
+          <DataGrid
+            dataSource={gridData}
+            showBorders={true}
+            onRowInserted={(e) => {
+              setGridData([...gridData, e.data]); // Add new row data to gridData state
+            }}
+          >
+            <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
+            {/* Define columns */}
+            <Column dataField="Condition" caption="Condition" />
+            <Column dataField="Formula" caption="Formula" />
+          </DataGrid>
+        </div>
+        {/* Checkbox for "Compulsory for all" */}
+        <div className="grid gap-1 py-1 lg:col-span-6">
+                                    <label className="flex items-center space-x-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={isCompulsoryChecked}
+                                            onChange={handleCompulsoryChange}
+                                        />
+                                        <span>{getLanguageByEnglish("Compulsory for all")}</span>
+                                    </label>
+          </div>
+          {/* <div className="grid gap-1 py-1 lg:col-span-2">
+                  <DpRadioGroup
+                    formcontrol={form.control}
+                    name="depType"
+                    disabled={false}
+                    labelText={getLanguageByEnglish("Department Type")}
+                    options={radioOptions}
+                    selectedValue={selectedDepartmentType}
+                    onValueChange={handleDepartmentTypeChange}
+                  />
+          </div>
+          <div className="grid gap-1 py-1 lg:col-span-2">
+                  <DPComboBox
+                    disabled={isComboBoxDisabled} // Use state to disable
+                    name="sublevelType"
+                    formcontrol={form.control}
+                    labelText={getLanguageByEnglish("Sublevel")}
+                    data={sublevels}
+                    onValueChange={(field, value) => {
+                      form.setValue("ledger", value);
+                    }}
+                  />
+                </div> */}
           </MaxWidthWrapper>
         </div>
       );
