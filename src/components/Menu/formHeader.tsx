@@ -12,6 +12,7 @@ interface FormHeaderProps {
   router: AppRouterInstance;
   getValues: UseFormGetValues<any>;
   setFormValues: React.Dispatch<React.SetStateAction<any>>;
+  hideItem?: string;  // New prop to specify which item to hide
 }
 
 const FormHeader: React.FC<FormHeaderProps> = ({
@@ -20,6 +21,7 @@ const FormHeader: React.FC<FormHeaderProps> = ({
   router,
   getValues,
   setFormValues,
+  hideItem,  // Destructure the new prop
 }) => {
   const draftAlerted = useRef(false);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -106,7 +108,10 @@ const FormHeader: React.FC<FormHeaderProps> = ({
         <div>
           <Button variant='ghost' type="button" onClick={printData}>Print</Button>
           <Button variant='ghost' type="button" onClick={onLogClick}>Log</Button>
-          <Button variant='ghost' type="button" onClick={saveDraft}>Draft</Button>
+          {/* Conditionally render the Draft button */}
+          {hideItem !== "Draft" && (
+            <Button variant='ghost' type="button" onClick={saveDraft}>Draft</Button>
+          )}
         </div>
       </div>
       <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" docCd={docCd} />

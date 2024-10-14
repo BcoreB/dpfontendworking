@@ -56,6 +56,7 @@ export const formSchema = z.object({
     EmpAllowanceDeductionFormula : z.array(
         formSchemaEmpAllowanceDeductionFormulaDet
       ),
+      glcode:z.string(),
     ledger:z.string(),
 })
 
@@ -73,6 +74,7 @@ export const InitializeForm = () => {
         seqno:0,
         EmpAllowanceDeductionFormula: [],
         ledger:'',
+        glcode:'',
        
     },
   });

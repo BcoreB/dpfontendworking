@@ -9,8 +9,9 @@ import { InitializeForm,EmpAllowanceDeductionFormulaDet, formSchema, Type, SubTy
 import { useRouter } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
 import DPComboBox from '@/components/ui/dpcombobox';
-import DpRadioGroup from '@/components/ui/dpradiogroup';
 import FormHeader from '@/components/Menu/formHeader';
+import DPInputBrowse from '@/components/ui/dpinputbrowse';
+
 // Import DataGrid from DevExtreme
 import { DataGrid, Column, Editing, Lookup } from 'devextreme-react/data-grid';
 
@@ -30,7 +31,7 @@ export const sublevels = [
 ]
 
 const AllowanceDeduction = () => {
-    const docCd = 7;
+    const docCd = 8;
     const docKey = 101;
     const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
     const [allowanceDetails, setallowanceDetails] = useState<EmpAllowanceDeductionFormulaDet[]>([]);
@@ -38,24 +39,7 @@ const AllowanceDeduction = () => {
     const handleCompulsoryChange = () => {
         setIsCompulsoryChecked(!isCompulsoryChecked);
     };
-
-  const [selectedDepartmentType, setSelectedDepartmentType] = useState(''); // Initially no selection
-  const [isComboBoxDisabled, setComboBoxDisabled] = useState(true); // Initially disabled
-
-   // Handle changes in the radio group
-   const handleDepartmentTypeChange = (field: string, value: string) => {
-    setSelectedDepartmentType(value);
-    form.setValue('ledger', value);
-
-    if (value === 'A') {
-      // Disable ComboBox if Top Level is selected
-      setComboBoxDisabled(true);
-      form.setValue('ledger', ' '); // Reset sublevelType if Top Level is selected
-    } else if (value === 'sublevel') {
-      // Enable ComboBox if Sub Level is selected
-      setComboBoxDisabled(false);
-    }
-  };
+  
     const router = useRouter();
     const [gridData, setGridData] = useState([
       { Condition: '', Formula: '' }, // Initial row
@@ -74,12 +58,13 @@ const AllowanceDeduction = () => {
                     docKey={docKey}
                     router={router}
                     getValues={form.getValues}
+                    hideItem="Draft"  // Pass the name of the field to hide
                   />
                   <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 py-1">
                     <div className="grid gap-1 py-1 lg:col-span-1">
                       <DPInput
                         formcontrol={form.control}
-                        name="AllDedCode"
+                        name="alldedcode"
                         disabled={false}
                         type="text"
                         labelText={getLanguageByEnglish("AllDed Code")}
@@ -92,7 +77,7 @@ const AllowanceDeduction = () => {
                     <div className="grid gap-1 py-1 lg:col-span-3">
                       <DPInput
                         formcontrol={form.control}
-                        name="AlldedName"
+                        name="alldedname"
                         disabled={false}
                         type="text"
                         labelText={getLanguageByEnglish("Allded Name")}
@@ -105,7 +90,7 @@ const AllowanceDeduction = () => {
                     <div className="grid gap-1 py-1 lg:col-span-2">
                       <DPInput
                         formcontrol={form.control}
-                        name="AlldedShortName"
+                        name="alldedshortname"
                         disabled={false}
                         type="text"
                         labelText={getLanguageByEnglish("Allded Short Name")}
@@ -118,7 +103,7 @@ const AllowanceDeduction = () => {
                     <div className="grid gap-1 py-1 lg:col-span-2">
                     <DPComboBox
                         disabled={false}
-                        name="Type"
+                        name="type"
                         formcontrol={form.control}
                         labelText={getLanguageByEnglish("Type")}
                         data={Type} // You can populate this with actual data
@@ -130,7 +115,7 @@ const AllowanceDeduction = () => {
                     <div className="grid gap-1 py-1 lg:col-span-1">
                       <DPComboBox
                         disabled={false}
-                        name="SubType"
+                        name="subtype"
                         formcontrol={form.control}
                         labelText={getLanguageByEnglish("Sub Type")}
                         data={SubType} // You can populate this with actual data
@@ -142,7 +127,7 @@ const AllowanceDeduction = () => {
                     <div className="grid gap-1 py-1 lg:col-span-2">
                     <DPComboBox
                         disabled={false}
-                        name="InputType"
+                        name="inputtype"
                         formcontrol={form.control}
                         labelText={getLanguageByEnglish("Input Type")}
                         data={InputType} // You can populate this with actual data
@@ -165,11 +150,7 @@ const AllowanceDeduction = () => {
                       />
                     </div>
                   </div>
-                  
-                </form>
-              </Form>
-            </div>
-            {/* DevExtreme DataGrid for Condition and Formula */}
+                  {/* DevExtreme DataGrid for Condition and Formula */}
         <div className="mt-5">
           <DataGrid
             dataSource={gridData}
@@ -195,29 +176,49 @@ const AllowanceDeduction = () => {
                                         <span>{getLanguageByEnglish("Compulsory for all")}</span>
                                     </label>
           </div>
-          {/* <div className="grid gap-1 py-1 lg:col-span-2">
-                  <DpRadioGroup
-                    formcontrol={form.control}
-                    name="depType"
-                    disabled={false}
-                    labelText={getLanguageByEnglish("Department Type")}
-                    options={radioOptions}
-                    selectedValue={selectedDepartmentType}
-                    onValueChange={handleDepartmentTypeChange}
-                  />
+          <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 py-1">
+          <div className="grid gap-1 py-1 lg:col-span-1">
+                <DPInputBrowse
+                  formcontrol={form.control}
+                  name="glcode"
+                  disabled={false}
+                  keyExp="glcode"
+                  type="text"
+                  labelText={getLanguageByEnglish("General Ledger")}
+                  placeholder={getLanguageByEnglish("")}
+                  onValueChange={(field, value) => {
+                    form.setValue("glcode", value);
+                  }}
+                  getValues={form.getValues} // Pass getValues here
+                  setValue={form.setValue} // Pass setValue here
+                  docCd={docCd} // Pass docCd
+                  fieldMapping={[ // Pass fieldMapping
+                    { column: 'glcode', formField: 'glcode' },
+                    { column: 'glname', formField: 'ledger' },
+                  ]}
+                />
+
           </div>
           <div className="grid gap-1 py-1 lg:col-span-2">
-                  <DPComboBox
-                    disabled={isComboBoxDisabled} // Use state to disable
-                    name="sublevelType"
+                  <DPInput
                     formcontrol={form.control}
-                    labelText={getLanguageByEnglish("Sublevel")}
-                    data={sublevels}
+                    name="ledger"
+                    disabled={false}
+                    type="text"
+                    labelText={getLanguageByEnglish("GL Name")}
+                    placeholder={getLanguageByEnglish("")}
                     onValueChange={(field, value) => {
                       form.setValue("ledger", value);
                     }}
                   />
-                </div> */}
+           </div>
+          </div>
+          
+                </form>
+              </Form>
+            </div>
+            
+                
           </MaxWidthWrapper>
         </div>
       );

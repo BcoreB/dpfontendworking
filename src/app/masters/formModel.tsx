@@ -18,10 +18,11 @@ interface ModalProps {
   onClose: (data?: any) => void;
   title: string;
   docCd: number;
+  keyExp:string;
   fieldMapping: ModalFieldMapping[]; // Add the new prop here
 }
 
-const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd, fieldMapping }) => {
+const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd, fieldMapping, keyExp }) => {
   const [data, setData] = useState<any[]>([]);
   const [gridKey, setGridKey] = useState(0); // Key for force re-rendering
   const [selectedRowData, setSelectedRowData] = useState<any>(null);
@@ -80,7 +81,7 @@ const FormModal: React.FC<ModalProps> = ({ isVisible, onClose, title, docCd, fie
             columnAutoWidth={true}
             allowColumnReordering={true}
             dataSource={data}
-            keyExpr="deptHeadCode"
+            keyExpr={keyExp}
             onSelectionChanged={handleSelectionChanged} // Handle row selection
             onCellDblClick={handleCellDblClick} // Handle double-click on a specific cell
           >

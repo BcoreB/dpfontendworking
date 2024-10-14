@@ -7,6 +7,7 @@ import FormModal from "@/app/masters/formModel"; // Import FormModal
 interface DPInputBrowseProps {
   formcontrol: any;
   name: string;
+  keyExp:string
   labelText: string;
   placeholder: string;
   disabled: boolean;
@@ -24,6 +25,7 @@ const DPInputBrowse: React.FC<DPInputBrowseProps> = ({
   labelText,
   placeholder,
   disabled,
+  keyExp,
   type,
   onValueChange,
   getValues, // Destructure getValues prop
@@ -47,6 +49,9 @@ const DPInputBrowse: React.FC<DPInputBrowseProps> = ({
     }
     setModalVisible(false);
   };
+
+
+  
 
   return (
     <FormField
@@ -87,6 +92,7 @@ const DPInputBrowse: React.FC<DPInputBrowseProps> = ({
             title="Select Data"
             docCd={docCd}
             fieldMapping={fieldMapping}
+            keyExp={keyExp}
           />
         </FormItem>
       )}

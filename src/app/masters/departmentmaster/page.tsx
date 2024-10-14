@@ -121,6 +121,7 @@ const DepartmentMaster = () => {
                   onValueChange={(field, value) => {
                     form.setValue("deptHeadCode", value);
                   }}
+                  keyExp="deptHeadCode"
                   getValues={form.getValues} // Pass getValues here
                   setValue={form.setValue} // Pass setValue here
                   docCd={docCd} // Pass docCd
