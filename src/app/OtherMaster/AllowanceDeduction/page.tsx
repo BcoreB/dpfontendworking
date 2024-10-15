@@ -15,6 +15,8 @@ import DPInputBrowse from '@/components/ui/dpinputbrowse';
 // Import DataGrid from DevExtreme
 import { DataGrid, Column, Editing, Lookup } from 'devextreme-react/data-grid';
 
+
+
 export const radioOptions = [
   { value: 'A', label: 'A' },
   { value: 'B', label: 'B' },
@@ -30,6 +32,20 @@ export const sublevels = [
   }
 ]
 
+// Define the addNewRow function
+const addNewRow = (setGridData: any) => {
+  setGridData((prevGridData: any) => [
+    ...prevGridData,
+    { Condition: "", Formula: "" }, // New row with empty values
+  ]);
+};
+
+// Define the function to check for empty rows
+const hasEmptyRow = (gridData: any) => {
+  return gridData.some((row: any) => row.Condition === "" || row.Formula === "");
+};
+
+
 const AllowanceDeduction = () => {
     const docCd = 8;
     const docKey = 101;
@@ -40,9 +56,25 @@ const AllowanceDeduction = () => {
         setIsCompulsoryChecked(!isCompulsoryChecked);
     };
   
+    // Handle the editor preparation (when a cell enters edit mode)
+  const handleEditorPreparing = (e: any) => {
+    if (e.dataField === 'Formula' && e.parentType === 'dataRow') {
+      // Intercept the keydown event
+      e.editorOptions.onKeyDown = (event: any) => {
+        if (event.event.key === 'Enter') {
+          if (!hasEmptyRow(gridData)) {
+            addNewRow(setGridData);
+          } else {
+            alert('There are empty rows. Please fill them before adding a new row.');
+          }
+        }
+      };
+    }
+  };
+    
     const router = useRouter();
     const [gridData, setGridData] = useState([
-      { Condition: '', Formula: '' }, // Initial row
+      { Condition: "", Formula: "" }, // Initial row
     ]);
     // Initialize the form
     const form = InitializeForm();
@@ -155,8 +187,10 @@ const AllowanceDeduction = () => {
           <DataGrid
             dataSource={gridData}
             showBorders={true}
+            onEditorPreparing={handleEditorPreparing}
             onRowInserted={(e) => {
               setGridData([...gridData, e.data]); // Add new row data to gridData state
+              
             }}
           >
             <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
@@ -208,7 +242,7 @@ const AllowanceDeduction = () => {
                     labelText={getLanguageByEnglish("GL Name")}
                     placeholder={getLanguageByEnglish("")}
                     onValueChange={(field, value) => {
-                      form.setValue("ledger", value);
+                      
                     }}
                   />
            </div>

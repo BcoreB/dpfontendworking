@@ -62,6 +62,7 @@ export const formSchema = z.object({
     fromdate:z.date(),
     todate:z.date(),
     alldedcode:z.string(),
+    
     nettotal:z.string(),
     doccd:z.number(),
     deleted:z.string(),
@@ -70,6 +71,7 @@ export const formSchema = z.object({
     empcode:z.string(),
     empcompid:z.string(),
     deptcode:z.string(),
+    empname:z.string(),
     EmployeeVariableAllDedDet : z.array(
       formSchemaEmployeeVariableAllDedDet
       ),
@@ -85,6 +87,7 @@ export const InitializeForm = () => {
         fromdate:undefined,
         todate:undefined,
         alldedcode:'',
+       
         nettotal:'',
         doccd:0,
         deleted:'',
@@ -93,6 +96,7 @@ export const InitializeForm = () => {
         empcode:'',
         empcompid:'',
         deptcode:'',
+        empname:'',
         EmployeeVariableAllDedDet: [],
        
        
@@ -101,7 +105,17 @@ export const InitializeForm = () => {
 };
 
 
-export const Type = [
+export const inputType = [
+    {
+      value: "a",
+      label: "A",
+    },
+    {
+      value: "b",
+      label: "B",
+    }
+]
+export const payrollPeriod = [
   {
     value: "a",
     label: "A",
@@ -111,7 +125,7 @@ export const Type = [
     label: "B",
   }
 ];
-export const SubType = [
+export const AlldedCode = [
   {
     value: "a",
     label: "A",
@@ -122,7 +136,7 @@ export const SubType = [
   }
 ];
 
-export const InputType = [
+export const Company = [
     {
         value: "a",
         label: "A",
@@ -131,6 +145,17 @@ export const InputType = [
         value: "b",
         label: "B",
       }
+];
+
+export const Department = [
+  {
+      value: "a",
+      label: "A",
+    },
+    {
+      value: "b",
+      label: "B",
+    }
 ];
 
 
