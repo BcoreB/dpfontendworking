@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { AppRouterInstance } from 'next/dist/shared/lib/router/router';
 import Modal from '@/components/Menu/modal'; // Import Modal component
@@ -23,6 +23,14 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
 }) => {
   const draftAlerted = useRef(false);
   const [isModalVisible, setModalVisible] = useState(false); // State to control modal visibility
+  const [documentDate, setDocumentDate] = useState(""); // State for document date
+
+  // Get current date and format it for the date input field
+  useEffect(() => {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+    setDocumentDate(formattedDate); // Set the current date as default
+  }, []);
 
   const addNew = useCallback(() => {
     const url = '/masters/accomodationmaster';
@@ -127,6 +135,8 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
                 type="date"
                 name="documentDate"
                 className="p-1 border rounded"
+                value={documentDate}  // Set default value as current date
+                onChange={(e) => setDocumentDate(e.target.value)} // Allow changing the date
               />
           </div>
         </div>

@@ -133,7 +133,7 @@ const handleOpenClick = () => {
   }
 };
 
-  const handleDataChange = (e) => {
+  const handleDataChange = (e:any) => {
     setSelectedDataKey(e.target.value);
   };
   const toggleSection = (index: number) => {
@@ -324,7 +324,7 @@ const handleOpenClick = () => {
           leave="transition-transform duration-300"
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
-          className="sidebar-slide absolute right-0 pr-12 h-5/6 mt-48 shadow-lg p-4"
+          className="sidebar-slide absolute right-0 pr-12 h-full mt-16 shadow-lg p-4"
           style={{ width: '28rem', background:'#FFF7FC',}}
         >
           <div ref={sidebarRef}>
