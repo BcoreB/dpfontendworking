@@ -29,7 +29,17 @@ export interface formSchemaEmployeeVariableAllDedDet {
     basicsalary:string,
     formula:string,
 }
-
+ export interface EmployeeVariableAllDedDetGrid {
+  id:string,
+  alldedcode:string,
+  empcode:string,
+  empname:string,
+  basicsalary:string,
+  inputtypevalue:string,
+  amount:string
+  details:string,
+  RowId:number,
+ }
 
 // Initialize formGrid with default values
 export const InitializeformSchemaEmployeeVariableAllDedDet = () =>{

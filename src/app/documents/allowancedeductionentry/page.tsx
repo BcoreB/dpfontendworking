@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import DPInput from '@/components/ui/dpinput';
-import { InitializeForm,payrollPeriod, formSchema, AlldedCode, Company, Department, inputType } from './formSchema';
+import { InitializeForm,payrollPeriod, formSchema, AlldedCode, Company, Department, inputType, EmployeeVariableAllDedDetGrid } from './formSchema';
 import { useRouter } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
 import DPComboBox from '@/components/ui/dpcombobox';
@@ -14,8 +14,8 @@ import DocumentHeader from '@/components/Menu/documentHeader';
 import Sidebar from '@/components/Menu/documentSideBar';
 import DPInputBrowse from '@/components/ui/dpinputbrowse';
 import DPDatePicker from '@/components/ui/dpdatepicker';
-
-const LeaveEntry = () => {
+import GenericGrid from '../leaveentry/GenericGrid';
+const AllowanceDeductionEntry = () => {
   const docCd = 10;
   const docKey = 101;
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
@@ -23,12 +23,27 @@ const LeaveEntry = () => {
   const router = useRouter();
 
 
-  
+  const [leaveData, setAllowanceDeductionData] = useState< EmployeeVariableAllDedDetGrid[]>([
+    {
+      id: "1",
+      RowId:0,
+      alldedcode:'',
+      empcode:'',
+      empname:'',
+      basicsalary:'',
+      inputtypevalue:'',
+      amount:'',
+      details:'',
+    },
+  ]);
 
   // Initialize the form
   const form = InitializeForm();
 
-   
+  const handleValueSelect = (updatedData: any) => {
+    setAllowanceDeductionData(updatedData);
+
+  };
 
 
   // Function to handle the button click and alert form values
@@ -162,19 +177,41 @@ const LeaveEntry = () => {
                     name="inputtype"
                     formcontrol={form.control}
                     labelText={getLanguageByEnglish("Input Type")}
-                    data={AlldedCode} // You can populate this with actual data
+                    data={inputType} // You can populate this with actual data
                     onValueChange={(field, value) => {
                       form.setValue("inputtype", value);
                     }}
                   />
                 </div>
                 <div className="grid gap-1 py-1 lg:col-span-2">
-                    <div className="flex items-end justify-center gap-4">
+                    <div className="flex items-end justify-start gap-4">
                         <Button >Import Excel</Button>
                         <Button >Export Excel</Button>
                         <a href="">Load Data</a>
                     </div>
                 </div>
+              </div>
+              <div className="mt-10">
+                <GenericGrid<EmployeeVariableAllDedDetGrid>
+                  columns={[
+                    {
+                      dataField: 'alldedcode',
+                      caption: 'All Ded Code',   
+                    },
+                    { dataField: 'empcode', caption: 'Emp Code' },
+                    { dataField: 'empname', caption: 'Employee Name' },
+                    { dataField: 'basicsalary', caption: 'Basic Salary'},
+                    { dataField: 'inputtypevalue', caption: 'Input Type'},
+                    { dataField: 'amount', caption: 'Amount' },
+                    { dataField: 'details', caption: 'Details' },
+
+                  ]}
+                  
+                  dataSource={leaveData}
+                  
+                  onValueSelect={handleValueSelect}
+                  lastColumn="details"
+                />
               </div>
             </form>
           </Form>
@@ -184,4 +221,4 @@ const LeaveEntry = () => {
   );
 };
 
-export default LeaveEntry;
+export default AllowanceDeductionEntry;

@@ -16,6 +16,7 @@ interface EmployeeData {
   RowId:number;
 }
 
+
 // Define a separate interface for the lookup data
 interface LookupData {
   EmpCode: number;
