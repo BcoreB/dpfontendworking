@@ -15,6 +15,7 @@ import Sidebar from '@/components/Menu/documentSideBar';
 import DPInputBrowse from '@/components/ui/dpinputbrowse';
 import DPDatePicker from '@/components/ui/dpdatepicker';
 import GenericGrid from '../leaveentry/GenericGrid';
+import * as XLSX from 'xlsx'; // Import XLSX library
 const AllowanceDeductionEntry = () => {
   const docCd = 10;
   const docKey = 101;
@@ -23,7 +24,7 @@ const AllowanceDeductionEntry = () => {
   const router = useRouter();
 
 
-  const [leaveData, setAllowanceDeductionData] = useState< EmployeeVariableAllDedDetGrid[]>([
+  const [allowancedeductionData, setAllowanceDeductionData] = useState< EmployeeVariableAllDedDetGrid[]>([
     {
       id: "1",
       RowId:0,
@@ -42,17 +43,43 @@ const AllowanceDeductionEntry = () => {
 
   const handleValueSelect = (updatedData: any) => {
     setAllowanceDeductionData(updatedData);
-
+    console.log("Mapped Data:", updatedData);
+    console.log("AllowanceDeductionData", allowancedeductionData)
   };
 
+// Function to handle file selection
+const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const data = new Uint8Array(event.target?.result as ArrayBuffer);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(sheet);
+      const mappedData = jsonData.map((row: any, index: number) => ({
+        id: (index + 1).toString(),
+        RowId: index,
+        alldedcode: row["alldedcode"] || '',
+        empcode: row["empcode"] || '',
+        empname: row["empname"] || '',
+        basicsalary: row["basicsalary"] || '',
+        inputtypevalue: row["inputtypevalue"] || '',
+        amount: row["amount"] || '',
+        details: row["details"] || '',
+      }));
+      handleValueSelect([...mappedData]);
+      
+    };
+    reader.readAsArrayBuffer(file); // Use ArrayBuffer for reading binary files
+  }
+};
 
-  // Function to handle the button click and alert form values
-  const handleAlertFormValues = () => {
-
-    const values = form.getValues();
-    console.log('Form Values:', values);
-    alert(JSON.stringify(values, null, 2));
-  };
+// Function to trigger file input click
+const handleImportClick = () => {
+  document.getElementById('fileInput')?.click();
+};
 
   return (
     <div className="w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8">
@@ -185,30 +212,32 @@ const AllowanceDeductionEntry = () => {
                 </div>
                 <div className="grid gap-1 py-1 lg:col-span-2">
                     <div className="flex items-end justify-start gap-4">
-                        <Button >Import Excel</Button>
+                        <Button type="button" onClick={handleImportClick}>Import Excel</Button>
                         <Button >Export Excel</Button>
                         <a href="">Load Data</a>
+                        {/* Hidden file input for importing excel */}
+                        <input 
+                          type="file" 
+                          id="fileInput" 
+                          style={{ display: 'none' }} 
+                          accept=".xlsx, .xls" 
+                          onChange={handleFileUpload} 
+                        />
                     </div>
                 </div>
               </div>
               <div className="mt-10">
                 <GenericGrid<EmployeeVariableAllDedDetGrid>
                   columns={[
-                    {
-                      dataField: 'alldedcode',
-                      caption: 'All Ded Code',   
-                    },
+                    { dataField: 'alldedcode', caption: 'All Ded Code' },
                     { dataField: 'empcode', caption: 'Emp Code' },
                     { dataField: 'empname', caption: 'Employee Name' },
-                    { dataField: 'basicsalary', caption: 'Basic Salary'},
-                    { dataField: 'inputtypevalue', caption: 'Input Type'},
+                    { dataField: 'basicsalary', caption: 'Basic Salary' },
+                    { dataField: 'inputtypevalue', caption: 'Input Type' },
                     { dataField: 'amount', caption: 'Amount' },
                     { dataField: 'details', caption: 'Details' },
-
                   ]}
-                  
-                  dataSource={leaveData}
-                  
+                  dataSource={allowancedeductionData} // Make sure this is correctly populated
                   onValueSelect={handleValueSelect}
                   lastColumn="details"
                 />

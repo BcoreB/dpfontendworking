@@ -62,12 +62,11 @@ export const InitializeformSchemaEmployeeVariableAllDedDet = () =>{
 
 // Define the schema for air sector master
 export const formSchema = z.object({
-    payrollperiodcode:z.string().max(20,{message:'maximum length allowed 20'})
-    .min(5, {
-      message: "empcode must be at least 5 characters.",
+    payrollperiodcode:z.string().min(1, {
+      message: "empcode must be at least 1 characters.",
     }),
-    inputtype:z.string().min(5, {
-        message: "Ded name must be at least 5 characters.",
+    inputtype:z.string().min(1, {
+        message: "Ded name must be at least 1 characters.",
       }),
     fromdate:z.date(),
     todate:z.date(),
