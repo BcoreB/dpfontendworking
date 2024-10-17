@@ -12,6 +12,7 @@ interface FormHeaderProps {
   router: AppRouterInstance;
   getValues: UseFormGetValues<any>;
   setFormValues: React.Dispatch<React.SetStateAction<any>>;
+  fieldToPrint: string; // New prop for the field name
 }
 
 const DocumentHeader: React.FC<FormHeaderProps> = ({
@@ -20,6 +21,7 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
   router,
   getValues,
   setFormValues,
+  fieldToPrint,
 }) => {
   const draftAlerted = useRef(false);
   const [isModalVisible, setModalVisible] = useState(false); // State to control modal visibility
@@ -47,11 +49,56 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
   }, [router]);
 
   const printData = useCallback(() => {
-    const url = '/masters/accomodationmaster';
-    router.push(url);
-    alert("printed Data");
-    window.location.reload();
-  }, [router]);
+    const values = getValues(); // Get form values
+    console.log(values);
+    const valueToPrint = values[fieldToPrint]; // Get the specific field value
+    
+    // Create a printable layout for the specific form field data
+    const printWindow = window.open('', '_blank');
+    printWindow?.document.write(`
+      <html>
+        <head>
+          <title>Print Form Data</title>
+          <style>
+            table {
+              width: 100%;
+              border-collapse: collapse;
+            }
+            th, td {
+              border: 1px solid black;
+              padding: 8px;
+              text-align: left;
+            }
+            th {
+              background-color: #f2f2f2;
+            }
+          </style>
+        </head>
+        <body>
+          <h2>Form Data</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Field Name</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>${fieldToPrint}</td>
+                <td>${typeof valueToPrint === 'object' ? JSON.stringify(valueToPrint) : valueToPrint}</td>
+              </tr>
+            </tbody>
+          </table>
+          <script>
+            window.print();
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow?.document.close();
+  }, [getValues, fieldToPrint]);
+  
 
   const saveDraft = useCallback(() => {
     const currentFormValues = getValues(); // Get current form values

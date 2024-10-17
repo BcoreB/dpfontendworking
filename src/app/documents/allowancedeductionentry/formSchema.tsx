@@ -18,7 +18,7 @@ export const formSchemaEmployeeVariableAllDedDet = z.object({
 })
 
 // Interface for Grid
-export interface formSchemaEmployeeVariableAllDedDet {
+export interface EmployeeVariableAllDedDetSave {
 
     id:string,
     alldedcode:string,
@@ -40,6 +40,8 @@ export interface formSchemaEmployeeVariableAllDedDet {
   details:string,
   RowId:number,
  }
+
+ 
 
 // Initialize formGrid with default values
 export const InitializeformSchemaEmployeeVariableAllDedDet = () =>{

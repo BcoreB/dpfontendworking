@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import DPInput from '@/components/ui/dpinput';
-import { InitializeForm,payrollPeriod, formSchema, AlldedCode, Company, Department, inputType, EmployeeVariableAllDedDetGrid } from './formSchema';
+import { InitializeForm,payrollPeriod, formSchema, AlldedCode, Company, Department, inputType,EmployeeVariableAllDedDetSave, EmployeeVariableAllDedDetGrid } from './formSchema';
 import { useRouter } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
 import DPComboBox from '@/components/ui/dpcombobox';
@@ -41,11 +41,51 @@ const AllowanceDeductionEntry = () => {
   // Initialize the form
   const form = InitializeForm();
 
+  useEffect(()=>{
+    
+
+    // console.log('data',data)
+  
+       
+      const fetchData=async ()=>{
+          if(allowancedeductionData)
+            {
+              const newData = allowancedeductionData.map((doc, index) => (
+            
+                {
+
+                  id: doc.id, // Adjust as necessary
+                  alldedcode: doc.alldedcode,     // Adjust as necessary
+                  empcode: doc.empcode || 'default_empcode', // Adjust as necessary
+                  inputtypevalue:doc.inputtypevalue,
+                  remarks: doc.details || 'default_remarks', // Adjust as necessary
+                  rowid: doc.RowId || 0,  // Adjust as necessary
+                  basicsalary: doc.basicsalary,
+ 
+                })) as unknown as EmployeeVariableAllDedDetSave[]  ;
+                form.setValue('EmployeeVariableAllDedDet', newData);
+    
+
+            }
+             
+          }
+        
+        fetchData();
+ 
+ 
+
+ },[allowancedeductionData])
+
   const handleValueSelect = (updatedData: any) => {
     setAllowanceDeductionData(updatedData);
-    console.log("Mapped Data:", updatedData);
-    console.log("AllowanceDeductionData", allowancedeductionData)
+    console.log("Allowance : ",allowancedeductionData)
+    console.log("updated data :", upda)
   };
+  
+  // Monitor state updates
+  useEffect(() => {
+    console.log("AllowanceDeductionData updated:", allowancedeductionData);
+  }, [allowancedeductionData]);
 
 // Function to handle file selection
 const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,6 +137,7 @@ const handleImportClick = () => {
                 docKey={docKey}
                 router={router}
                 getValues={form.getValues}
+                fieldToPrint='EmployeeVariableAllDedDet'
               />
               <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 py-1">
                 <div className="grid gap-1 py-1 lg:col-span-4">
