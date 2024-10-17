@@ -24,7 +24,7 @@ const AllowanceDeductionEntry = () => {
   const router = useRouter();
 
 
-  const [allowancedeductionData, setAllowanceDeductionData] = useState< EmployeeVariableAllDedDetGrid[]>([
+  const [allowancedeductionData, setallowancedeductionData] = useState< EmployeeVariableAllDedDetGrid[]>([
     {
       id: "1",
       RowId:0,
@@ -41,51 +41,27 @@ const AllowanceDeductionEntry = () => {
   // Initialize the form
   const form = InitializeForm();
 
-  useEffect(()=>{
-    
-
-    // console.log('data',data)
-  
-       
-      const fetchData=async ()=>{
-          if(allowancedeductionData)
-            {
-              const newData = allowancedeductionData.map((doc, index) => (
-            
-                {
-
-                  id: doc.id, // Adjust as necessary
-                  alldedcode: doc.alldedcode,     // Adjust as necessary
-                  empcode: doc.empcode || 'default_empcode', // Adjust as necessary
-                  inputtypevalue:doc.inputtypevalue,
-                  remarks: doc.details || 'default_remarks', // Adjust as necessary
-                  rowid: doc.RowId || 0,  // Adjust as necessary
-                  basicsalary: doc.basicsalary,
- 
-                })) as unknown as EmployeeVariableAllDedDetSave[]  ;
-                form.setValue('EmployeeVariableAllDedDet', newData);
-    
-
-            }
-             
-          }
-        
-        fetchData();
- 
- 
-
- },[allowancedeductionData])
-
-  const handleValueSelect = (updatedData: any) => {
-    setAllowanceDeductionData(updatedData);
-    console.log("Allowance : ",allowancedeductionData)
-    console.log("updated data :", upda)
-  };
-  
-  // Monitor state updates
   useEffect(() => {
-    console.log("AllowanceDeductionData updated:", allowancedeductionData);
-  }, [allowancedeductionData]);
+    // This useEffect ensures that every time the state changes, the form/grid gets updated
+    console.log('allowancedeductionData updated: ', allowancedeductionData);
+    // This will ensure the form is in sync with the updated state data
+    const newData = allowancedeductionData.map((doc, index) => ({
+      id: doc.id,
+      alldedcode: doc.alldedcode,
+      empcode: doc.empcode || 'default_empcode',
+      inputtypevalue: doc.inputtypevalue,
+      remarks: doc.details || 'default_remarks',
+      rowid: doc.RowId || 0,
+      basicsalary: doc.basicsalary,
+    })) as unknown as EmployeeVariableAllDedDetSave[];
+  
+    form.setValue('EmployeeVariableAllDedDet', newData);
+  }, [allowancedeductionData]); // This dependency ensures reactivity
+  
+
+ const handleValueSelect = (updatedData: any) => {
+  setallowancedeductionData((prevData) => [...prevData, ...updatedData]);
+};
 
 // Function to handle file selection
 const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,8 +85,7 @@ const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         amount: row["amount"] || '',
         details: row["details"] || '',
       }));
-      handleValueSelect([...mappedData]);
-      
+      setallowancedeductionData((prevData) => [...prevData, ...mappedData]); 
     };
     reader.readAsArrayBuffer(file); // Use ArrayBuffer for reading binary files
   }
@@ -120,6 +95,13 @@ const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
 const handleImportClick = () => {
   document.getElementById('fileInput')?.click();
 };
+
+
+
+const loadSampleData = () => {
+  console.log("Updated AllowanceDeductionData: ", allowancedeductionData);
+};
+
 
   return (
     <div className="w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8">
@@ -268,7 +250,8 @@ const handleImportClick = () => {
                 </div>
               </div>
               <div className="mt-10">
-                <GenericGrid<EmployeeVariableAllDedDetGrid>
+              <GenericGrid<EmployeeVariableAllDedDetGrid>
+                  key={allowancedeductionData.map(item => item.id).join()} // Ensure each render has a unique key
                   columns={[
                     { dataField: 'alldedcode', caption: 'All Ded Code' },
                     { dataField: 'empcode', caption: 'Emp Code' },
@@ -278,10 +261,13 @@ const handleImportClick = () => {
                     { dataField: 'amount', caption: 'Amount' },
                     { dataField: 'details', caption: 'Details' },
                   ]}
-                  dataSource={allowancedeductionData} // Make sure this is correctly populated
+                  dataSource={allowancedeductionData}
                   onValueSelect={handleValueSelect}
                   lastColumn="details"
                 />
+              </div>
+              <div className="flex items-end justify-start gap-4">
+                    <Button type="button" onClick={loadSampleData}>Load Sample Data</Button>
               </div>
             </form>
           </Form>
