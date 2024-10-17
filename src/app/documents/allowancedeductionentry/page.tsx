@@ -85,7 +85,7 @@ const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         amount: row["amount"] || '',
         details: row["details"] || '',
       }));
-      setallowancedeductionData([, ...mappedData]); 
+      setallowancedeductionData([...mappedData]); 
     };
     reader.readAsArrayBuffer(file); // Use ArrayBuffer for reading binary files
   }
@@ -98,8 +98,11 @@ const handleImportClick = () => {
 
 
 
-
-
+const lookupData = [
+  { empcode: 1, empname: 'John Doe',basicsalary:35000 },
+  { empcode: 2, empname: 'Jane Smith',basicsalary:36000 },
+  { empcode: 3, empname: 'Alice Johnson',basicsalary:25000 },
+];
 
   return (
     <div className="w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8">
@@ -119,6 +122,8 @@ const handleImportClick = () => {
                 getValues={form.getValues}
                 fieldToPrint='EmployeeVariableAllDedDet'
               />
+              
+
               <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 py-1">
                 <div className="grid gap-1 py-1 lg:col-span-4">
                   <DPComboBox
@@ -253,9 +258,18 @@ const handleImportClick = () => {
                   
                   columns={[
                     { dataField: 'alldedcode', caption: 'All Ded Code' },
-                    { dataField: 'empcode', caption: 'Emp Code' },
-                    { dataField: 'empname', caption: 'Employee Name' },
-                    { dataField: 'basicsalary', caption: 'Basic Salary' },
+                    { dataField: 'empcode',
+                       caption: 'Emp Code',
+                       inputType: 'lookup', // Optional attribute
+                       dataSource: lookupData, // Optional data source for lookup
+                       columnMapping: { // Pass column mapping directly within EmpCode column
+                         empcode: 'empcode',
+                         empname: 'empname',
+                         basicsalary:'basicsalary'
+                       },
+                       },
+                    { dataField: 'empname', caption: 'Employee Name', disabled:true },
+                    { dataField: 'basicsalary', caption: 'Basic Salary', disabled:true },
                     { dataField: 'inputtypevalue', caption: 'Input Type' },
                     { dataField: 'amount', caption: 'Amount' },
                     { dataField: 'details', caption: 'Details' },
