@@ -20,9 +20,15 @@ export interface EmpAllowanceDeductionFormulaDet {
   AlldedCode:string;
   Condition:string,
   Formula:string,
-  RowId:string,
+  RowId:number,
 }
 
+export interface EmpAllowanceDeductionGrid {
+  id:string,
+  Condition:string,
+  Formula:string,
+  RowId:number,
+}
 
 // Initialize formGrid with default values
 export const InitializeformSchemaEmpAllowanceDeductionFormulaDet = () =>{

@@ -98,9 +98,7 @@ const handleImportClick = () => {
 
 
 
-const loadSampleData = () => {
-  console.log("Updated AllowanceDeductionData: ", allowancedeductionData);
-};
+
 
 
   return (
@@ -266,9 +264,7 @@ const loadSampleData = () => {
                   lastColumn="details"
                 />
               </div>
-              <div className="flex items-end justify-start gap-4">
-                    <Button type="button" onClick={loadSampleData}>Load Sample Data</Button>
-              </div>
+              
             </form>
           </Form>
         </div>

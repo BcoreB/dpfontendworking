@@ -5,15 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import DPInput from '@/components/ui/dpinput';
-import { InitializeForm,EmpAllowanceDeductionFormulaDet, formSchema, Type, SubType, InputType } from './formSchema';
+import { InitializeForm,EmpAllowanceDeductionFormulaDet, formSchema, Type, SubType,EmpAllowanceDeductionGrid , InputType } from './formSchema';
 import { useRouter } from 'next/navigation';
 import getLanguageByEnglish from '@/utils/languages';
 import DPComboBox from '@/components/ui/dpcombobox';
 import FormHeader from '@/components/Menu/formHeader';
 import DPInputBrowse from '@/components/ui/dpinputbrowse';
-
-// Import DataGrid from DevExtreme
-import { DataGrid, Column, Editing, Lookup } from 'devextreme-react/data-grid';
+import GenericGrid from '@/app/documents/leaveentry/GenericGrid';
 
 
 
@@ -46,12 +44,39 @@ const hasEmptyRow = (gridData: any) => {
 };
 
 
+
 const AllowanceDeduction = () => {
     const docCd = 8;
     const docKey = 101;
     const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
-    const [allowanceDetails, setallowanceDetails] = useState<EmpAllowanceDeductionFormulaDet[]>([]);
+    
     const [isCompulsoryChecked, setIsCompulsoryChecked] = useState(false);
+
+    const [allowanceDetails, setallowanceDetails] = useState<EmpAllowanceDeductionGrid[]>([
+      {
+        id:'0',
+        RowId:0,
+        Condition:'',
+        Formula:' ',
+      }
+
+    ]);
+
+
+    useEffect(() => {
+      // This will ensure the form is in sync with the updated state data
+      const newData = allowanceDetails.map((doc, index) => ({
+        id: doc.id,
+        condition: doc.Condition,
+        formula: doc.Formula,
+        rowid: doc.RowId || 0,
+        alldedcode:'1',
+      })) as unknown as EmpAllowanceDeductionFormulaDet[];
+    
+      form.setValue('EmpAllowanceDeductionFormula', newData);
+    }, [allowanceDetails]); // This dependency ensures reactivity
+
+
     const handleCompulsoryChange = () => {
         setIsCompulsoryChecked(!isCompulsoryChecked);
     };
@@ -72,6 +97,14 @@ const AllowanceDeduction = () => {
     }
   };
     
+  const handleValueSelect = (updatedData: any) => {
+    setallowanceDetails((prevData) => [...prevData, ...updatedData]);
+  };
+
+  const loadSampleData = () => {
+    console.log(form.getValues());
+  };
+
     const router = useRouter();
     const [gridData, setGridData] = useState([
       { Condition: "", Formula: "" }, // Initial row
@@ -184,20 +217,15 @@ const AllowanceDeduction = () => {
                   </div>
                   {/* DevExtreme DataGrid for Condition and Formula */}
         <div className="mt-5">
-          <DataGrid
-            dataSource={gridData}
-            showBorders={true}
-            onEditorPreparing={handleEditorPreparing}
-            onRowInserted={(e) => {
-              setGridData([...gridData, e.data]); // Add new row data to gridData state
-              
-            }}
-          >
-            <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
-            {/* Define columns */}
-            <Column dataField="Condition" caption="Condition" />
-            <Column dataField="Formula" caption="Formula" />
-          </DataGrid>
+                <GenericGrid<EmpAllowanceDeductionGrid>
+                  columns={[
+                    { dataField: 'Condition', caption: 'All Ded Code' },
+                    { dataField: 'Formula', caption: 'Emp Code' },
+                  ]}
+                  dataSource={allowanceDetails}
+                  onValueSelect={handleValueSelect}
+                  lastColumn="Formula"
+                />
         </div>
         {/* Checkbox for "Compulsory for all" */}
         <div className="grid gap-1 py-1 lg:col-span-6">
@@ -246,6 +274,9 @@ const AllowanceDeduction = () => {
                     }}
                   />
            </div>
+           <div className="flex items-end justify-start gap-4">
+                    <Button type="button" onClick={loadSampleData}>Load Sample Data</Button>
+              </div>
           </div>
           
                 </form>
