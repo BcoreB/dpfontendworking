@@ -60,7 +60,7 @@ const AllowanceDeductionEntry = () => {
   
 
  const handleValueSelect = (updatedData: any) => {
-  setallowancedeductionData((prevData) => [...prevData, ...updatedData]);
+  setallowancedeductionData([...updatedData]);
 };
 
 // Function to handle file selection
@@ -85,7 +85,7 @@ const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         amount: row["amount"] || '',
         details: row["details"] || '',
       }));
-      setallowancedeductionData((prevData) => [...prevData, ...mappedData]); 
+      setallowancedeductionData([, ...mappedData]); 
     };
     reader.readAsArrayBuffer(file); // Use ArrayBuffer for reading binary files
   }
@@ -250,6 +250,7 @@ const handleImportClick = () => {
               <div className="mt-10">
               <GenericGrid<EmployeeVariableAllDedDetGrid>
                   key={allowancedeductionData.map(item => item.id).join()} // Ensure each render has a unique key
+                  
                   columns={[
                     { dataField: 'alldedcode', caption: 'All Ded Code' },
                     { dataField: 'empcode', caption: 'Emp Code' },
