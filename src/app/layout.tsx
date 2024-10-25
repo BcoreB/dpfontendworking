@@ -29,6 +29,10 @@ import "./globals.css";
 import { DirectionProvider } from './DirectionContext';
 import HideableNavbar from "../components/Menu/HideableNavbar";
 
+import { config } from '@fortawesome/fontawesome-svg-core'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+config.autoAddCss = false
+
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
@@ -38,7 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <DirectionProvider>
-      <div className={inter.className}>
+      <div className='{inter.className} h-full'>
         <HideableNavbar />
         {children}
       </div>

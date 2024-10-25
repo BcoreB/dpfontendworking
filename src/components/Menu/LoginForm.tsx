@@ -29,15 +29,12 @@ const LoginForm: React.FC = () => {
 
   return (
     <form
-      className="rounded bg-white rounded-lg px-10 py-12 mb-4 text-left"
+      className={`rounded bg-white rounded-lg py-12 mb-4 text-left ${isRtl ? 'text-right' : ''}`}
       onSubmit={handleLogin}
     >
       <div className="mb-4">
-        <h2 className='text-black text-xl font-semibold'>Login to your account</h2>
-      </div>
-      <div className="mb-4">
         <input
-          className="px-6 w-full py-2 rounded-lg text-black focus:outline-none"
+          className={`px-6 w-10/12 py-2 rounded-lg text-black focus:outline-none ${isRtl ? 'text-right' : ''}`}
           id="username"
           type="text"
           placeholder="User Email"
@@ -47,7 +44,7 @@ const LoginForm: React.FC = () => {
       </div>
       <div className="mb-4">
         <input
-          className="px-6 w-full py-2 rounded-lg text-black focus:outline-none"
+          className={`px-6 w-10/12 py-2 rounded-lg text-black focus:outline-none ${isRtl ? 'text-right' : ''}`}
           id="password"
           type="password"
           placeholder="Password"
@@ -57,7 +54,7 @@ const LoginForm: React.FC = () => {
       </div>
       <div className="mb-6">
         <select
-          className="px-6 w-full py-2 rounded-lg text-black focus:outline-none"
+          className={`px-6 w-10/12 py-2 rounded-lg text-black focus:outline-none ${isRtl ? 'text-right' : ''}`}
           id="location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
@@ -72,14 +69,21 @@ const LoginForm: React.FC = () => {
           {error}
         </div>
       )}
-      <div className="flex items-center justify-between">
+      <div className="flex w-10/12 pb-4 items-center justify-between">
+        <div className="remember">
+          <input type="checkbox" className='bg-blue' id="remember" name="remember" value="true" />
+          <label> Remember me</label>
+        </div>
+        <a href="" className='text-blue-500'><span dir="ltr">Forgot password?</span></a>
+      </div>
+      <div className="">
         <button
-          className="bg-black text-white font-bold py-1 p-4 rounded-lg focus:outline-none focus:shadow-outline"
+          className="bg-black text-white w-10/12 font-bold py-2 p-4 rounded-lg focus:outline-none focus:shadow-outline"
           type="submit"
         >
           LOGIN
         </button>
-        <div>
+        <div className='mt-5'>
           <input
             type="checkbox"
             id="languageSelect"
