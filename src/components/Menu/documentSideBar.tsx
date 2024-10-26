@@ -301,7 +301,7 @@ const handleOpenClick = () => {
   
   return (
     <div className="flex h-screen relative">
-      <div className="right-0 flex bg-purple-100 h-full flex-col text-sm z-10 pt-2 justify-evenly items-center mt-16 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
+      <div className="right-0 flex bg-purple-100 h-full flex-col text-sm z-10 pt-2 justify-evenly items-center mt-20 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
         {sections.map((section, index) => (
           <button
             key={index}

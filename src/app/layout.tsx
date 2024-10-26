@@ -42,7 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <DirectionProvider>
-      <div className='{inter.className} h-full'>
+      <div className='{inter.className}'>
         <HideableNavbar />
         {children}
       </div>

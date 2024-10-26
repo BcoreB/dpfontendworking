@@ -99,7 +99,7 @@ const FormHeader: React.FC<FormHeaderProps> = ({
 
   return (
     <div className="form-header">
-      <div className='flex justify-between bg-purple-100 mb-5'>
+      <div className='flex justify-between bg-purple-100 mb-5 p-2 px-4'>
         <div>
           <Button variant='ghost' type="button" onClick={addNew}>New</Button>
           <Button variant='ghost' type="submit" onClick={onSubmit}>Save</Button> {/* Using onSubmit here */}

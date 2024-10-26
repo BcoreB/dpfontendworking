@@ -99,6 +99,10 @@
   border-left: 2px solid rgba(33, 33, 33,0.1);
   height:50px;
 }
+.navbar-div
+{
+  z-index: 100 !important;
+}
 body {
   color: rgb(var(--foreground-rgb));
   height: 100vh !important;
