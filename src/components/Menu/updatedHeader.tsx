@@ -2,18 +2,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-
+import { menulist } from './data/menulist';
 export default function Navheader() {
   const router = useRouter();
 
-  const items = [
-    { name: 'Employee Master', path: '/masters/employeemaster' },
-    { name: 'Leave Entry', path: '/documents/leaveentry' },
-    { name: 'Department Master', path: '/masters/departmentmaster' },
-    { name: 'Allowance Deduction Entry', path: '/documents/allowancedeductionentry' },
-    { name: 'Allowance Deduction Master', path: '/OtherMaster/allowancedeductionmaster' },
-    { name: 'Air Sector Master', path: '/masters/airsectormaster' },
-  ];
 
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -22,15 +14,26 @@ export default function Navheader() {
     setSearchTerm(e.target.value);
   };
 
-  const filteredItems = items.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // Flatten `menulist` structure to gather all menu items in one list for easier searching
+  const allMenuItems = menulist.flatMap(menu =>
+    menu.Sub.flatMap(category =>
+      category.MenuList.map(item => ({
+        name: item.Name,
+        path: item.Link
+      }))
+    )
   );
+// Filter menu items based on the search term
+const filteredItems = allMenuItems.filter((item) =>
+  item.name.toLowerCase().includes(searchTerm.toLowerCase())
+);
 
-  const handleItemClick = (path:string) => {
+const handleItemClick = (path: string) => {
+  if (path) {
     router.push(path);
     setSearchTerm('');
-  };
-
+  }
+};
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
