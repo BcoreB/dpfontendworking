@@ -73,10 +73,10 @@ export default function Navbar() {
 function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuItemProps) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const iconRef = useRef<HTMLImageElement>(null);
+  const itemRef = useRef<HTMLDivElement>(null);
   const { isRtl } = useDirection();
 
-  const handleIconClick = () => {
+  const handleToggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
   };
 
@@ -85,8 +85,8 @@ function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuIte
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node) &&
-        iconRef.current &&
-        !iconRef.current.contains(event.target as Node)
+        itemRef.current &&
+        !itemRef.current.contains(event.target as Node)
       ) {
         setDropdownVisible(false);
       }
@@ -100,19 +100,23 @@ function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuIte
 
   return (
     <div className="relative flex items-center">
-      <img
-        src={iconSrc}
-        alt="Icon"
-        ref={iconRef}
-        onClick={handleIconClick}
-        className={`w-8 h-8 cursor-pointer transition-colors duration-300 ${isDropdownVisible ? 'bg-gray-200' : ''}`}
-      />
-
-      {isExpanded && (
-        <span className="ml-2 text-sm font-medium transition-opacity duration-300">
-          {dropdownData[0].category}
-        </span>
-      )}
+      {/* Wrap the icon and text in a single clickable div */}
+      <div
+        ref={itemRef}
+        onClick={handleToggleDropdown}
+        className="flex items-center cursor-pointer"
+      >
+        <img
+          src={iconSrc}
+          alt="Icon"
+          className={`w-8 h-8 transition-colors duration-300 ${isDropdownVisible ? 'bg-gray-200' : ''}`}
+        />
+        {isExpanded && (
+          <span className="ml-2 text-sm font-medium transition-opacity duration-300">
+            {dropdownData[0].category}
+          </span>
+        )}
+      </div>
 
       {isDropdownVisible && (
         <div

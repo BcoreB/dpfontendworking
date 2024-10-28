@@ -102,7 +102,7 @@ export default function Home() {
           <h1 className='text-3xl font-bold mt-2'>Login to your account</h1>
           <LoginForm />
         </div>
-        <div className="landing-carousel bg-blue-500 w-1/2">
+        <div className="landing-carousel bg-[#818CF8] w-1/2">
           <div className="relative w-full mx-auto">
             {/* Slide */}
             <div className="w-full h-full  text-white text-center  items-center py-10 overflow-hidden">
@@ -123,7 +123,7 @@ export default function Home() {
                 <button
                   key={index}
                   className={`h-2 w-2 rounded-full ${
-                    index === currentIndex ? "bg-blue-600" : "bg-gray-400"
+                    index === currentIndex ? "bg-blue-600" : "bg-white"
                   }`}
                   onClick={() => setCurrentIndex(index)}
                 />
