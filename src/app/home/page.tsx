@@ -1,7 +1,8 @@
+"use client"
 import Image from "next/image";
 import getLanguageByEnglish from '@/utils/languages'
 import Navheader from "@/components/Menu/updatedHeader";
-
+import Dashboard from "@/components/dashboard/Dashboard";
 export default function Home() {
     return (
         <>
@@ -9,13 +10,7 @@ export default function Home() {
                 
                 <div className=" text-center ml-28">
                     
-                    <Image
-                        src={'/dashboard.png'}
-                        width={1000}
-                        height={350}
-                        alt=""
-                        className="m-auto"
-                    />
+                    <Dashboard />
                 </div>
             </div>
         </>
