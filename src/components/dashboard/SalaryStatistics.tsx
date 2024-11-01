@@ -28,7 +28,7 @@ const data = [
 
 const SalaryStatistics: React.FC = () => {
   return (
-    <Paper className="p-4 shadow-md rounded-md">
+    <Paper className="p-4  shadow-md rounded-md">
       <Chart data={data}>
         <ArgumentAxis />
         <ValueAxis />

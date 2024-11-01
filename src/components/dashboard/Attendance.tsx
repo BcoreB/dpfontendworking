@@ -1,5 +1,5 @@
 // components/Attendance.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -28,12 +28,16 @@ const Attendance: React.FC = () => {
 
   const handleCheckIn = () => {
     console.log('Checked In');
-    // Add logic for Check-In
+    console.log('Attendance Type:', attendanceType);
+    console.log('Remarks:', remarks);
+    console.log('Location:', mapCenter);
   };
 
   const handleCheckOut = () => {
     console.log('Checked Out');
-    // Add logic for Check-Out
+    console.log('Attendance Type:', attendanceType);
+    console.log('Remarks:', remarks);
+    console.log('Location:', mapCenter);
   };
 
   return (
@@ -76,10 +80,10 @@ const Attendance: React.FC = () => {
         </LoadScript>
       </div>
       <div className="flex justify-between">
-        <Button variant="contained" color="black" onClick={handleCheckIn}>
+        <Button variant="contained" sx={{ mt: 2, color: 'black' }} onClick={handleCheckIn}>
           Check In
         </Button>
-        <Button variant="contained" color="black" onClick={handleCheckOut}>
+        <Button variant="contained" sx={{ mt: 2, color: 'black' }} onClick={handleCheckOut}>
           Check Out
         </Button>
       </div>

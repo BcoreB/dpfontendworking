@@ -6,9 +6,9 @@ import Dashboard from "@/components/dashboard/Dashboard";
 export default function Home() {
     return (
         <>
-            <div className="h-full w-full relative" >
+            <div className="h-full w-full relative " >
                 
-                <div className=" text-center ml-28">
+            <div className="text-center md:ml-28 md:max-h-[90vh] md:overflow-y-auto">
                     
                     <Dashboard />
                 </div>
