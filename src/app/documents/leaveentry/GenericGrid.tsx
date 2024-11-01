@@ -4,6 +4,7 @@ import { EditorPreparingEvent } from 'devextreme/ui/data_grid';
 import { TextBox } from 'devextreme-react/text-box';
 import { Popup } from 'devextreme-react/popup';
 import { AiFillCaretDown } from 'react-icons/ai';
+import { DateBox } from 'devextreme-react/date-box';
 import Button from 'devextreme-react/cjs/button';
 interface GridProps<T> {
   columns: {
@@ -13,7 +14,7 @@ interface GridProps<T> {
     dataSource?: any;
     dataType?: string;
     disabled?: boolean;
-    formula?:string
+    formula?:string,
     columnMapping?: { [key: string]: keyof T }; // Include columnMapping here
   }[];
   dataSource: T[]; // Allow null in the dataSource
@@ -84,6 +85,7 @@ const addNewRow = () => {
 
 
 const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
+  
   if (e.parentType === 'dataRow') {
     // Check if the column being edited is in the watchColumns array
     if (watchColumns.includes(e.dataField as keyof T)) {
@@ -285,20 +287,44 @@ const handleRowDoubleClick = (e: any) => {
           {columns.map((column) => {
             const isDateColumn = column.dataType === 'date';
             const isLookupColumn = column.inputType === 'lookup';
-
+            const isTimeColumn = column.dataType === 'datetime';
             return (
               <Column
                 key={String(column.dataField)}
                 dataField={String(column.dataField)}
                 caption={column.caption}
-                dataType={isDateColumn ? 'date' : undefined}
+                dataType={isDateColumn ? 'date' : isTimeColumn ? 'datetime' : undefined}
                 allowEditing={!column.disabled}
+                editorOptions={
+                  isTimeColumn
+                    ? {
+                        type: 'datetime',
+                        displayFormat: 'yyyy-MM-dd HH:mm:ss', // Display format with seconds
+                        dateSerializationFormat: "yyyy-MM-ddTHH:mm:ss", // Serialization format
+                        placeholder: 'yyyy-MM-dd HH:mm:ss', // Placeholder for guidance
+                        mask: '0000-00-00 00:00:00', // Input mask for correct datetime format
+                        defaultValue: '0000-00-00 00:00:00', // Set default to '0' value
+                      }
+                    : {} // No mask applied for non-datetime fields
+                }
                 cellRender={(cellInfo: CellInfo<T>) => {
                   if (isDateColumn) {
                     return <span>
                     {cellInfo.value ? new Intl.DateTimeFormat('en-US').format(new Date(cellInfo.value)) : ''}
                   </span>;
-                  } else if (isLookupColumn) {
+                  }else if (isTimeColumn) {
+                    return (
+                      <span>
+                        {cellInfo.value
+                          ? new Intl.DateTimeFormat('en-US', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit',
+                            }).format(new Date(cellInfo.value))
+                          : '0000-00-00 00:00:00'} {/* Display default '0' value */}
+                      </span>
+                    );
+                  }   else if (isLookupColumn) {
                     return renderCellWithIcon(cellInfo, column.dataSource);
                   }
                   return <span>{cellInfo.value}</span>;
@@ -395,6 +421,7 @@ const handleRowDoubleClick = (e: any) => {
             showBorders={true}
             selection={{ mode: 'single' }}
             onRowDblClick={handleRowDoubleClick}
+            columnAutoWidth={true}  // Auto-adjust column widths to content
             style={{ userSelect: 'none' }} // Disable text selection in the grid
           >
             {filteredLookupDataSource.length > 0 &&

@@ -66,8 +66,28 @@ const lookupData = [
 
 
 const handleValueSelect = (updatedData: any) => {
-    setattendanceData([...updatedData]);
-  };
+  setattendanceData([...updatedData]);
+  console.log(updatedData)
+};
+
+const handleValuesChange = (changedValues: any) => {
+  const { InTime, OutTime } = changedValues.currentValues;
+
+  console.log("Changed values:", changedValues);
+
+  if (InTime && OutTime) {
+    const fromDate = new Date(InTime);
+    const toDate = new Date(OutTime);
+
+    const differenceInTime = toDate.getTime() - fromDate.getTime();
+
+    // Calculate hours and minutes
+    const differenceInHours = Math.floor(differenceInTime / (1000 * 60 * 60));
+    const differenceInMinutes = Math.floor((differenceInTime % (1000 * 60 * 60)) / (1000 * 60));
+
+    alert(`The difference between InTime and OutTime is ${differenceInHours} hours and ${differenceInMinutes} minutes.`);
+  }
+};
 
 
   return (
@@ -234,18 +254,20 @@ const handleValueSelect = (updatedData: any) => {
                        { dataField: 'EmpName', caption: 'Employee Name' },
                     { dataField: 'Status', caption: 'Status' },
                     
-                    { dataField: 'InTime', caption: 'In Time',dataType: 'time' },
-                    { dataField: 'OutDate', caption: 'Out Date', dataType: 'date' },
-                    { dataField: 'OutTime', caption: 'Out Time',dataType: 'time' },
+                    { dataField: 'InTime', caption: 'In Time',dataType: 'datetime' },
+                    { dataField: 'OutTime', caption: 'Out Time',dataType: 'datetime' },
                     { dataField: 'totalhours', caption: 'Total Hours', disabled:true },
                     { dataField: 'totalminutes', caption: 'Total Minutes', disabled:true },
+                    { dataField: 'Idle', caption: 'Idle', dataType:'boolean' },
                     { dataField: 'RefCode', caption: 'References' },
                     { dataField: 'RefCode2', caption: 'Sub Referance' },
-                    { dataField: 'Idle', caption: 'Idle' },
+                    
                   ]}
                   dataSource={attendanceData}
                   onValueSelect={handleValueSelect}
-                  lastColumn="Idle"
+                  lastColumn="RefCode2"
+                  watchColumns={['InTime','OutTime']}
+                  onValuesChange={handleValuesChange}
                 />
               </div>
               
