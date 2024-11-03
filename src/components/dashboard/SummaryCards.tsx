@@ -1,29 +1,66 @@
-// components/SummaryCards.tsx
 import React, { useState } from 'react';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 
-const SummaryCards = () => {
-  const cards = [
-    { title: 'ABSENT', count: 6 },
-    { title: 'LEAVE', count: 1 },
-    { title: 'LOAN', count: 6 },
-    { title: 'Late In, Early Out', count: 9 },
-  ];
+interface SummaryCardProps {
+  employeeCode: string;
+}
 
+const SummaryCards: React.FC<SummaryCardProps> = ({ employeeCode }) => {
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December',
   ];
 
+  const summaryData: Record<string, Record<number, { title: string; count: number }[]>> = {
+    "12345": {
+      0: [{ title: 'ABSENT', count: 4 }, { title: 'LEAVE', count: 2 }, { title: 'LOAN', count: 1 }, { title: 'Late In, Early Out', count: 3 }],
+      1: [{ title: 'ABSENT', count: 6 }, { title: 'LEAVE', count: 1 }, { title: 'LOAN', count: 2 }, { title: 'Late In, Early Out', count: 5 }],
+      2: [{ title: 'ABSENT', count: 3 }, { title: 'LEAVE', count: 2 }, { title: 'LOAN', count: 3 }, { title: 'Late In, Early Out', count: 4 }],
+      3: [{ title: 'ABSENT', count: 5 }, { title: 'LEAVE', count: 0 }, { title: 'LOAN', count: 1 }, { title: 'Late In, Early Out', count: 2 }],
+      4: [{ title: 'ABSENT', count: 1 }, { title: 'LEAVE', count: 4 }, { title: 'LOAN', count: 0 }, { title: 'Late In, Early Out', count: 3 }],
+      5: [{ title: 'ABSENT', count: 2 }, { title: 'LEAVE', count: 1 }, { title: 'LOAN', count: 5 }, { title: 'Late In, Early Out', count: 6 }],
+      6: [{ title: 'ABSENT', count: 4 }, { title: 'LEAVE', count: 3 }, { title: 'LOAN', count: 2 }, { title: 'Late In, Early Out', count: 7 }],
+      7: [{ title: 'ABSENT', count: 3 }, { title: 'LEAVE', count: 0 }, { title: 'LOAN', count: 4 }, { title: 'Late In, Early Out', count: 1 }],
+      8: [{ title: 'ABSENT', count: 6 }, { title: 'LEAVE', count: 2 }, { title: 'LOAN', count: 1 }, { title: 'Late In, Early Out', count: 5 }],
+      9: [{ title: 'ABSENT', count: 2 }, { title: 'LEAVE', count: 1 }, { title: 'LOAN', count: 3 }, { title: 'Late In, Early Out', count: 3 }],
+      10: [{ title: 'ABSENT', count: 4 }, { title: 'LEAVE', count: 3 }, { title: 'LOAN', count: 1 }, { title: 'Late In, Early Out', count: 4 }],
+      11: [{ title: 'ABSENT', count: 5 }, { title: 'LEAVE', count: 0 }, { title: 'LOAN', count: 2 }, { title: 'Late In, Early Out', count: 6 }],
+    },
+    "67890": {
+      0: [{ title: 'ABSENT', count: 2 }, { title: 'LEAVE', count: 3 }, { title: 'LOAN', count: 4 }, { title: 'Late In, Early Out', count: 2 }],
+      1: [{ title: 'ABSENT', count: 1 }, { title: 'LEAVE', count: 4 }, { title: 'LOAN', count: 5 }, { title: 'Late In, Early Out', count: 1 }],
+      2: [{ title: 'ABSENT', count: 3 }, { title: 'LEAVE', count: 2 }, { title: 'LOAN', count: 2 }, { title: 'Late In, Early Out', count: 3 }],
+      3: [{ title: 'ABSENT', count: 4 }, { title: 'LEAVE', count: 1 }, { title: 'LOAN', count: 6 }, { title: 'Late In, Early Out', count: 5 }],
+      4: [{ title: 'ABSENT', count: 2 }, { title: 'LEAVE', count: 0 }, { title: 'LOAN', count: 3 }, { title: 'Late In, Early Out', count: 2 }],
+      5: [{ title: 'ABSENT', count: 1 }, { title: 'LEAVE', count: 5 }, { title: 'LOAN', count: 1 }, { title: 'Late In, Early Out', count: 4 }],
+      6: [{ title: 'ABSENT', count: 3 }, { title: 'LEAVE', count: 1 }, { title: 'LOAN', count: 0 }, { title: 'Late In, Early Out', count: 3 }],
+      7: [{ title: 'ABSENT', count: 4 }, { title: 'LEAVE', count: 3 }, { title: 'LOAN', count: 2 }, { title: 'Late In, Early Out', count: 2 }],
+      8: [{ title: 'ABSENT', count: 5 }, { title: 'LEAVE', count: 1 }, { title: 'LOAN', count: 4 }, { title: 'Late In, Early Out', count: 3 }],
+      9: [{ title: 'ABSENT', count: 2 }, { title: 'LEAVE', count: 4 }, { title: 'LOAN', count: 5 }, { title: 'Late In, Early Out', count: 6 }],
+      10: [{ title: 'ABSENT', count: 3 }, { title: 'LEAVE', count: 2 }, { title: 'LOAN', count: 3 }, { title: 'Late In, Early Out', count: 1 }],
+      11: [{ title: 'ABSENT', count: 6 }, { title: 'LEAVE', count: 0 }, { title: 'LOAN', count: 1 }, { title: 'Late In, Early Out', count: 5 }],
+    },
+    // Additional employee codes can be added here
+  };
+  
+
   const currentMonth = new Date().getMonth();
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
 
-  const handleMonthChange = (event) => {
-    setSelectedMonth(event.target.value);
+  const handleMonthChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setSelectedMonth(event.target.value as number);
   };
 
+  // Get the summary data for the current employee and selected month, or default to empty cards
+  const cards = summaryData[employeeCode]?.[selectedMonth] || [
+    { title: 'ABSENT', count: 0 },
+    { title: 'LEAVE', count: 0 },
+    { title: 'LOAN', count: 0 },
+    { title: 'Late In, Early Out', count: 0 },
+  ];
+
   return (
-    <div className='flex flex-col py-4 justify-between md:items-end'>
+    <div className="flex flex-col py-4 justify-between md:items-end">
       {/* Month Dropdown */}
       <FormControl variant="outlined" sx={{ minWidth: 120, mb: 2 }}>
         <InputLabel>Month</InputLabel>

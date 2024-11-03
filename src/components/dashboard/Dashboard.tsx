@@ -14,19 +14,23 @@ import RequestTables from './AttendanceRequest';
 import StaffLedgerTable from './StaffLedgerTable';
 import LoanRequestTables from './LoanRequestTable';
 import PaySlipTable from './PaySlipTable';
-const Dashboard = () => {
+// Define the props for the ProfileCard component
+interface EmpProps {
+  employeeCode: string;
+}
+const Dashboard : React.FC<EmpProps> = ({ employeeCode }) => {
   return (
     <div className="p-4 md:p-10 space-y-6 max-h-lvh">
       {/* Profile and Summary Cards */}
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
-        <ProfileCard />
-        <SummaryCards />
+        <ProfileCard employeeCode={employeeCode}/>
+        <SummaryCards employeeCode={employeeCode}/>
       </div>
 
       {/* Main Tables Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Attendance />
-        <AttendanceTable />
+        <AttendanceTable employeeCode={employeeCode}/>
         <RequestTables/>
       </div>
 
