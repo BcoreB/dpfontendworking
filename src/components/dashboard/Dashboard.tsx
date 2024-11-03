@@ -10,7 +10,10 @@ import TrainingTable from './TrainingTable';
 import SalaryStatistics from './SalaryStatistics';
 import Announcements from './Announcements';
 import Attendance from './Attendance';
-
+import RequestTables from './AttendanceRequest';
+import StaffLedgerTable from './StaffLedgerTable';
+import LoanRequestTables from './LoanRequestTable';
+import PaySlipTable from './PaySlipTable';
 const Dashboard = () => {
   return (
     <div className="p-4 md:p-10 space-y-6 max-h-lvh">
@@ -24,21 +27,27 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Attendance />
         <AttendanceTable />
-        <LeaveTable />
+        <RequestTables/>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 max-h-[500px] md:grid-cols-3 gap-4">
         <DocumentsTable />
         <HolidaysTable />
         <TrainingTable />
       </div>
 
       {/* Bottom Section: Salary and Announcements */}
-      <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
-        <div className="w-full  md:h-auto md:w-1/2">
+      <div className="flex flex-col max-h-[600px] md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
+        <div className="w-full  md:h-auto md:w-1/3">
           <SalaryStatistics />
         </div>
         <Announcements />
+        <StaffLedgerTable />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <PaySlipTable/>
+        <LeaveTable />
+        <LoanRequestTables/>
       </div>
     </div>
   );

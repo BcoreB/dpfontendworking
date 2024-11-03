@@ -7,6 +7,7 @@ const SummaryCards = () => {
     { title: 'ABSENT', count: 6 },
     { title: 'LEAVE', count: 1 },
     { title: 'LOAN', count: 6 },
+    { title: 'Late In, Early Out', count: 9 },
   ];
 
   const months = [
