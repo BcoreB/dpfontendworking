@@ -1,7 +1,7 @@
 // components/RequestTables.tsx
 import React, { useState } from 'react';
 import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
-import { TableCell, Box, Button } from '@mui/material';
+import { TableCell, Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 
 const LoanRequestTables = () => {
   const minRows = 8; // Minimum number of rows to fill table
@@ -27,6 +27,92 @@ const LoanRequestTables = () => {
   const [loanRows, setLoanRows] = useState([]);
   const [expenseRows, setExpenseRows] = useState([]);
 
+  // State for Loan dialog
+  const [openLoanDialog, setOpenLoanDialog] = useState(false);
+  const [loanFormData, setLoanFormData] = useState({
+    type: '',
+    amount: '',
+    guarantor: '',
+    reason: '',
+    status: 'Pending',
+  });
+
+  // State for Expense dialog
+  const [openExpenseDialog, setOpenExpenseDialog] = useState(false);
+  const [expenseFormData, setExpenseFormData] = useState({
+    type: '',
+    voucher: '',
+    amount: '',
+    reason: '',
+    status: 'Pending',
+  });
+
+  // Function to open Loan dialog
+  const handleOpenLoanDialog = () => {
+    setOpenLoanDialog(true);
+  };
+
+  // Function to close Loan dialog
+  const handleCloseLoanDialog = () => {
+    setOpenLoanDialog(false);
+    setLoanFormData({
+      type: '',
+      amount: '',
+      guarantor: '',
+      reason: '',
+      status: 'Pending',
+    });
+  };
+
+  // Function to open Expense dialog
+  const handleOpenExpenseDialog = () => {
+    setOpenExpenseDialog(true);
+  };
+
+  // Function to close Expense dialog
+  const handleCloseExpenseDialog = () => {
+    setOpenExpenseDialog(false);
+    setExpenseFormData({
+      type: '',
+      voucher: '',
+      amount: '',
+      reason: '',
+      status: 'Pending',
+    });
+  };
+
+  // Function to handle Loan form submission
+  const handleLoanFormSubmit = () => {
+    // Add the form data to loanRows
+    setLoanRows([...loanRows, loanFormData]);
+    handleCloseLoanDialog();
+  };
+
+  // Function to handle Expense form submission
+  const handleExpenseFormSubmit = () => {
+    // Add the form data to expenseRows
+    setExpenseRows([...expenseRows, expenseFormData]);
+    handleCloseExpenseDialog();
+  };
+
+  // Function to handle Loan form input change
+  const handleLoanInputChange = (e) => {
+    const { name, value } = e.target;
+    setLoanFormData({
+      ...loanFormData,
+      [name]: value,
+    });
+  };
+
+  // Function to handle Expense form input change
+  const handleExpenseInputChange = (e) => {
+    const { name, value } = e.target;
+    setExpenseFormData({
+      ...expenseFormData,
+      [name]: value,
+    });
+  };
+
   // Function to add empty rows if not enough data is present
   const fillEmptyRows = (rows, columns) => {
     const emptyRow = columns.reduce((acc, column) => {
@@ -45,7 +131,7 @@ const LoanRequestTables = () => {
   const displayedExpenseRows = fillEmptyRows(expenseRows, expenseColumns);
 
   // Custom Table Header Cell component to set background color
-  const CustomTableHeaderCell = (props: any) => (
+  const CustomTableHeaderCell = (props) => (
     <TableHeaderRow.Cell
       {...props}
       style={{
@@ -60,7 +146,7 @@ const LoanRequestTables = () => {
   );
 
   // Custom Table Cell component to add vertical lines between cells
-  const CustomTableCell = (props: any) => (
+  const CustomTableCell = (props) => (
     <Table.Cell
       {...props}
       style={{
@@ -79,8 +165,8 @@ const LoanRequestTables = () => {
         <h3 className="text-lg font-semibold bg-green-200 py-2 text-center">Loan Request</h3>
         <Box
           sx={{
-            height: 200, // Fixed height for table content
-            overflowY: 'auto', // Enable scrolling if content exceeds height
+            height: 200,
+            overflowY: 'auto',
             border: '1px solid #ddd',
           }}
         >
@@ -89,7 +175,12 @@ const LoanRequestTables = () => {
             <TableHeaderRow cellComponent={CustomTableHeaderCell} />
           </Grid>
         </Box>
-        <Button variant="contained" color="warning" sx={{ mt: 2, float: 'right', mr: 1, color:'black' }}>
+        <Button
+          variant="contained"
+          color="warning"
+          sx={{ mt: 2, float: 'right', mr: 1, color: 'black' }}
+          onClick={handleOpenLoanDialog}
+        >
           Request
         </Button>
       </div>
@@ -99,8 +190,8 @@ const LoanRequestTables = () => {
         <h3 className="text-lg font-semibold bg-green-200 py-2 text-center">Expense Request</h3>
         <Box
           sx={{
-            height: 200, // Fixed height for table content
-            overflowY: 'auto', // Enable scrolling if content exceeds height
+            height: 200,
+            overflowY: 'auto',
             border: '1px solid #ddd',
           }}
         >
@@ -109,10 +200,47 @@ const LoanRequestTables = () => {
             <TableHeaderRow cellComponent={CustomTableHeaderCell} />
           </Grid>
         </Box>
-        <Button variant="contained" color="warning" sx={{ mt: 2, float: 'right', mr: 1, color:'black' }}>
+        <Button
+          variant="contained"
+          color="warning"
+          sx={{ mt: 2, float: 'right', mr: 1, color: 'black' }}
+          onClick={handleOpenExpenseDialog}
+        >
           Request
         </Button>
       </div>
+
+      {/* Loan Request Dialog */}
+      <Dialog open={openLoanDialog} onClose={handleCloseLoanDialog}>
+        <DialogTitle>New Loan Request</DialogTitle>
+        <DialogContent>
+          <TextField className='my-4' label="Type" name="type" fullWidth value={loanFormData.type} onChange={handleLoanInputChange} />
+          <TextField className='my-4' label="Amount" name="amount" fullWidth value={loanFormData.amount} onChange={handleLoanInputChange} />
+          <TextField className='my-4' label="Guarantor" name="guarantor" fullWidth value={loanFormData.guarantor} onChange={handleLoanInputChange} />
+          <TextField className='my-4' label="Reason" name="reason" fullWidth value={loanFormData.reason} onChange={handleLoanInputChange} />
+          
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseLoanDialog} color="primary">Cancel</Button>
+          <Button onClick={handleLoanFormSubmit} color="primary">Submit</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Expense Request Dialog */}
+      <Dialog open={openExpenseDialog} onClose={handleCloseExpenseDialog}>
+        <DialogTitle>New Expense Request</DialogTitle>
+        <DialogContent>
+          <TextField className='my-4' label="Type" name="type" fullWidth value={expenseFormData.type} onChange={handleExpenseInputChange} />
+          <TextField className='my-4' label="Voucher" name="voucher" fullWidth value={expenseFormData.voucher} onChange={handleExpenseInputChange} />
+          <TextField className='my-4' label="Amount" name="amount" fullWidth value={expenseFormData.amount} onChange={handleExpenseInputChange} />
+          <TextField className='my-4' label="Reason" name="reason" fullWidth value={expenseFormData.reason} onChange={handleExpenseInputChange} />
+          
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseExpenseDialog} color="primary">Cancel</Button>
+          <Button onClick={handleExpenseFormSubmit} color="primary">Submit</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

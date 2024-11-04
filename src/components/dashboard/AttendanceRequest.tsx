@@ -43,52 +43,67 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
   // Fetch rows based on employeeCode or default to empty arrays
   const { attendance = [], promotion = [] } = requestData[employeeCode as keyof typeof requestData] || {};
 
-  // Helper to ensure tables always have at least minRows
-  const fillEmptyRows = (rows: any[], minRows: number, emptyRow: object) => {
-    const filledRows = [...rows];
-    while (filledRows.length < minRows) {
-      filledRows.push({ ...emptyRow });
-    }
-    return filledRows;
-  };
-
   // State for attendance data
-  const [attendanceData, setAttendanceData] = useState(
-    fillEmptyRows(attendance, 5, {
-      date: '', time: '', action: '', reason: '', status: ''
-    })
-  );
-
-  // State for handling request modal visibility and form data
-  const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
+  const [attendanceData, setAttendanceData] = useState(attendance);
+  
+  // State for attendance request modal
+  const [attendanceModalOpen, setAttendanceModalOpen] = useState(false);
+  const [attendanceFormData, setAttendanceFormData] = useState({
     dateTime: '',
     action: 'Cancel',  // Default to 'Cancel'
     reason: ''
   });
 
-  // Helper to open and close modal
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  // State for promotion data and promotion request modal
+  const [promotionData, setPromotionData] = useState(promotion);
+  const [promotionModalOpen, setPromotionModalOpen] = useState(false);
+  const [promotionFormData, setPromotionFormData] = useState({
+    date: new Date().toISOString().split('T')[0], // Current date
+    toPosition: '',
+    reason: '',
+    status: 'Pending'
+  });
 
-  // Update form data
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Helper to open and close modals
+  const openAttendanceModal = () => setAttendanceModalOpen(true);
+  const closeAttendanceModal = () => setAttendanceModalOpen(false);
+  const openPromotionModal = () => setPromotionModalOpen(true);
+  const closePromotionModal = () => setPromotionModalOpen(false);
+
+  // Update attendance form data
+  const handleAttendanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setAttendanceFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Handle Save action
-  const handleSave = () => {
-    const { dateTime, action, reason } = formData;
+  // Update promotion form data
+  const handlePromotionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPromotionFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Handle attendance form submission
+  const handleSaveAttendance = () => {
+    const { dateTime, action, reason } = attendanceFormData;
     const [date, time] = dateTime.split('T');  // Split datetime for date and time
 
-    // Add new entry to attendance data
     const newEntry = { date, time, action, reason, status: 'Pending' };
     setAttendanceData(prev => [newEntry, ...prev]);
-
-    // Close modal
-    handleClose();
+    closeAttendanceModal();
   };
+
+  const handleSavePromotion = () => {
+    const newEntry = {
+      date: promotionFormData.date,
+      positionTo: promotionFormData.toPosition, // Map to `positionTo`
+      reason: promotionFormData.reason,
+      status: promotionFormData.status
+    };
+  
+    setPromotionData(prev => [newEntry, ...prev]);
+    closePromotionModal();
+  };
+  
 
   // Custom Header and Cell Styling
   const CustomTableHeaderCell = (props: any) => (
@@ -122,41 +137,35 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
       {/* Attendance Request Table */}
       <div className="bg-white shadow-md rounded-md mb-4">
         <h3 className="text-lg font-semibold bg-green-200 py-2">Attendance Request</h3>
-        <Box
-          sx={{
-            maxHeight: 300,
-            overflowY: 'auto',
-            border: '1px solid #ddd',
-          }}
-        >
+        <Box sx={{ maxHeight: 300, overflowY: 'auto', border: '1px solid #ddd' }}>
           <Grid rows={attendanceData} columns={attendanceColumns}>
             <Table cellComponent={CustomTableCell} />
             <TableHeaderRow cellComponent={CustomTableHeaderCell} />
           </Grid>
         </Box>
-        <Button variant="contained" sx={{ mt: 2, color: 'black' }} onClick={handleOpen}>
+        <Button variant="contained" sx={{ mt: 2, color: 'black' }} onClick={openAttendanceModal}>
           Request
         </Button>
       </div>
 
-      {/* Modal for Attendance Request */}
-      <Dialog open={open} onClose={handleClose}>
+      {/* Attendance Request Modal */}
+      <Dialog open={attendanceModalOpen} onClose={closeAttendanceModal}>
         <DialogTitle>Attendance Request</DialogTitle>
         <DialogContent>
           <TextField
             label="Date & Time"
             type="datetime-local"
             name="dateTime"
-            value={formData.dateTime}
-            onChange={handleChange}
+            value={attendanceFormData.dateTime}
+            onChange={handleAttendanceChange}
             fullWidth
             InputLabelProps={{ shrink: true }}
             sx={{ mt: 2 }}
           />
           <RadioGroup
             name="action"
-            value={formData.action}
-            onChange={handleChange}
+            value={attendanceFormData.action}
+            onChange={handleAttendanceChange}
             row
             sx={{ mt: 2 }}
           >
@@ -166,8 +175,8 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
           <TextField
             label="Reason"
             name="reason"
-            value={formData.reason}
-            onChange={handleChange}
+            value={attendanceFormData.reason}
+            onChange={handleAttendanceChange}
             fullWidth
             multiline
             rows={3}
@@ -175,8 +184,8 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSave} variant="contained" sx={{ color: 'black', backgroundColor: 'green' }}>
+          <Button onClick={closeAttendanceModal}>Cancel</Button>
+          <Button onClick={handleSaveAttendance} variant="contained" sx={{ color: 'black', backgroundColor: 'green' }}>
             Save
           </Button>
         </DialogActions>
@@ -185,22 +194,47 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
       {/* Promotion Requests Table */}
       <div className="bg-white shadow-md rounded-md">
         <h3 className="text-lg font-semibold bg-green-200 py-2">Promotion Requests</h3>
-        <Box
-          sx={{
-            maxHeight: 300,
-            overflowY: 'auto',
-            border: '1px solid #ddd',
-          }}
-        >
-          <Grid rows={promotion} columns={promotionColumns}>
+        <Box sx={{ maxHeight: 300, overflowY: 'auto', border: '1px solid #ddd' }}>
+          <Grid rows={promotionData} columns={promotionColumns}>
             <Table cellComponent={CustomTableCell} />
             <TableHeaderRow cellComponent={CustomTableHeaderCell} />
           </Grid>
         </Box>
-        <Button variant="contained" sx={{ mt: 2, color: 'black' }}>
+        <Button variant="contained" sx={{ mt: 2, color: 'black' }} onClick={openPromotionModal}>
           Request
         </Button>
       </div>
+
+      {/* Promotion Request Modal */}
+      <Dialog open={promotionModalOpen} onClose={closePromotionModal}>
+        <DialogTitle>Promotion Request</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Position To"
+            name="toPosition" // Match this with the state key
+            value={promotionFormData.toPosition}
+            onChange={handlePromotionChange}
+            fullWidth
+            sx={{ mt: 2 }}
+          />
+          <TextField
+            label="Reason"
+            name="reason"
+            value={promotionFormData.reason}
+            onChange={handlePromotionChange}
+            fullWidth
+            multiline
+            rows={3}
+            sx={{ mt: 2 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closePromotionModal}>Cancel</Button>
+          <Button onClick={handleSavePromotion} variant="contained" sx={{ color: 'black', backgroundColor: 'green' }}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
