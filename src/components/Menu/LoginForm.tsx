@@ -2,7 +2,7 @@
 "use client"
 import React, { useState } from 'react';
 import { useDirection } from '../../app/DirectionContext';
-
+import { useEmployee } from '@/app/EmployeeContext';
 const LoginForm: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -10,18 +10,21 @@ const LoginForm: React.FC = () => {
   const [error, setError] = useState('');
 
   const { toggleDirection, isRtl } = useDirection();
+  const { setEmployeeCode } = useEmployee();
 
+  
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    // Check if location is selected
+
     if (location === '') {
       setError('Please select a location.');
       return;
     }
 
+    // Simulate a successful login
     if (username === 'admin' && password === 'admin') {
-      window.location.href = '/home';
+      setEmployeeCode('12345'); // Set the employee code here
+      window.location.href = '/home'; // Redirect after setting the employee code
     } else {
       setError('Invalid login credentials. Please try again.');
     }

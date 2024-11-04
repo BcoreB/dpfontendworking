@@ -28,7 +28,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { DirectionProvider } from './DirectionContext';
 import HideableNavbar from "../components/Menu/HideableNavbar";
-
+import { EmployeeProvider } from "./EmployeeContext";
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 config.autoAddCss = false
@@ -42,10 +42,12 @@ export default function RootLayout({
 }>) {
   return (
     <DirectionProvider>
-      <div className='{inter.className}'>
-        <HideableNavbar />
-        {children}
-      </div>
+      <EmployeeProvider>
+        <div className='{inter.className}'>
+          <HideableNavbar />
+          {children}
+        </div>
+      </EmployeeProvider>
     </DirectionProvider>
   );
 }
