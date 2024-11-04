@@ -1,20 +1,19 @@
 // components/TrainingTable.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
 import { TableCell, Button, Modal, Box, Typography, MenuItem, Select } from '@mui/material';
+import { trainingData, TrainingData } from '../Menu/data/trainingData';
 
 interface Column {
   name: string;
   title: string;
 }
 
-interface Row {
-  date: string;
-  training: string;
-  attenddate: string;
+interface TrainingTableProps {
+  employeeCode: string;
 }
 
-const TrainingTable: React.FC = () => {
+const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
   const minRows = 16; // Minimum number of rows to display in the table
 
   const [columns] = useState<Column[]>([
@@ -23,16 +22,17 @@ const TrainingTable: React.FC = () => {
     { name: 'attenddate', title: 'Attend Date' },
   ]);
 
-  const [rows, setRows] = useState<Row[]>([
-    { date: '2024-11-02', training: 'React Basics', attenddate: '2024-11-03' },
-    { date: '2024-11-10', training: 'Advanced JavaScript', attenddate: '2024-11-11' },
-    { date: '2024-12-01', training: 'TypeScript Essentials', attenddate: '2024-12-02' },
-  ]);
-
+  const [rows, setRows] = useState<TrainingData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTraining, setSelectedTraining] = useState('');
 
   const trainingOptions = ['React Basics', 'Advanced JavaScript', 'TypeScript Essentials'];
+
+  // Fetch training data based on employeeCode
+  useEffect(() => {
+    const employeeData = trainingData[employeeCode] || [];
+    setRows(employeeData);
+  }, [employeeCode]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -43,24 +43,24 @@ const TrainingTable: React.FC = () => {
   };
 
   const handleRequestTraining = () => {
-    const today = new Date().toISOString().split('T')[0]; // Format today's date as YYYY-MM-DD
-    const newRow: Row = {
+    const today = new Date().toISOString().split('T')[0];
+    const newRow: TrainingData = {
       date: today,
       training: selectedTraining,
-      attenddate: '', // Leave Attend Date empty
+      attenddate: '',
     };
 
-    setRows((prevRows) => [...prevRows, newRow]); // Add new row to the table
-    setSelectedTraining(''); // Reset selected training
+    setRows((prevRows) => [...prevRows, newRow]);
+    setSelectedTraining('');
     handleCloseModal();
   };
 
   // Fill the table with empty rows if there isn't enough data
-  const fillEmptyRows = (dataRows: Row[], columns: Column[]): Row[] => {
+  const fillEmptyRows = (dataRows: TrainingData[], columns: Column[]): TrainingData[] => {
     const emptyRow = columns.reduce((acc, column) => {
-      acc[column.name as keyof Row] = ''; // Fill each cell with an empty string
+      acc[column.name as keyof TrainingData] = '';
       return acc;
-    }, {} as Row);
+    }, {} as TrainingData);
 
     const filledRows = [...dataRows];
     while (filledRows.length < minRows) {
@@ -71,8 +71,7 @@ const TrainingTable: React.FC = () => {
 
   const displayedRows = fillEmptyRows(rows, columns);
 
-  // Custom Table Header Cell component to set background color
-  const CustomTableHeaderCell: React.FC<TableHeaderRow.CellProps> = (props:any) => (
+  const CustomTableHeaderCell: React.FC<TableHeaderRow.CellProps> = (props: any) => (
     <TableHeaderRow.Cell
       {...props}
       style={{
@@ -85,8 +84,7 @@ const TrainingTable: React.FC = () => {
     />
   );
 
-  // Custom Table Cell component to add vertical lines between cells
-  const CustomTableCell: React.FC<Table.CellProps> = (props:any) => (
+  const CustomTableCell: React.FC<Table.CellProps> = (props: any) => (
     <Table.Cell
       {...props}
       style={{
@@ -101,8 +99,8 @@ const TrainingTable: React.FC = () => {
       <h3 className="text-lg font-semibold bg-green-200 py-2 text-center">Training</h3>
       <Box
         sx={{
-          maxHeight: 400, // Set maximum height for the table
-          overflowY: 'auto', // Enable vertical scroll if content exceeds the maximum height
+          maxHeight: 400,
+          overflowY: 'auto',
           border: '1px solid #ddd',
         }}
       >
@@ -112,12 +110,10 @@ const TrainingTable: React.FC = () => {
         </Grid>
       </Box>
 
-      {/* Request Training Button */}
       <Button variant="contained" onClick={handleOpenModal} sx={{ mt: 2, color: 'black' }}>
         Request Training
       </Button>
 
-      {/* Modal for selecting training */}
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <Box
           sx={{

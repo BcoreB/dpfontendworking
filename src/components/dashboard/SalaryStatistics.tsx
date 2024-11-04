@@ -1,5 +1,5 @@
 // components/SalaryStatistics.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import {
   Chart,
@@ -9,26 +9,31 @@ import {
   ValueAxis,
 } from '@devexpress/dx-react-chart-material-ui';
 import { Animation } from '@devexpress/dx-react-chart';
+import { getSalaryData } from '../Menu/data/salaryData';
 
-// Sample salary data
-const data = [
-  { month: 'Jan', salary: 3000 },
-  { month: 'Feb', salary: 3200 },
-  { month: 'Mar', salary: 3100 },
-  { month: 'Apr', salary: 3300 },
-  { month: 'May', salary: 3400 },
-  { month: 'Jun', salary: 3500 },
-  { month: 'Jul', salary: 3600 },
-  { month: 'Aug', salary: 3700 },
-  { month: 'Sep', salary: 3800 },
-  { month: 'Oct', salary: 3900 },
-  { month: 'Nov', salary: 4000 },
-  { month: 'Dec', salary: 4100 },
-];
+// Define prop types
+interface SalaryStatisticsProps {
+  employeeCode: string;
+}
 
-const SalaryStatistics: React.FC = () => {
+// Define data structure for a single salary record
+interface SalaryData {
+  month: string;
+  salary: number;
+}
+
+const SalaryStatistics: React.FC<SalaryStatisticsProps> = ({ employeeCode }) => {
+  // State to hold the salary data
+  const [data, setData] = useState<SalaryData[]>([]);
+
+  // Fetch salary data based on employeeCode
+  useEffect(() => {
+    const salaryData = getSalaryData(employeeCode);
+    setData(salaryData);
+  }, [employeeCode]);
+
   return (
-    <Paper className="p-4  shadow-md rounded-md">
+    <Paper className="p-4 shadow-md rounded-md">
       <Chart data={data}>
         <ArgumentAxis />
         <ValueAxis />

@@ -1,9 +1,29 @@
-// components/RequestTables.tsx
 import React, { useState } from 'react';
-import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
-import { TableCell, Button, Box, Typography } from '@mui/material';
+import {
+  Grid,
+  Table,
+  TableHeaderRow
+} from '@devexpress/dx-react-grid-material-ui';
+import {
+  TableCell,
+  Button,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Radio,
+  RadioGroup,
+  FormControlLabel
+} from '@mui/material';
+import requestData from '../Menu/data/requestData';
 
-const RequestTables = () => {
+interface RequestTablesProps {
+  employeeCode: string;
+}
+
+const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
   // Columns for each table
   const attendanceColumns = [
     { name: 'date', title: 'Date' },
@@ -20,16 +40,11 @@ const RequestTables = () => {
     { name: 'status', title: 'Status' },
   ];
 
-  // Placeholder rows (initially empty)
-  const [attendanceRows, setAttendanceRows] = useState([]);
-  const [promotionRows, setPromotionRows] = useState([]);
+  // Fetch rows based on employeeCode or default to empty arrays
+  const { attendance = [], promotion = [] } = requestData[employeeCode as keyof typeof requestData] || {};
 
-  // Define a minimum row count (e.g., 5 rows)
-  const minRows = 5;
-
-  // Function to fill empty rows if data is less than minRows
-  const fillEmptyRows = (rows:any, minRows:number) => {
-    const emptyRow = { date: '', time: '', action: '', reason: '', status: '' };
+  // Helper to ensure tables always have at least minRows
+  const fillEmptyRows = (rows: any[], minRows: number, emptyRow: object) => {
     const filledRows = [...rows];
     while (filledRows.length < minRows) {
       filledRows.push({ ...emptyRow });
@@ -37,9 +52,43 @@ const RequestTables = () => {
     return filledRows;
   };
 
-  // Ensure tables always have at least minRows
-  const attendanceData = fillEmptyRows(attendanceRows, minRows);
-  const promotionData = fillEmptyRows(promotionRows, minRows);
+  // State for attendance data
+  const [attendanceData, setAttendanceData] = useState(
+    fillEmptyRows(attendance, 5, {
+      date: '', time: '', action: '', reason: '', status: ''
+    })
+  );
+
+  // State for handling request modal visibility and form data
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    dateTime: '',
+    action: 'Cancel',  // Default to 'Cancel'
+    reason: ''
+  });
+
+  // Helper to open and close modal
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  // Update form data
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Handle Save action
+  const handleSave = () => {
+    const { dateTime, action, reason } = formData;
+    const [date, time] = dateTime.split('T');  // Split datetime for date and time
+
+    // Add new entry to attendance data
+    const newEntry = { date, time, action, reason, status: 'Pending' };
+    setAttendanceData(prev => [newEntry, ...prev]);
+
+    // Close modal
+    handleClose();
+  };
 
   // Custom Header and Cell Styling
   const CustomTableHeaderCell = (props: any) => (
@@ -63,7 +112,7 @@ const RequestTables = () => {
         ...props.style,
         borderRight: '1px solid #ccc',
         textAlign: 'center',
-        fontSize: '0.875rem', // Smaller font size for cells
+        fontSize: '0.875rem',
       }}
     />
   );
@@ -75,8 +124,8 @@ const RequestTables = () => {
         <h3 className="text-lg font-semibold bg-green-200 py-2">Attendance Request</h3>
         <Box
           sx={{
-            maxHeight: 300, // Set fixed height
-            overflowY: 'auto', // Enable vertical scrolling
+            maxHeight: 300,
+            overflowY: 'auto',
             border: '1px solid #ddd',
           }}
         >
@@ -85,22 +134,65 @@ const RequestTables = () => {
             <TableHeaderRow cellComponent={CustomTableHeaderCell} />
           </Grid>
         </Box>
-        <Button variant="contained" sx={{ mt: 2, color: 'black' }}>
+        <Button variant="contained" sx={{ mt: 2, color: 'black' }} onClick={handleOpen}>
           Request
         </Button>
       </div>
+
+      {/* Modal for Attendance Request */}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Attendance Request</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Date & Time"
+            type="datetime-local"
+            name="dateTime"
+            value={formData.dateTime}
+            onChange={handleChange}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            sx={{ mt: 2 }}
+          />
+          <RadioGroup
+            name="action"
+            value={formData.action}
+            onChange={handleChange}
+            row
+            sx={{ mt: 2 }}
+          >
+            <FormControlLabel value="Cancel" control={<Radio />} label="Cancel" />
+            <FormControlLabel value="New" control={<Radio />} label="New" />
+          </RadioGroup>
+          <TextField
+            label="Reason"
+            name="reason"
+            value={formData.reason}
+            onChange={handleChange}
+            fullWidth
+            multiline
+            rows={3}
+            sx={{ mt: 2 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSave} variant="contained" sx={{ color: 'black', backgroundColor: 'green' }}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Promotion Requests Table */}
       <div className="bg-white shadow-md rounded-md">
         <h3 className="text-lg font-semibold bg-green-200 py-2">Promotion Requests</h3>
         <Box
           sx={{
-            maxHeight: 300, // Set fixed height
-            overflowY: 'auto', // Enable vertical scrolling
+            maxHeight: 300,
+            overflowY: 'auto',
             border: '1px solid #ddd',
           }}
         >
-          <Grid rows={promotionData} columns={promotionColumns}>
+          <Grid rows={promotion} columns={promotionColumns}>
             <Table cellComponent={CustomTableCell} />
             <TableHeaderRow cellComponent={CustomTableHeaderCell} />
           </Grid>
