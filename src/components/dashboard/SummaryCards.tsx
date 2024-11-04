@@ -79,11 +79,11 @@ const SummaryCards: React.FC<SummaryCardProps> = ({ employeeCode }) => {
       </FormControl>
 
       {/* Summary Cards */}
-      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {cards.map((card, index) => (
           <div
             key={index}
-            className="w-full md:w-48 bg-gradient-to-br from-green-300 to-green-100 shadow-lg rounded-lg p-4"
+            className="bg-gradient-to-br from-green-300 to-green-100 shadow-lg rounded-lg p-4"
           >
             <div className="text-center p-2">
               <h3 className="text-md font-semibold text-gray-700">{card.title}</h3>
@@ -94,6 +94,7 @@ const SummaryCards: React.FC<SummaryCardProps> = ({ employeeCode }) => {
           </div>
         ))}
       </div>
+
     </div>
   );
 };

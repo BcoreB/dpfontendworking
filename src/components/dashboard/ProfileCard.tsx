@@ -42,7 +42,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ employeeCode }) => {
   const { name, position, image, dob } = profile;
 
   return (
-    <div className="bg-white p-4 shadow-md rounded-md w-10/12 md:w-2/6 text-center">
+    <div className="bg-white p-4 shadow-md m-auto md:ml-0 rounded-md w-10/12 md:w-2/6 text-center">
       <img src={image} alt={name} className="mx-auto rounded-full w-24 h-24" />
       <h2 className="mt-2 text-lg font-semibold">{name}</h2>
       <p className="text-gray-500">{position}</p>

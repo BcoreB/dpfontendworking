@@ -56,12 +56,12 @@ const handleItemClick = (path: string) => {
   };
 
   return (
-    <div className="nav-header bg-white h-20 flex w-full justify-evenly items-center">
+    <div className="nav-header bg-white h-20 flex w-full justify-between md:justify-evenly items-center">
       <div className="w-1/6 flex items-center justify-between">
         <Image height={100} width={100} alt="" src={'/BcoreLogo.png'} />
         <div className="vertical-line"></div>
       </div>
-      <div className="w-3/6 flex justify-between">
+      <div className="w-3/6 hidden md:flex justify-between">
         <div className="relative">
           <input
             type="text"

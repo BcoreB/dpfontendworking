@@ -55,7 +55,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode }) => {
   );
 
   return (
-    <div className="bg-white shadow-md rounded-md" style={{ height: '800px', overflowY: 'auto' }}>
+    <div className="bg-white shadow-md rounded-md" style={{ height: '650px', overflowY: 'auto' }}>
       <h3 className="text-lg py-2 bg-green-200 font-semibold">Attendance</h3>
       <Grid rows={rows} columns={columns}>
         <Table cellComponent={CustomTableCell} />

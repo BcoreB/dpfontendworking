@@ -17,7 +17,7 @@ const HideableNavbar: React.FC = () => {
     <>
       <div className=''><Navheader/></div>
       <div className='w-full h-full px-5 lg:px-20 lg:pb-14'>
-        <div className="absolute left-0 hidden md:block navbar-div">
+        <div className="absolute left-0 navbar-div">
                     <Navbar/>
         </div>
       </div>

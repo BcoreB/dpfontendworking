@@ -28,23 +28,23 @@ const Dashboard : React.FC<EmpProps> = ({ employeeCode }) => {
       </div>
 
       {/* Main Tables Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
         <Attendance />
         <AttendanceTable employeeCode={employeeCode}/>
         <RequestTables employeeCode={employeeCode}/>
       </div>
 
-      <div className="grid grid-cols-1 max-h-[500px] md:grid-cols-3 gap-4">
+      <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
         <DocumentsTable employeeCode={employeeCode}/>
         <HolidaysTable employeeCode={employeeCode}/>
         <TrainingTable employeeCode={employeeCode} />
       </div>
 
       {/* Bottom Section: Salary and Announcements */}
-      <div className="flex flex-col max-h-[600px] md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
-        <div className="w-full  md:h-auto md:w-1/3">
+      <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
+        {/* <div className="w-full  md:h-auto md:w-1/3">
           <SalaryStatistics employeeCode={employeeCode}/>
-        </div>
+        </div> */}
         <Announcements />
         <StaffLedgerTable employeeCode={employeeCode}/>
       </div>
