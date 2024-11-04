@@ -29,9 +29,9 @@ const Dashboard : React.FC<EmpProps> = ({ employeeCode }) => {
 
       {/* Main Tables Section */}
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
-        <Attendance />
-        <AttendanceTable employeeCode={employeeCode}/>
-        <RequestTables employeeCode={employeeCode}/>
+        <div className="w-1/3"><Attendance /></div>
+        <div className="w-1/3"><AttendanceTable employeeCode={employeeCode}/></div>
+        <div className="w-1/3"><RequestTables employeeCode={employeeCode}/></div>
       </div>
 
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
@@ -42,9 +42,9 @@ const Dashboard : React.FC<EmpProps> = ({ employeeCode }) => {
 
       {/* Bottom Section: Salary and Announcements */}
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
-        {/* <div className="w-full  md:h-auto md:w-1/3">
+        <div className="w-full  md:h-auto md:w-1/3">
           <SalaryStatistics employeeCode={employeeCode}/>
-        </div> */}
+        </div>
         <Announcements />
         <StaffLedgerTable employeeCode={employeeCode}/>
       </div>
