@@ -35,7 +35,7 @@ const Dashboard : React.FC<EmpProps> = ({ employeeCode }) => {
       {/* Main Tables Section */}
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
         <div className="w-full md:w-1/3"><Attendance onAddEntry={handleAddEntry}/></div>
-        <div className="w-full md:w-1/3"><AttendanceTable attendanceEntries={attendanceEntries} employeeCode={employeeCode}/></div>
+        <div className="w-full md:w-1/3"><AttendanceTable attendanceEntries={attendanceEntries} employeeCode={'12345'}/></div>
         <div className="w-full md:w-1/3"><RequestTables employeeCode={employeeCode}/></div>
       </div>
 

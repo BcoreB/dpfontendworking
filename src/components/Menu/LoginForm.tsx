@@ -22,9 +22,13 @@ const LoginForm: React.FC = () => {
     }
 
     // Simulate a successful login
-    if (username === 'admin' && password === 'admin') {
-      setEmployeeCode('12345'); // Set the employee code here
-      window.location.href = '/home'; // Redirect after setting the employee code
+    if (username === '12345' && password === '12345') {
+      localStorage.setItem('employeecode', '12345'); // Store employeecode in localStorage
+      window.location.href = '/home'; // Redirect after setting the employeecode
+    }
+    else if (username === '67890' && password === '67890') {
+      localStorage.setItem('employeecode', '67890'); // Store employeecode in localStorage
+      window.location.href = '/home'; // Redirect after setting the employeecode
     } else {
       setError('Invalid login credentials. Please try again.');
     }
