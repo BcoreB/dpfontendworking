@@ -1,7 +1,7 @@
 // components/TrainingTable.tsx
 import React, { useState, useEffect } from 'react';
 import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
-import { TableCell, Button, Modal, Box, Typography, MenuItem, Select } from '@mui/material';
+import { TableCell, Button, Modal, Box, Typography, MenuItem, Select,TextField } from '@mui/material';
 import { trainingData, TrainingData } from '../Menu/data/trainingData';
 
 interface Column {
@@ -25,7 +25,8 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
   const [rows, setRows] = useState<TrainingData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTraining, setSelectedTraining] = useState('');
-
+  const [prefDate, setPrefDate] = useState('');
+  const [reason, setReason] = useState('');
   const trainingOptions = ['React Basics', 'Advanced JavaScript', 'TypeScript Essentials'];
 
   // Fetch training data based on employeeCode
@@ -147,13 +148,39 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
               </MenuItem>
             ))}
           </Select>
+          
+          <TextField
+            label="Pref. Date"
+            type="date"
+            value={prefDate}
+            onChange={(e) => setPrefDate(e.target.value)}
+            fullWidth
+            sx={{ mt: 2, mb: 2 }}
+            InputLabelProps={{ shrink: true }}
+          />
+
+          <TextField
+            label="Reason"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+
           <Button
             variant="contained"
             onClick={handleRequestTraining}
             sx={{ mt: 2, color: 'black' }}
-            disabled={!selectedTraining}
+            disabled={!selectedTraining || !prefDate || !reason}
           >
-            Request
+            Save
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={handleCloseModal}
+            sx={{ mt: 2, ml: 2 }}
+          >
+            Cancel
           </Button>
         </Box>
       </Modal>

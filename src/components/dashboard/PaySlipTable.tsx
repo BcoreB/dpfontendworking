@@ -73,9 +73,6 @@ const PaySlipTable = () => {
           <TableHeaderRow cellComponent={CustomTableHeaderCell} />
         </Grid>
       </Box>
-      <Button variant="contained" color="warning" sx={{ mt: 2, float: 'right', mr: 1, color:'black' }}>
-          Request
-      </Button>
     </div>
   );
 };

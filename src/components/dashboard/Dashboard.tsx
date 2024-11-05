@@ -1,5 +1,5 @@
 // components/Dashboard.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import ProfileCard from './ProfileCard';
 import SummaryCards from './SummaryCards';
 import AttendanceTable from './AttendanceTable';
@@ -19,6 +19,11 @@ interface EmpProps {
   employeeCode: string;
 }
 const Dashboard : React.FC<EmpProps> = ({ employeeCode }) => {
+  const [attendanceEntries, setAttendanceEntries] = useState([]);
+
+  const handleAddEntry = (entry) => {
+    setAttendanceEntries((prevEntries) => [...prevEntries, entry]);
+  };
   return (
     <div className="p-4 md:p-10 space-y-6 max-h-lvh">
       {/* Profile and Summary Cards */}
@@ -29,8 +34,8 @@ const Dashboard : React.FC<EmpProps> = ({ employeeCode }) => {
 
       {/* Main Tables Section */}
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
-        <div className="w-full md:w-1/3"><Attendance /></div>
-        <div className="w-full md:w-1/3"><AttendanceTable employeeCode={employeeCode}/></div>
+        <div className="w-full md:w-1/3"><Attendance onAddEntry={handleAddEntry}/></div>
+        <div className="w-full md:w-1/3"><AttendanceTable attendanceEntries={attendanceEntries} employeeCode={employeeCode}/></div>
         <div className="w-full md:w-1/3"><RequestTables employeeCode={employeeCode}/></div>
       </div>
 

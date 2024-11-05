@@ -9,39 +9,44 @@ import { LoadScript, GoogleMap, Marker } from '@react-google-maps/api';
 
 const containerStyle = {
   width: '100%',
-  height: '420px', // Increased height of the map
+  height: '340px', // Increased height of the map
 };
 
 const center = {
   lat: 37.7749, // Example latitude for San Francisco
   lng: -122.4194, // Example longitude for San Francisco
 };
-
-const Attendance: React.FC = () => {
+interface AttendanceProps {
+  onAddEntry: (entry: { date: string; in: string; out: string }) => void;
+}
+const Attendance: React.FC = ({ onAddEntry }) => {
   const [attendanceType, setAttendanceType] = useState('Office');
   const [remarks, setRemarks] = useState('');
   const [mapCenter, setMapCenter] = useState(center);
 
+  const handleCheckIn = () => {
+    const entry = {
+      date: new Date().toLocaleDateString(),
+      in: new Date().toLocaleTimeString(),
+      out: '', // No checkout time yet
+    };
+    onAddEntry(entry);
+  };
   const handleAttendanceTypeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setAttendanceType(event.target.value as string);
   };
 
-  const handleCheckIn = () => {
-    console.log('Checked In');
-    console.log('Attendance Type:', attendanceType);
-    console.log('Remarks:', remarks);
-    console.log('Location:', mapCenter);
-  };
-
   const handleCheckOut = () => {
-    console.log('Checked Out');
-    console.log('Attendance Type:', attendanceType);
-    console.log('Remarks:', remarks);
-    console.log('Location:', mapCenter);
+    const entry = {
+      date: new Date().toLocaleDateString(),
+      in: '',
+      out: new Date().toLocaleTimeString(),
+    };
+    onAddEntry(entry);
   };
 
   return (
-    <Paper className="p-4 shadow-md rounded-md w-full max-w-md mx-auto">
+    <Paper className="p-4 shadow-md rounded-md w-full max-w-md max-h-[600px] mx-auto">
       <h2 className="text-center font-semibold mb-4">Attendance</h2>
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>

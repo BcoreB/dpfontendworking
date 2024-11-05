@@ -6,9 +6,10 @@ import {  RowData } from '../Menu/data/attendanceData';
 import attendanceData from '../Menu/data/attendanceData';
 interface AttendanceTableProps {
   employeeCode: string;
+  attendanceEntries: { date: string; in: string; out: string }[];
 }
 
-const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode }) => {
+const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attendanceEntries }) => {
   const [columns] = useState([
     { name: 'date', title: 'Date' },
     { name: 'in', title: 'In' },
@@ -26,7 +27,8 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode }) => {
   // Fill empty rows if data is insufficient
   const rows = [
     ...rowsData,
-    ...Array(emptyRowCount).fill({ date: '', in: '', out: '', shift: '' }),
+    ...attendanceEntries,
+    // ...Array(emptyRowCount).fill({ date: '', in: '', out: '', shift: '' }),
   ];
 
   // Custom Table Header Cell component to set background color
@@ -55,9 +57,9 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode }) => {
   );
 
   return (
-    <div className="bg-white shadow-md rounded-md" style={{ height: '650px', overflowY: 'auto' }}>
+    <div className="bg-white shadow-md rounded-md" style={{ height: '600px', overflowY: 'auto' }}>
       <h3 className="text-lg py-2 bg-green-200 font-semibold">Attendance</h3>
-      <Grid rows={rows} columns={columns}>
+      <Grid rows={rows} columns={columns} >
         <Table cellComponent={CustomTableCell} />
         <TableHeaderRow cellComponent={CustomTableHeaderCell} />
       </Grid>

@@ -15,7 +15,9 @@ import {
   TextField,
   Radio,
   RadioGroup,
-  FormControlLabel
+  FormControlLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import requestData from '../Menu/data/requestData';
 
@@ -137,7 +139,7 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
       {/* Attendance Request Table */}
       <div className="bg-white shadow-md rounded-md mb-4">
         <h3 className="text-lg font-semibold bg-green-200 py-2">Attendance Request</h3>
-        <Box sx={{ maxHeight: 300, overflowY: 'auto', border: '1px solid #ddd' }}>
+        <Box sx={{ height: 200, overflowY: 'auto', border: '1px solid #ddd' }}>
           <Grid rows={attendanceData} columns={attendanceColumns}>
             <Table cellComponent={CustomTableCell} />
             <TableHeaderRow cellComponent={CustomTableHeaderCell} />
@@ -194,7 +196,7 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
       {/* Promotion Requests Table */}
       <div className="bg-white shadow-md rounded-md">
         <h3 className="text-lg font-semibold bg-green-200 py-2">Promotion Requests</h3>
-        <Box sx={{ maxHeight: 300, overflowY: 'auto', border: '1px solid #ddd' }}>
+        <Box sx={{height: 200, overflowY: 'auto', border: '1px solid #ddd' }}>
           <Grid rows={promotionData} columns={promotionColumns}>
             <Table cellComponent={CustomTableCell} />
             <TableHeaderRow cellComponent={CustomTableHeaderCell} />
@@ -209,14 +211,21 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
       <Dialog open={promotionModalOpen} onClose={closePromotionModal}>
         <DialogTitle>Promotion Request</DialogTitle>
         <DialogContent>
-          <TextField
+        <Select
             label="Position To"
             name="toPosition" // Match this with the state key
             value={promotionFormData.toPosition}
             onChange={handlePromotionChange}
             fullWidth
             sx={{ mt: 2 }}
-          />
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value="Manager">Manager</MenuItem>
+            <MenuItem value="Supervisor">Supervisor</MenuItem>
+            {/* Add more positions as needed */}
+          </Select>
           <TextField
             label="Reason"
             name="reason"
