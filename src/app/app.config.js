@@ -12,6 +12,7 @@ module.exports = {
       mycountry_code: "BH",
       latitude: 26.1736,
       longitude: 50.5478, 
-      IPv4: "89.148.59.174"
+      IPv4: "89.148.59.174",
+      employeecode:'67890'
     }
  

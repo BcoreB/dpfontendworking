@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/Menu/updatedNavbar";
 import Navheader from "@/components/Menu/updatedHeader";
 import Image from "next/image";
+import config from '@/app/app.config';  // Import the config file
 
 const HideableNavbar: React.FC = () => {
   const pathname = usePathname();
@@ -12,7 +13,7 @@ const HideableNavbar: React.FC = () => {
   const [isNavbarVisible, setIsNavbarVisible] = useState(false);
 
   const hideNavbarPaths = ["/", ""]; // Add paths to hide the Navbar
-
+  console.log('Employeecode from config',config.employeecode)
   useEffect(() => {
     // Detect screen size and set mobile view
     const handleResize = () => {
@@ -51,7 +52,7 @@ const HideableNavbar: React.FC = () => {
 
   return (
     <>
-      <div className="w-11/12 md:w-full"><Navheader /></div>
+      <div className="w-11/12 md:w-full"><Navheader employeeCode={config.employeecode} /></div>
       <div className="w-full h-full px-5 lg:px-20 lg:pb-14 relative">
         {isMobile ? (
           <div className="absolute top-4 left-4 z-10">

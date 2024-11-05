@@ -4,6 +4,7 @@ import getLanguageByEnglish from '@/utils/languages'
 import Navheader from "@/components/Menu/updatedHeader";
 import Dashboard from "@/components/dashboard/Dashboard";
 import { useEmployee } from "../EmployeeContext";
+import config from '@/app/app.config';  // Import the config file
 export default function Home() {
     const { employeeCode } = useEmployee();
     return (
@@ -12,7 +13,7 @@ export default function Home() {
                 
             <div className="text-center md:ml-28 md:max-h-[90vh] md:overflow-y-auto">
                     
-                    <Dashboard employeeCode={employeeCode||'12345'} />
+                    <Dashboard employeeCode={config.employeecode} />
                 </div>
             </div>
         </>
