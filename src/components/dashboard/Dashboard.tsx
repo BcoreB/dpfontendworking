@@ -28,8 +28,8 @@ const Dashboard : React.FC<EmpProps> = ({ employeeCode }) => {
     <div className="p-4 md:p-10 space-y-6 max-h-lvh">
       {/* Profile and Summary Cards */}
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
-        <ProfileCard employeeCode={employeeCode}/>
-        <SummaryCards employeeCode={employeeCode}/>
+        <div className="w-full md:w-1/3"><ProfileCard employeeCode={employeeCode}/></div>
+        <div className="w-full md:w-2/3"><SummaryCards employeeCode={employeeCode}/></div>
       </div>
 
       {/* Main Tables Section */}

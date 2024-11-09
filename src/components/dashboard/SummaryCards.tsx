@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 
 interface SummaryCardProps {
   employeeCode: string;
@@ -51,7 +53,6 @@ const SummaryCards: React.FC<SummaryCardProps> = ({ employeeCode }) => {
     setSelectedMonth(event.target.value as number);
   };
 
-  // Get the summary data for the current employee and selected month, or default to empty cards
   const cards = summaryData[employeeCode]?.[selectedMonth] || [
     { title: 'ABSENT', count: 0 },
     { title: 'LEAVE', count: 0 },
@@ -60,15 +61,15 @@ const SummaryCards: React.FC<SummaryCardProps> = ({ employeeCode }) => {
   ];
 
   return (
-    <div className="flex flex-col py-4 justify-between md:items-end">
+    <div className="flex flex-col py-4">
       {/* Month Dropdown */}
-      <FormControl variant="outlined" sx={{ minWidth: 120, mb: 2 }}>
-        <InputLabel>Month</InputLabel>
+      <FormControl variant="outlined" sx={{ minWidth: 120, mb: 4 ,ml: 'auto',}}>
+        <InputLabel className='ml-0'>Month</InputLabel>
         <Select
           value={selectedMonth}
           onChange={handleMonthChange}
           label="Month"
-          sx={{ backgroundColor: '#f0f0f0', borderRadius: 1 }}
+          sx={{ backgroundColor: '#f0f0f0', borderRadius: 1 , width:160 }}
         >
           {months.map((month, index) => (
             <MenuItem key={index} value={index}>
@@ -79,22 +80,25 @@ const SummaryCards: React.FC<SummaryCardProps> = ({ employeeCode }) => {
       </FormControl>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {cards.map((card, index) => (
           <div
             key={index}
-            className="bg-gradient-to-br from-green-300 to-green-100 shadow-lg rounded-lg p-4"
+            className="flex items-center bg-white shadow rounded-xl p-4"
           >
-            <div className="text-center p-2">
-              <h3 className="text-md font-semibold text-gray-700">{card.title}</h3>
+            {/* Icon */}
+            <div className="flex items-center justify-center bg-purple-100 rounded-full w-12 h-12 mr-4">
+              <FontAwesomeIcon icon={faFileAlt} className="text-purple-500 text-xl" />
             </div>
-            <div className="text-center px-4 py-2 bg-white rounded-md shadow-inner">
-              <p className="text-xl font-bold text-green-700">{card.count}</p>
+            
+            {/* Title and Count */}
+            <div>
+              <p className="text-sm text-gray-500">{card.title}</p>
+              <p className="text-2xl font-bold text-gray-800">{card.count}</p>
             </div>
           </div>
         ))}
       </div>
-
     </div>
   );
 };
