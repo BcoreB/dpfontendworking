@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { getDocumentsByEmployeeCode, DocumentRow } from '../Menu/data/documentData';
 import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
+
 interface Column {
   name: string;
   title: string;

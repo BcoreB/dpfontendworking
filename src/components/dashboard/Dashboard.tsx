@@ -14,6 +14,8 @@ import RequestTables from './AttendanceRequest';
 import StaffLedgerTable from './StaffLedgerTable';
 import LoanRequestTables from './LoanRequestTable';
 import PaySlipTable from './PaySlipTable';
+
+import 'devextreme/dist/css/dx.light.css';
 // Define the props for the ProfileCard component
 interface EmpProps {
   employeeCode: string;
@@ -53,8 +55,13 @@ const Dashboard : React.FC<EmpProps> = ({ employeeCode }) => {
         <div className="w-full  md:h-auto md:w-1/3">
           <SalaryStatistics employeeCode={employeeCode}/>
         </div>
-        <Announcements />
-        <StaffLedgerTable employeeCode={employeeCode}/>
+        <div className="w-full md:w-1/3">
+          <Announcements />
+        </div>
+        <div className="w-full md:w-1/3">
+          <StaffLedgerTable employeeCode={employeeCode}/>
+        </div>
+        
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <PaySlipTable/>
