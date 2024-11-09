@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
 import { TableCell, Box } from '@mui/material';
+import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
 import { getEmployeeData } from '../Menu/data/employeeData';
 
 // Define props interface to accept employeeCode
@@ -31,7 +32,7 @@ const StaffLedgerTable: React.FC<StaffLedgerTableProps> = ({ employeeCode }) => 
   const [rows, setRows] = useState<RowData[]>([]);
 
   // Minimum number of rows to maintain consistent table height
-  const minRows = 12;
+  const minRows = 14;
 
   // Fill empty rows if data is less than the minimum required
   const fillEmptyRows = (data: RowData[], minRows: number) => {
@@ -49,49 +50,92 @@ const StaffLedgerTable: React.FC<StaffLedgerTableProps> = ({ employeeCode }) => 
     setRows(fillEmptyRows(employeeData, minRows));
   }, [employeeCode]);
 
-  // Custom Table Header Cell component
-  const CustomTableHeaderCell: React.FC<any> = (props) => (
-    <TableHeaderRow.Cell
-      {...props}
-      style={{
-        ...props.style,
-        backgroundColor: '#FEFFA7',
-        color: '#000',
-        fontWeight: 'bold',
-        borderRight: '1px solid #ccc',
-        textAlign: 'center',
-      }}
-    />
-  );
-
-  // Custom Table Cell component
-  const CustomTableCell: React.FC<any> = (props) => (
-    <Table.Cell
-      {...props}
-      style={{
-        ...props.style,
-        borderRight: '1px solid #ccc',
-        textAlign: 'center',
-        fontSize: '0.875rem',
-      }}
-    />
-  );
 
   return (
-    <div className="bg-white shadow-md rounded-md w-full md:w-1/3">
-      <h3 className="text-lg font-semibold bg-green-200 py-2">Staff Ledger</h3>
-      <Box
-        sx={{
-          maxHeight: 500,
-          overflowY: 'auto',
-          border: '1px solid #ddd',
+    <div
+      className="bg-white shadow-lg rounded-lg p-4"
+      style={{
+        maxWidth: '100%',
+        overflowX: 'auto', // Enable horizontal scrolling
+        borderRadius: '16px',
+        border: '1px solid #e0e0e0',
+        padding: '20px',
+        backgroundColor: '#f7f9fc',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingBottom: '15px',
         }}
       >
-        <Grid rows={rows} columns={columns}>
-          <Table cellComponent={CustomTableCell} />
-          <TableHeaderRow cellComponent={CustomTableHeaderCell} />
-        </Grid>
-      </Box>
+        <h3
+          style={{
+            fontSize: '25px',
+            fontWeight: '600',
+            color: '#1a1f36',
+          }}
+        >
+          Staff Ledger
+        </h3>
+      </div>
+
+      <DataGrid
+        dataSource={rows}
+        showBorders={false}
+        rowAlternationEnabled={false}
+        hoverStateEnabled={true}
+        height={450}
+        columnAutoWidth={true}
+        noDataText="" // This will hide any default no data text
+        style={{
+          border: 'none',
+          fontFamily: 'Arial, sans-serif',
+          fontSize: '14px',
+        }}
+        width="100%" // Set DataGrid width to take full container space
+      >
+        {columns.map((column) => (
+          <Column
+            key={column.name}
+            dataField={column.name}
+            caption={column.title.toUpperCase()}
+            alignment="left"
+            headerCellRender={(header) => (
+              <div
+                style={{
+                  color: '#6b7280',
+                  fontWeight: '600',
+                  padding: '15px',
+                  borderBottom: '1px solid #e5e7eb',
+                  textTransform: 'uppercase',
+                  fontSize: '12px',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                {header.column.caption}
+              </div>
+            )}
+            cellRender={(cellData) => (
+              <div
+                style={{
+                  padding: '10px 15px',
+                  borderBottom: '1px solid #f0f0f5',
+                  color: '#1a1f36',
+                  fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
+                }}
+              >
+                {cellData.text}
+              </div>
+            )}
+          />
+        ))}
+        <Paging enabled={false} />
+        <Scrolling mode="virtual" />
+      </DataGrid>
     </div>
   );
 };

@@ -105,7 +105,7 @@ const LoanRequestTables = () => {
   };
 
   // Function to handle Expense form input change
-  const handleExpenseInputChange = (e) => {
+  const handleExpenseInputChange = (e:any) => {
     const { name, value } = e.target;
     setExpenseFormData({
       ...expenseFormData,
@@ -131,22 +131,23 @@ const LoanRequestTables = () => {
   const displayedExpenseRows = fillEmptyRows(expenseRows, expenseColumns);
 
   // Custom Table Header Cell component to set background color
-  const CustomTableHeaderCell = (props) => (
+  const CustomTableHeaderCell = (props:any) => (
     <TableHeaderRow.Cell
       {...props}
       style={{
         ...props.style,
-        backgroundColor: '#FEFFA7',
+        backgroundColor: '#f3e8ff',
         color: '#000',
-        fontWeight: 'bold',
+        fontWeight: 'medium',
         borderRight: '1px solid #ccc',
-        textAlign: 'center',
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '14px',
       }}
     />
   );
 
   // Custom Table Cell component to add vertical lines between cells
-  const CustomTableCell = (props) => (
+  const CustomTableCell = (props:any) => (
     <Table.Cell
       {...props}
       style={{
@@ -161,8 +162,8 @@ const LoanRequestTables = () => {
   return (
     <div>
       {/* Loan Request Table */}
-      <div className="bg-white shadow-md rounded-md mb-16">
-        <h3 className="text-lg font-semibold bg-green-200 py-2 text-center">Loan Request</h3>
+      <div className="bg-white shadow-md rounded-md mb-16 p-4">
+        <h3 className="text-lg text-left font-semibold py-2 text-center">Loan Request</h3>
         <Box
           sx={{
             height: 200,
@@ -186,8 +187,8 @@ const LoanRequestTables = () => {
       </div>
 
       {/* Expense Request Table */}
-      <div className="bg-white shadow-md rounded-md">
-        <h3 className="text-lg font-semibold bg-green-200 py-2 text-center">Expense Request</h3>
+      <div className="bg-white shadow-md rounded-md p-4">
+        <h3 className="text-lg text-left font-semibold py-2 text-center">Expense Request</h3>
         <Box
           sx={{
             height: 200,

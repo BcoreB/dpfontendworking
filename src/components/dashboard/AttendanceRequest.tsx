@@ -113,11 +113,11 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
       {...props}
       style={{
         ...props.style,
-        backgroundColor: '#FEFFA7',
+        backgroundColor: '#f5f2fd',
         color: '#000',
-        fontWeight: 'bold',
-        borderRight: '1px solid #ccc',
-        textAlign: 'center',
+        fontWeight: 'medium',
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '14px',
       }}
     />
   );
@@ -127,9 +127,9 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
       {...props}
       style={{
         ...props.style,
-        borderRight: '1px solid #ccc',
+        
         textAlign: 'center',
-        fontSize: '0.875rem',
+        fontSize: '14px',
       }}
     />
   );
@@ -137,8 +137,8 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
   return (
     <div>
       {/* Attendance Request Table */}
-      <div className="bg-white shadow-md rounded-md mb-4">
-        <h3 className="text-lg font-semibold bg-green-200 py-2">Attendance Request</h3>
+      <div className="bg-white shadow-md rounded-md mb-4 py-2 px-4">
+        <h3 className="text-lg font-semibold text-left py-2">Attendance Request</h3>
         <Box sx={{ height: 200, overflowY: 'auto', border: '1px solid #ddd' }}>
           <Grid rows={attendanceData} columns={attendanceColumns}>
             <Table cellComponent={CustomTableCell} />
@@ -194,8 +194,8 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
       </Dialog>
 
       {/* Promotion Requests Table */}
-      <div className="bg-white shadow-md rounded-md">
-        <h3 className="text-lg font-semibold bg-green-200 py-2">Promotion Requests</h3>
+      <div className="bg-white shadow-md rounded-md p-4">
+        <h3 className="text-lg font-semibold text-left py-2">Promotion Requests</h3>
         <Box sx={{height: 200, overflowY: 'auto', border: '1px solid #ddd' }}>
           <Grid rows={promotionData} columns={promotionColumns}>
             <Table cellComponent={CustomTableCell} />

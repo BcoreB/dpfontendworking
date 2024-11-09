@@ -1,6 +1,6 @@
 // components/TrainingTable.tsx
 import React, { useState, useEffect } from 'react';
-import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
+import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
 import { TableCell, Button, Modal, Box, Typography, MenuItem, Select,TextField } from '@mui/material';
 import { trainingData, TrainingData } from '../Menu/data/trainingData';
 
@@ -72,49 +72,96 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
 
   const displayedRows = fillEmptyRows(rows, columns);
 
-  const CustomTableHeaderCell: React.FC<TableHeaderRow.CellProps> = (props: any) => (
-    <TableHeaderRow.Cell
-      {...props}
-      style={{
-        ...props.style,
-        backgroundColor: '#FEFFA7',
-        color: '#000',
-        fontWeight: 'bold',
-        borderRight: '1px solid #ccc',
-      }}
-    />
-  );
-
-  const CustomTableCell: React.FC<Table.CellProps> = (props: any) => (
-    <Table.Cell
-      {...props}
-      style={{
-        ...props.style,
-        borderRight: '1px solid #ccc',
-      }}
-    />
-  );
-
   return (
-    <div className="bg-white shadow-md rounded-md">
-      <h3 className="text-lg font-semibold bg-green-200 py-2 text-center">Training</h3>
-      <Box
-        sx={{
-          maxHeight: 400,
-          overflowY: 'auto',
-          border: '1px solid #ddd',
+    <div className="bg-white shadow-md rounded-lg">
+      <div
+      className="bg-white shadow-lg rounded-lg p-4"
+      style={{
+        maxWidth: '100%',
+        overflowX: 'auto', // Enable horizontal scrolling
+        borderRadius: '16px',
+        border: '1px solid #e0e0e0',
+        padding: '20px',
+        backgroundColor: '#f7f9fc',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingBottom: '15px',
         }}
       >
-        <Grid rows={displayedRows} columns={columns}>
-          <Table cellComponent={CustomTableCell} />
-          <TableHeaderRow cellComponent={CustomTableHeaderCell} />
-        </Grid>
-      </Box>
+        <h3
+          style={{
+            fontSize: '25px',
+            fontWeight: '600',
+            color: '#1a1f36',
+          }}
+        >
+          Documents
+        </h3>
+      </div>
 
-      <Button variant="contained" onClick={handleOpenModal} sx={{ mt: 2, color: 'black' }}>
-        Request Training
-      </Button>
-
+      <DataGrid
+        dataSource={displayedRows}
+        showBorders={false}
+        rowAlternationEnabled={false}
+        hoverStateEnabled={true}
+        height={460}
+        columnAutoWidth={true}
+        noDataText="" // This will hide any default no data text
+        style={{
+          border: 'none',
+          fontFamily: 'Arial, sans-serif',
+          fontSize: '14px',
+        }}
+        width="100%" // Set DataGrid width to take full container space
+      >
+        {columns.map((column) => (
+          <Column
+            key={column.name}
+            dataField={column.name}
+            caption={column.title.toUpperCase()}
+            alignment="left"
+            headerCellRender={(header) => (
+              <div
+                style={{
+                  color: '#6b7280',
+                  fontWeight: '600',
+                  padding: '15px',
+                  borderBottom: '1px solid #e5e7eb',
+                  textTransform: 'uppercase',
+                  fontSize: '12px',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                {header.column.caption}
+              </div>
+            )}
+            cellRender={(cellData) => (
+              <div
+                style={{
+                  padding: '10px 15px',
+                  borderBottom: '1px solid #f0f0f5',
+                  color: '#1a1f36',
+                  fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
+                }}
+              >
+                {cellData.text}
+              </div>
+            )}
+          />
+          ))}
+          <Paging enabled={false} />
+          <Scrolling mode="virtual" />
+        </DataGrid>
+        <Button variant="contained" onClick={handleOpenModal} sx={{color: 'black' }}>
+          Request Training
+        </Button>
+      </div>
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <Box
           sx={{

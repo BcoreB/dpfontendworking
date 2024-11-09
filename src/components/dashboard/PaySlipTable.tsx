@@ -1,24 +1,20 @@
 // components/DocumentsTable.tsx
-import React, { useState, useEffect } from 'react';
-import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
-import { TableCell, Box, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
+
 const PaySlipTable = () => {
   const columns = [
-    { name: 'date', title: 'Date' },
-    { name: 'account', title: 'Account' },
-    { name: 'ref', title: 'Ref#' },
-    { name: 'amount', title: 'Amount' },
-    { name: 'remarks', title: 'Remarks' },
+    { name: 'date', title: 'Date', width: 200 },
+    { name: 'account', title: 'Account', width: 300 },
+    { name: 'ref', title: 'Ref#', width: 200 },
+    { name: 'amount', title: 'Amount', width: 200 },
+    { name: 'remarks', title: 'Remarks', width: 400 },
   ];
 
-  // Initial rows data (empty in this case)
   const [rows, setRows] = useState([]);
 
-  // Define a minimum number of rows to maintain table height
   const minRows = 20;
-
-  // Function to add empty rows if not enough data is present
-  const fillEmptyRows = (rows:any, minRows:number) => {
+  const fillEmptyRows = (rows, minRows) => {
     const emptyRow = { date: '', account: '', ref: '', amount: '', remarks: '' };
     const filledRows = [...rows];
     while (filledRows.length < minRows) {
@@ -26,53 +22,94 @@ const PaySlipTable = () => {
     }
     return filledRows;
   };
-
-  // Filled data with empty rows if not enough data
   const displayedRows = fillEmptyRows(rows, minRows);
 
-  // Custom Table Header Cell component to set background color
-  const CustomTableHeaderCell = (props: any) => (
-    <TableHeaderRow.Cell
-      {...props}
-      style={{
-        ...props.style,
-        backgroundColor: '#FEFFA7',
-        color: '#000',
-        fontWeight: 'bold',
-        borderRight: '1px solid #ccc',
-        textAlign: 'center',
-      }}
-    />
-  );
-
-  // Custom Table Cell component to add vertical lines between cells
-  const CustomTableCell = (props: any) => (
-    <Table.Cell
-      {...props}
-      style={{
-        ...props.style,
-        borderRight: '1px solid #ccc',
-        textAlign: 'center',
-        fontSize: '0.875rem', // Smaller font size
-      }}
-    />
-  );
-
   return (
-    <div className="bg-white shadow-md rounded-md w-full">
-      <h3 className="text-lg font-semibold bg-green-200 py-2">Payslip</h3>
-      <Box
-        sx={{
-          maxHeight: 500, // Fixed height for the table
-          overflowY: 'auto', // Enable vertical scrolling if content exceeds height
-          border: '1px solid #ddd',
+    <div
+      className="bg-white shadow-lg rounded-lg p-4"
+      style={{
+        width: '100%',
+        overflowX: 'auto', // Enable horizontal scrolling
+        borderRadius: '16px',
+        border: '1px solid #e0e0e0',
+        padding: '20px',
+        backgroundColor: '#f7f9fc',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingBottom: '15px',
         }}
       >
-        <Grid rows={displayedRows} columns={columns}>
-          <Table cellComponent={CustomTableCell} />
-          <TableHeaderRow cellComponent={CustomTableHeaderCell} />
-        </Grid>
-      </Box>
+        <h3
+          style={{
+            fontSize: '25px',
+            fontWeight: '600',
+            color: '#1a1f36',
+          }}
+        >
+          Payslip
+        </h3>
+      </div>
+
+      <DataGrid
+        dataSource={displayedRows}
+        showBorders={false}
+        rowAlternationEnabled={false}
+        hoverStateEnabled={true}
+        height={500}
+        columnAutoWidth={false} // Disable automatic column width to allow set widths
+        noDataText="" // Hide default no data text
+        style={{
+          border: 'none',
+          fontFamily: 'Arial, sans-serif',
+          fontSize: '14px',
+          width: '700px', // Set a fixed width wider than the container
+        }}
+      >
+        {columns.map((column) => (
+          <Column
+            key={column.name}
+            dataField={column.name}
+            caption={column.title.toUpperCase()}
+            alignment="left"
+            width={column.width} // Set specific width for each column
+            headerCellRender={(header) => (
+              <div
+                style={{
+                  color: '#6b7280',
+                  fontWeight: '600',
+                  padding: '15px',
+                  borderBottom: '1px solid #e5e7eb',
+                  textTransform: 'uppercase',
+                  fontSize: '12px',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                {header.column.caption}
+              </div>
+            )}
+            cellRender={(cellData) => (
+              <div
+                style={{
+                  padding: '10px 15px',
+                  borderBottom: '1px solid #f0f0f5',
+                  color: '#1a1f36',
+                  fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
+                }}
+              >
+                {cellData.text}
+              </div>
+            )}
+          />
+        ))}
+        <Paging enabled={false} />
+        <Scrolling mode="standard" /> {/* Use standard scrolling for horizontal support */}
+      </DataGrid>
     </div>
   );
 };

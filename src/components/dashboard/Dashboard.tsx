@@ -40,9 +40,12 @@ const Dashboard : React.FC<EmpProps> = ({ employeeCode }) => {
       </div>
 
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
-        <DocumentsTable employeeCode={employeeCode}/>
-        <HolidaysTable employeeCode={employeeCode}/>
-        <TrainingTable employeeCode={employeeCode} />
+        <div className="w-full md:w-1/3"><DocumentsTable employeeCode={employeeCode}/></div>
+        <div className="w-full md:w-1/3"><HolidaysTable employeeCode={employeeCode}/></div>
+        <div className="w-full md:w-1/3"><TrainingTable employeeCode={employeeCode} /></div>
+        
+        
+        
       </div>
 
       {/* Bottom Section: Salary and Announcements */}
