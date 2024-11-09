@@ -118,6 +118,12 @@ body {
   overflow-x: hidden;
   
 }
+/* Add this CSS rule to your global stylesheet */
+.dx-datagrid-summary .dx-datagrid-summary-item {
+  display: none !important;
+}
+
+
 @media screen and (max-width:540px) {
   .landing-bg
   {

@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from 'react';
-import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
-import { TableCell } from '@mui/material';
-import {  RowData } from '../Menu/data/attendanceData';
+import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
 import attendanceData from '../Menu/data/attendanceData';
+import { RowData } from '../Menu/data/attendanceData';
+
 interface AttendanceTableProps {
   employeeCode: string;
   attendanceEntries: { date: string; in: string; out: string }[];
@@ -17,52 +17,100 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
     { name: 'shift', title: 'Shift' },
   ]);
 
-  // Ensure rowsData has a fallback array if employeeCode does not exist in attendanceData
   const rowsData: RowData[] = attendanceData[employeeCode] || [];
-
-  // Define the total number of rows to display
-  const totalRowsToDisplay = 20;
+  const totalRowsToDisplay = 15;
   const emptyRowCount = totalRowsToDisplay - rowsData.length;
-
-  // Fill empty rows if data is insufficient
   const rows = [
     ...rowsData,
     ...attendanceEntries,
-    // ...Array(emptyRowCount).fill({ date: '', in: '', out: '', shift: '' }),
+    ...Array(emptyRowCount).fill({ date: '', in: '', out: '', shift: '' }),
   ];
 
-  // Custom Table Header Cell component to set background color
-  const CustomTableHeaderCell = (props: any) => (
-    <TableHeaderRow.Cell
-      {...props}
-      style={{
-        ...props.style,
-        backgroundColor: '#FEFFA7',
-        color: '#000',
-        fontWeight: 'bold',
-        borderRight: '1px solid #ccc',
-      }}
-    />
-  );
-
-  // Custom Table Cell component to add vertical lines between cells
-  const CustomTableCell = (props: any) => (
-    <Table.Cell
-      {...props}
-      style={{
-        ...props.style,
-        borderRight: '1px solid #ccc',
-      }}
-    />
-  );
-
   return (
-    <div className="bg-white shadow-md rounded-md" style={{ height: '600px', overflowY: 'auto' }}>
-      <h3 className="text-lg py-2 bg-green-200 font-semibold">Attendance</h3>
-      <Grid rows={rows} columns={columns} >
-        <Table cellComponent={CustomTableCell} />
-        <TableHeaderRow cellComponent={CustomTableHeaderCell} />
-      </Grid>
+    <div
+      className="bg-white shadow-lg rounded-lg p-4"
+      style={{
+        maxWidth: '100%',
+        overflowX: 'auto', // Enable horizontal scrolling
+        borderRadius: '16px',
+        border: '1px solid #e0e0e0',
+        padding: '20px',
+        backgroundColor: '#f7f9fc',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingBottom: '15px',
+        }}
+      >
+        <h3
+          style={{
+            fontSize: '25px',
+            fontWeight: '600',
+            color: '#1a1f36',
+          }}
+        >
+          Attendance
+        </h3>
+      </div>
+
+      <DataGrid
+        dataSource={rows}
+        showBorders={false}
+        rowAlternationEnabled={false}
+        hoverStateEnabled={true}
+        height={500}
+        columnAutoWidth={true}
+        noDataText="" // This will hide any default no data text
+        style={{
+          border: 'none',
+          fontFamily: 'Arial, sans-serif',
+          fontSize: '14px',
+        }}
+        width="100%" // Set DataGrid width to take full container space
+      >
+        {columns.map((column) => (
+          <Column
+            key={column.name}
+            dataField={column.name}
+            caption={column.title.toUpperCase()}
+            alignment="left"
+            headerCellRender={(header) => (
+              <div
+                style={{
+                  color: '#6b7280',
+                  fontWeight: '600',
+                  padding: '15px',
+                  borderBottom: '1px solid #e5e7eb',
+                  textTransform: 'uppercase',
+                  fontSize: '12px',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                {header.column.caption}
+              </div>
+            )}
+            cellRender={(cellData) => (
+              <div
+                style={{
+                  padding: '10px 15px',
+                  borderBottom: '1px solid #f0f0f5',
+                  color: '#1a1f36',
+                  fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
+                }}
+              >
+                {cellData.text}
+              </div>
+            )}
+          />
+        ))}
+        <Paging enabled={false} />
+        <Scrolling mode="virtual" />
+      </DataGrid>
     </div>
   );
 };
