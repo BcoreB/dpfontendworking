@@ -3,23 +3,25 @@ import React, { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { LoadScript, GoogleMap, Marker } from '@react-google-maps/api';
 
 const containerStyle = {
   width: '100%',
-  height: '340px', // Increased height of the map
+  height: '340px',
 };
 
 const center = {
-  lat: 37.7749, // Example latitude for San Francisco
-  lng: -122.4194, // Example longitude for San Francisco
+  lat: 37.7749,
+  lng: -122.4194,
 };
+
 interface AttendanceProps {
   onAddEntry: (entry: { date: string; in: string; out: string }) => void;
 }
-const Attendance: React.FC = ({ onAddEntry }) => {
+
+const Attendance: React.FC<AttendanceProps> = ({ onAddEntry }) => {
   const [attendanceType, setAttendanceType] = useState('Office');
   const [remarks, setRemarks] = useState('');
   const [mapCenter, setMapCenter] = useState(center);
@@ -28,11 +30,12 @@ const Attendance: React.FC = ({ onAddEntry }) => {
     const entry = {
       date: new Date().toLocaleDateString(),
       in: new Date().toLocaleTimeString(),
-      out: '', // No checkout time yet
+      out: '',
     };
     onAddEntry(entry);
   };
-  const handleAttendanceTypeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+
+  const handleAttendanceTypeChange = (event: SelectChangeEvent<string>) => {
     setAttendanceType(event.target.value as string);
   };
 
