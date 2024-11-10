@@ -57,8 +57,8 @@ const HideableNavbar: React.FC = () => {
   }
 
   return (
-    <>
-      <div className="w-11/12 md:w-full"><Navheader employeeCode={employeeCode||''} /></div>
+    <div className="pb-20 md:pb-0">
+      <div className=" md:w-full"><Navheader employeeCode={employeeCode||''} /></div>
       <div className="w-full h-full px-5 lg:px-20 lg:pb-14 relative">
         {isMobile ? (
           <div className="absolute top-4 left-4 z-10">
@@ -84,7 +84,7 @@ const HideableNavbar: React.FC = () => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

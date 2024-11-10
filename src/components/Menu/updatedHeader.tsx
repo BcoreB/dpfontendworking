@@ -56,7 +56,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
   };
 
   return (
-    <div className="nav-header bg-white h-20 flex w-full justify-between md:justify-evenly items-center px-4 md:px-10">
+    <div className="nav-header fixed z-10 bg-white h-20 flex w-full justify-between md:justify-evenly items-center px-4 md:px-10">
       <div className="flex items-center space-x-2 md:w-1/6">
         <Image height={50} width={50} alt="Logo" src={'/BcoreLogo.png'} className="max-w-full" />
         <div className="hidden md:block vertical-line"></div>
@@ -66,7 +66,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
         <div className="relative flex-1">
           <input
             type="text"
-            className="bg-[#EAF6FC] px-4 py-2 border-0 w-full max-w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-[#EAF6FC] px-4 py-2 border-0 w-full max-w-full shadow-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Search for an item..."
             value={searchTerm}
             onChange={handleSearch}
