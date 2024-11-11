@@ -24,14 +24,18 @@
 
 "use client";
 
+// app/layout.tsx
+"use client";
+
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { DirectionProvider } from './DirectionContext';
+import { EmployeeProvider } from './EmployeeContext';
 import HideableNavbar from "../components/Menu/HideableNavbar";
-import { EmployeeProvider } from "./EmployeeContext";
-import { config } from '@fortawesome/fontawesome-svg-core'
-import '@fortawesome/fontawesome-svg-core/styles.css'
-config.autoAddCss = false
+import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+
+config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,7 +47,7 @@ export default function RootLayout({
   return (
     <DirectionProvider>
       <EmployeeProvider>
-        <div className='{inter.className}'>
+        <div className={inter.className}>
           <HideableNavbar />
           {children}
         </div>

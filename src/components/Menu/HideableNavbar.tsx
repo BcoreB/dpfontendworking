@@ -3,17 +3,13 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/Menu/updatedNavbar";
 import Navheader from "@/components/Menu/updatedHeader";
-
+import { useEmployee } from '@/app/EmployeeContext';
 const HideableNavbar: React.FC = () => {
   const pathname = usePathname();
   const [isMobile, setIsMobile] = useState(false);
-  const [employeeCode, setEmployeeCode] = useState<string | null>(null);
+  const { employeeCode } = useEmployee(); // Access employeeCode from context
 
-  useEffect(() => {
-    // Retrieve employeecode from localStorage
-    const code = localStorage.getItem('employeecode');
-    setEmployeeCode(code);
-  }, []);
+  
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);

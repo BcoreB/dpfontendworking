@@ -15,7 +15,6 @@ import StaffLedgerTable from './StaffLedgerTable';
 import LoanRequestTables from './LoanRequestTable';
 import PaySlipTable from './PaySlipTable';
 import 'devextreme/dist/css/dx.light.css';
-
 // Define the props for the ProfileCard component
 interface EmpProps {
   employeeCode: string;

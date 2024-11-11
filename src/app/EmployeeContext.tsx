@@ -1,24 +1,35 @@
-// app/contexts/EmployeeContext.tsx
-import React, { createContext, useContext, useState } from 'react';
+// app/context/EmployeeContext.tsx
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
-interface EmployeeContextType {
+interface EmployeeContextProps {
   employeeCode: string | null;
   setEmployeeCode: (code: string) => void;
 }
 
-const EmployeeContext = createContext<EmployeeContextType | undefined>(undefined);
+const EmployeeContext = createContext<EmployeeContextProps | undefined>(undefined);
 
-export const EmployeeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [employeeCode, setEmployeeCode] = useState<string | null>(null);
+export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
+  const [employeeCode, setEmployeeCode] = useState<string | null>(() => {
+    // Retrieve the initial value from localStorage
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("employeeCode");
+    }
+    return null;
+  });
+
+  const saveEmployeeCode = (code: string) => {
+    setEmployeeCode(code);
+    localStorage.setItem("employeeCode", code); // Persist in localStorage
+  };
 
   return (
-    <EmployeeContext.Provider value={{ employeeCode, setEmployeeCode }}>
+    <EmployeeContext.Provider value={{ employeeCode, setEmployeeCode: saveEmployeeCode }}>
       {children}
     </EmployeeContext.Provider>
   );
 };
 
-export const useEmployee = (): EmployeeContextType => {
+export const useEmployee = () => {
   const context = useContext(EmployeeContext);
   if (!context) {
     throw new Error("useEmployee must be used within an EmployeeProvider");

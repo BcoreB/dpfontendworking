@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { menulist } from './data/menulist';
-import Navbar from "@/components/Menu/updatedNavbar"; 
+import Navbar from "@/components/Menu/updatedNavbar";
 
 // Sample employee data based on employee code
 const employeeData: Record<string, { name: string; profileImg: string }> = {
@@ -21,15 +21,14 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isNavbarVisible, setIsNavbarVisible] = useState(false);
+  const [isClient, setIsClient] = useState(false);  // Track client-only state
   const sidebarRef = useRef<HTMLDivElement>(null);  // Reference to sidebar
 
   const employee = employeeData[employeeCode] || { name: 'Unknown', profileImg: '/header/default-profile.jpg' };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
   useEffect(() => {
+    // Ensure this runs only on the client
+    setIsClient(true);
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -42,18 +41,9 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
     setIsNavbarVisible((prev) => !prev);
   };
 
-  const allMenuItems = menulist.flatMap(menu =>
-    menu.Sub.flatMap(category =>
-      category.MenuList.map(item => ({
-        name: item.Name,
-        path: item.Link
-      }))
-    )
-  );
-
-  const filteredItems = allMenuItems.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
   const handleItemClick = (path: string) => {
     if (path) {
@@ -151,8 +141,12 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
           className="opacity-50 cursor-pointer"
           onClick={toggleDropdown}
         />
-        <h3 className="truncate max-w-[80px] md:max-w-[160px]">{employee.name}</h3>
-        <Image width={40} height={40} className="rounded-full max-w-full" alt="Profile" src={employee.profileImg} />
+        {isClient && (
+          <>
+            <h3 className="truncate max-w-[80px] md:max-w-[160px]">{employee.name}</h3>
+            <Image width={40} height={40} className="rounded-full max-w-full" alt="Profile" src={employee.profileImg} />
+          </>
+        )}
 
         {isDropdownOpen && (
           <div className="absolute top-14 right-0 bg-white border border-gray-300 rounded-lg shadow-lg py-2 w-48 z-10">
