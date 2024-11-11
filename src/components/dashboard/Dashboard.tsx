@@ -1,3 +1,4 @@
+"use client"
 // components/Dashboard.tsx
 import React, { useState } from 'react';
 import ProfileCard from './ProfileCard';
@@ -21,6 +22,7 @@ interface EmpProps {
   employeeCode: string;
 }
 const Dashboard : React.FC<EmpProps> = ({ employeeCode }) => {
+  const safeEmployeeCode = employeeCode || ''; 
   const [attendanceEntries, setAttendanceEntries] = useState([]);
 
   const handleAddEntry = (entry) => {
@@ -30,21 +32,21 @@ const Dashboard : React.FC<EmpProps> = ({ employeeCode }) => {
     <div className="p-4 md:p-10 space-y-6 max-h-lvh">
       {/* Profile and Summary Cards */}
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
-        <div className="w-full md:w-1/3"><ProfileCard employeeCode={employeeCode}/></div>
-        <div className="w-full md:w-2/3"><SummaryCards employeeCode={employeeCode}/></div>
+        <div className="w-full md:w-1/3"><ProfileCard employeeCode={safeEmployeeCode}/></div>
+        <div className="w-full md:w-2/3"><SummaryCards employeeCode={safeEmployeeCode}/></div>
       </div>
 
       {/* Main Tables Section */}
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
         <div className="w-full md:w-1/3"><Attendance onAddEntry={handleAddEntry}/></div>
-        <div className="w-full md:w-1/3"><AttendanceTable attendanceEntries={attendanceEntries} employeeCode={'12345'}/></div>
-        <div className="w-full md:w-1/3"><RequestTables employeeCode={employeeCode}/></div>
+        <div className="w-full md:w-1/3"><AttendanceTable attendanceEntries={attendanceEntries} employeeCode={safeEmployeeCode}/></div>
+        <div className="w-full md:w-1/3"><RequestTables employeeCode={safeEmployeeCode}/></div>
       </div>
 
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
-        <div className="w-full md:w-1/3"><DocumentsTable employeeCode={employeeCode}/></div>
-        <div className="w-full md:w-1/3"><HolidaysTable employeeCode={employeeCode}/></div>
-        <div className="w-full md:w-1/3"><TrainingTable employeeCode={employeeCode} /></div>
+        <div className="w-full md:w-1/3"><DocumentsTable employeeCode={safeEmployeeCode}/></div>
+        <div className="w-full md:w-1/3"><HolidaysTable employeeCode={safeEmployeeCode}/></div>
+        <div className="w-full md:w-1/3"><TrainingTable employeeCode={safeEmployeeCode} /></div>
         
         
         
@@ -53,13 +55,13 @@ const Dashboard : React.FC<EmpProps> = ({ employeeCode }) => {
       {/* Bottom Section: Salary and Announcements */}
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
         <div className="w-full  md:h-auto md:w-1/3">
-          <SalaryStatistics employeeCode={employeeCode}/>
+          <SalaryStatistics employeeCode={safeEmployeeCode}/>
         </div>
         <div className="w-full md:w-1/3">
           <Announcements />
         </div>
         <div className="w-full md:w-1/3">
-          <StaffLedgerTable employeeCode={employeeCode}/>
+          <StaffLedgerTable employeeCode={safeEmployeeCode}/>
         </div>
         
       </div>

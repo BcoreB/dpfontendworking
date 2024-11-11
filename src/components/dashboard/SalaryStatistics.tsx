@@ -1,3 +1,4 @@
+"use client"
 // components/SalaryStatistics.tsx
 import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';

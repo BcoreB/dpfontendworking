@@ -9,13 +9,15 @@ interface EmployeeContextProps {
 const EmployeeContext = createContext<EmployeeContextProps | undefined>(undefined);
 
 export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
-  const [employeeCode, setEmployeeCode] = useState<string | null>(() => {
-    // Retrieve the initial value from localStorage
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("employeeCode");
+  const [employeeCode, setEmployeeCode] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Retrieve the initial value from localStorage only on the client
+    const storedCode = localStorage.getItem("employeeCode");
+    if (storedCode) {
+      setEmployeeCode(storedCode);
     }
-    return null;
-  });
+  }, []);
 
   const saveEmployeeCode = (code: string) => {
     setEmployeeCode(code);

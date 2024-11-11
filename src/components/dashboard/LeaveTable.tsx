@@ -1,3 +1,4 @@
+"use client"
 // components/LeaveTable.tsx
 import React, { useState } from 'react';
 import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
