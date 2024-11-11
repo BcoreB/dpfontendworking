@@ -27,7 +27,7 @@ const HideableNavbar: React.FC = () => {
 
   return (
     <div className="pb-20">
-      <div className="md:w-full">
+      <div className="md:w-full flex justify-center mb-4 md:mb-0">
         <Navheader employeeCode={employeeCode || ''} />
       </div>
 
