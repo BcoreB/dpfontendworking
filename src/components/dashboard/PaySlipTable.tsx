@@ -15,7 +15,7 @@ const PaySlipTable = () => {
   const [rows, setRows] = useState([]);
 
   const minRows = 20;
-  const fillEmptyRows = (rows, minRows) => {
+  const fillEmptyRows = (rows:any, minRows:number) => {
     const emptyRow = { date: '', account: '', ref: '', amount: '', remarks: '' };
     const filledRows = [...rows];
     while (filledRows.length < minRows) {
