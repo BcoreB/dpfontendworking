@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 
 // Define the structure of an individual employee profile
@@ -17,6 +18,8 @@ interface ProfileCardProps {
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ employeeCode }) => {
+
+  
   // Define employee profiles with type checking
   const employeeProfiles: Record<string, EmployeeProfile> = {
     "12345": {

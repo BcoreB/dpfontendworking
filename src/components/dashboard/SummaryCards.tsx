@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
@@ -12,7 +12,6 @@ const SummaryCards: React.FC<SummaryCardProps> = ({ employeeCode }) => {
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December',
   ];
-
   const summaryData: Record<string, Record<number, { title: string; count: number }[]>> = {
     "12345": {
       0: [{ title: 'ABSENT', count: 4 }, { title: 'LEAVE', count: 2 }, { title: 'LOAN', count: 1 }, { title: 'Late In, Early Out', count: 3 }],
@@ -45,14 +44,21 @@ const SummaryCards: React.FC<SummaryCardProps> = ({ employeeCode }) => {
     // Additional employee codes can be added here
   };
   
-
+  const [isClient, setIsClient] = useState(false);
   const currentMonth = new Date().getMonth();
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
 
   const handleMonthChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setSelectedMonth(event.target.value as number);
   };
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
+  
+  if (!isClient) {
+    return null; // Return null on server-side render to avoid mismatch
+  }
   const cards = summaryData[employeeCode]?.[selectedMonth] || [
     { title: 'ABSENT', count: 0 },
     { title: 'LEAVE', count: 0 },
