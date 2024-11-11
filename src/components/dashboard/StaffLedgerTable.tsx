@@ -1,3 +1,4 @@
+"use client"
 // components/StaffLedgerTable.tsx
 import React, { useState, useEffect } from 'react';
 import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';

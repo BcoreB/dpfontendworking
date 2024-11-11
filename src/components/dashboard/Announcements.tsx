@@ -1,3 +1,4 @@
+  "use client"
   // components/Announcements.tsx
   const Announcements = () => (
     <div className="bg-[#f3e8ff] p-4 shadow-md rounded-md w-full h-full">

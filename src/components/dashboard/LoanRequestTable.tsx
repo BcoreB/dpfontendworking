@@ -1,3 +1,4 @@
+"use client"
 // components/RequestTables.tsx
 import React, { useState } from 'react';
 import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';

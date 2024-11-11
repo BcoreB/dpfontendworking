@@ -1,3 +1,4 @@
+"use client"
 // components/Attendance.tsx
 import React, { useState } from 'react';
 import Paper from '@mui/material/Paper';
