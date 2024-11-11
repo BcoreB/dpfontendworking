@@ -84,16 +84,12 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
         dataSource={displayedRows}
         showBorders={false}
         rowAlternationEnabled={false}
-        hoverStateEnabled={true}
+        hoverStateEnabled
         height={500}
-        columnAutoWidth={true}
-        noDataText="" // This will hide any default no data text
-        style={{
-          border: 'none',
-          fontFamily: 'Arial, sans-serif',
-          fontSize: '14px',
-        }}
-        width="100%" // Set DataGrid width to take full container space
+        columnWidth={150}
+        noDataText=""
+        style={{ border: 'none', fontFamily: 'Arial, sans-serif', fontSize: '14px' }}
+        width="100%"
       >
         {columns.map((column) => (
           <Column
@@ -107,7 +103,7 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
                   color: '#6b7280',
                   fontWeight: '600',
                   padding: '15px',
-                  borderBottom: '1px solid #e5e7eb',
+                  
                   textTransform: 'uppercase',
                   fontSize: '12px',
                   letterSpacing: '0.5px',
@@ -120,7 +116,7 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
               <div
                 style={{
                   padding: '10px 15px',
-                  borderBottom: '1px solid #f0f0f5',
+                  
                   color: '#1a1f36',
                   fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
                 }}

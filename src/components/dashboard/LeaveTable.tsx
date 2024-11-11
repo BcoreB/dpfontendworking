@@ -100,7 +100,7 @@ const LeaveTable = () => {
                     color: '#6b7280',
                     fontWeight: '600',
                     padding: '15px',
-                    borderBottom: '1px solid #e5e7eb',
+                    
                     textTransform: 'uppercase',
                     fontSize: '12px',
                     letterSpacing: '0.5px',
@@ -113,7 +113,7 @@ const LeaveTable = () => {
                 <div
                   style={{
                     padding: '10px 15px',
-                    borderBottom: '1px solid #f0f0f5',
+                   
                     color: '#1a1f36',
                     fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
                   }}

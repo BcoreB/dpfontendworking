@@ -31,11 +31,11 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
       className="bg-white shadow-lg rounded-lg p-4"
       style={{
         maxWidth: '100%',
-        overflowX: 'auto', // Enable horizontal scrolling
+        overflowX: 'auto',
         borderRadius: '16px',
         border: '1px solid #e0e0e0',
         padding: '20px',
-        backgroundColor: '#f7f9fc',
+        backgroundColor: '#f9fafb',
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
       }}
     >
@@ -65,13 +65,14 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
         hoverStateEnabled={true}
         height={500}
         columnAutoWidth={true}
-        noDataText="" // This will hide any default no data text
+        noDataText=""
         style={{
           border: 'none',
           fontFamily: 'Arial, sans-serif',
           fontSize: '14px',
+          backgroundColor: '#ffffff',
         }}
-        width="100%" // Set DataGrid width to take full container space
+        width="100%"
       >
         {columns.map((column) => (
           <Column
@@ -82,13 +83,13 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
             headerCellRender={(header) => (
               <div
                 style={{
-                  color: '#6b7280',
+                  color: '#4b5563',
                   fontWeight: '600',
-                  padding: '15px',
-                  borderBottom: '1px solid #e5e7eb',
+                  padding: '10px',
                   textTransform: 'uppercase',
                   fontSize: '12px',
                   letterSpacing: '0.5px',
+                  
                 }}
               >
                 {header.column.caption}
@@ -97,10 +98,11 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
             cellRender={(cellData) => (
               <div
                 style={{
-                  padding: '10px 15px',
-                  borderBottom: '1px solid #f0f0f5',
+                  padding: '10px',
                   color: '#1a1f36',
+                 
                   fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
+                  borderRadius: '8px', // Soft edges for cells
                 }}
               >
                 {cellData.text}

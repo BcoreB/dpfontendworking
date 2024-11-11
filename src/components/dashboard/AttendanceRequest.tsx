@@ -123,14 +123,14 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
     />
   );
 
-  const CustomTableCell = (props: any) => (
+  const CustomTableCell = (props:any) => (
     <Table.Cell
       {...props}
       style={{
         ...props.style,
-        
+        border: 'none', // Remove row borders
         textAlign: 'center',
-        fontSize: '14px',
+        fontSize: '0.875rem', // Smaller font size
       }}
     />
   );

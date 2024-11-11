@@ -147,13 +147,12 @@ const LoanRequestTables = () => {
     />
   );
 
-  // Custom Table Cell component to add vertical lines between cells
   const CustomTableCell = (props:any) => (
     <Table.Cell
       {...props}
       style={{
         ...props.style,
-        borderRight: '1px solid #ccc',
+        border: 'none', // Remove row borders
         textAlign: 'center',
         fontSize: '0.875rem', // Smaller font size
       }}
