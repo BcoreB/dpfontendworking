@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
+import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 import attendanceData from '../Menu/data/attendanceData';
 import { RowData } from '../Menu/data/attendanceData';
 
@@ -18,13 +18,9 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
   ]);
 
   const rowsData: RowData[] = attendanceData[employeeCode] || [];
-  const totalRowsToDisplay = 15;
-  const emptyRowCount = totalRowsToDisplay - rowsData.length;
-  const rows = [
-    ...rowsData,
-    ...attendanceEntries,
-    ...Array(emptyRowCount).fill({ date: '', in: '', out: '', shift: '' }),
-  ];
+
+  // Combine the existing rows with new entries
+  const rows = [...rowsData, ...attendanceEntries];
 
   return (
     <div
@@ -89,7 +85,6 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
                   textTransform: 'uppercase',
                   fontSize: '12px',
                   letterSpacing: '0.5px',
-                  
                 }}
               >
                 {header.column.caption}
@@ -100,9 +95,8 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
                 style={{
                   padding: '10px',
                   color: '#1a1f36',
-                 
                   fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
-                  borderRadius: '8px', // Soft edges for cells
+                  borderRadius: '8px',
                 }}
               >
                 {cellData.text}
@@ -110,7 +104,16 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
             )}
           />
         ))}
-        <Paging enabled={false} />
+        
+        {/* Enable paging with custom styling */}
+        <Paging enabled={true} defaultPageSize={7} />
+        <Scrolling mode="standard" />
+        <Pager
+          showInfo={true}
+          infoText="Page {0} of {1}"
+          visible={true}
+          displayMode="compact"
+        />
       </DataGrid>
     </div>
   );

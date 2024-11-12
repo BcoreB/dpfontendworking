@@ -1,8 +1,8 @@
-"use client"
+"use client";
 // components/DocumentsTable.tsx
 import React, { useState, useEffect } from 'react';
 import { getDocumentsByEmployeeCode, DocumentRow } from '../Menu/data/documentData';
-import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
+import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 
 interface Column {
   name: string;
@@ -14,8 +14,6 @@ interface DocumentsTableProps {
 }
 
 const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
-  const minRows = 17;
-
   const [columns] = useState<Column[]>([
     { name: 'type', title: 'Type' },
     { name: 'number', title: 'Number' },
@@ -29,21 +27,6 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
     const employeeData = getDocumentsByEmployeeCode(employeeCode);
     setRows(employeeData);
   }, [employeeCode]);
-
-  const fillEmptyRows = (dataRows: DocumentRow[], columns: Column[]): DocumentRow[] => {
-    const emptyRow = columns.reduce((acc, column) => {
-      acc[column.name as keyof DocumentRow] = '';
-      return acc;
-    }, {} as DocumentRow);
-
-    const filledRows = [...dataRows];
-    while (filledRows.length < minRows) {
-      filledRows.push({ ...emptyRow });
-    }
-    return filledRows;
-  };
-
-  const displayedRows = fillEmptyRows(rows, columns);
 
   return (
     <div
@@ -78,7 +61,7 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
       </div>
 
       <DataGrid
-        dataSource={displayedRows}
+        dataSource={rows}
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled
@@ -131,8 +114,16 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
             )}
           />
         ))}
-        <Paging enabled={false} />
-        <Scrolling mode="virtual" />
+        
+        <Paging enabled={true} pageSize={5} />
+        <Scrolling mode="standard" />
+        
+        <Pager
+          showInfo={true}
+          infoText="Page {0} of {1}"
+          visible={true}
+          displayMode="compact"
+        />
       </DataGrid>
     </div>
   );

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from 'react';
-import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
+import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 import { Button, Modal, Box, Typography, MenuItem, Select, TextField } from '@mui/material';
 import { trainingData, TrainingData } from '../Menu/data/trainingData';
 
@@ -14,7 +14,6 @@ interface TrainingTableProps {
 }
 
 const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
-  const minRows = 16;
   const [columns] = useState<Column[]>([
     { name: 'date', title: 'Date' },
     { name: 'training', title: 'Training' },
@@ -49,21 +48,6 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  const fillEmptyRows = (dataRows: TrainingData[], columns: Column[]): TrainingData[] => {
-    const emptyRow = columns.reduce((acc, column) => {
-      acc[column.name as keyof TrainingData] = '';
-      return acc;
-    }, {} as TrainingData);
-
-    const filledRows = [...dataRows];
-    while (filledRows.length < minRows) {
-      filledRows.push({ ...emptyRow });
-    }
-    return filledRows;
-  };
-
-  const displayedRows = fillEmptyRows(rows, columns);
-
   return (
     <div className="bg-white shadow-md rounded-lg">
       <div
@@ -83,11 +67,11 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
         </div>
 
         <DataGrid
-          dataSource={displayedRows}
+          dataSource={rows}
           showBorders={false}
           rowAlternationEnabled={false}
           hoverStateEnabled
-          height={460}
+          height={450}
           columnWidth={120}
           noDataText=""
           style={{ border: 'none', fontFamily: 'Arial, sans-serif', fontSize: '14px' }}
@@ -111,16 +95,22 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
               )}
             />
           ))}
-          <Paging enabled={false} />
+          <Paging enabled={true} />
           <Scrolling mode="standard" />
+          <Pager
+            showInfo={true}
+            infoText="Page {0} of {1}"
+            visible={true}
+            displayMode="compact"
+          />
         </DataGrid>
 
-        <Button variant="contained" onClick={handleOpenModal} sx={{ color: 'black' }}>
+        <Button variant="contained" onClick={handleOpenModal} sx={{ color: 'black', marginTop:1 }}>
           Request Training
         </Button>
       </div>
 
-      <Modal open={isModalOpen} onClose={handleCloseModal} >
+      <Modal open={isModalOpen} onClose={handleCloseModal}>
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 600, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 24, p: 4 }}>
           <Typography variant="h6" component="h2">
             Select Training

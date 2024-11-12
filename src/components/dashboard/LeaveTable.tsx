@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
+import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select, FormControl, InputLabel, Switch, FormControlLabel } from '@mui/material';
 
 const LeaveTable = () => {
-  const minRows = 8; // Minimum number of rows to display in the table
-
   const [columns] = useState([
     { name: 'type', title: 'Type' },
     { name: 'fromDate', title: 'From Date' },
@@ -44,7 +42,7 @@ const LeaveTable = () => {
   };
 
   // Handle form data change
-  const handleChange = (e) => {
+  const handleChange = (e:any) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -81,22 +79,6 @@ const LeaveTable = () => {
     });
   };
 
-  // Fill table with empty rows if data is not sufficient
-  const fillEmptyRows = (dataRows, columns) => {
-    const emptyRow = columns.reduce((acc, column) => {
-      acc[column.name] = ''; // Fill each cell with an empty string
-      return acc;
-    }, {});
-
-    const filledRows = [...dataRows];
-    while (filledRows.length < minRows) {
-      filledRows.push({ ...emptyRow });
-    }
-    return filledRows;
-  };
-
-  const displayedRows = fillEmptyRows(rows, columns);
-
   return (
     <div className="bg-white shadow-md rounded-md">
       <div
@@ -131,11 +113,11 @@ const LeaveTable = () => {
         </div>
 
         <DataGrid
-          dataSource={displayedRows}
+          dataSource={rows}
           showBorders={false}
           rowAlternationEnabled={false}
           hoverStateEnabled={true}
-          height={500}
+          height={600}
           columnAutoWidth={true}
           noDataText=""
           style={{
@@ -178,8 +160,14 @@ const LeaveTable = () => {
               )}
             />
           ))}
-          <Paging enabled={false} />
-          <Scrolling mode="virtual" />
+          <Paging enabled={true} />
+          <Scrolling mode="standard" />
+          <Pager
+            showInfo={true}
+            infoText="Page {0} of {1}"
+            visible={true}
+            displayMode="compact"
+          />
         </DataGrid>
       </div>
       <Button variant="contained" color="warning" sx={{ mt: 2, float: 'right', mr: 1, color: 'black' }} onClick={handleOpenModal}>

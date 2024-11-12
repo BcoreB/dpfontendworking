@@ -1,9 +1,7 @@
 "use client"
 // components/StaffLedgerTable.tsx
 import React, { useState, useEffect } from 'react';
-import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
-import { TableCell, Box } from '@mui/material';
-import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
+import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 import { getEmployeeData } from '../Menu/data/employeeData';
 
 // Define props interface to accept employeeCode
@@ -32,25 +30,11 @@ const StaffLedgerTable: React.FC<StaffLedgerTableProps> = ({ employeeCode }) => 
   // State to hold employee data
   const [rows, setRows] = useState<RowData[]>([]);
 
-  // Minimum number of rows to maintain consistent table height
-  const minRows = 14;
-
-  // Fill empty rows if data is less than the minimum required
-  const fillEmptyRows = (data: RowData[], minRows: number) => {
-    const emptyRow: RowData = { date: '', account: '', ref: '', amount: '', remarks: '' };
-    const filledRows = [...data];
-    while (filledRows.length < minRows) {
-      filledRows.push({ ...emptyRow });
-    }
-    return filledRows;
-  };
-
   // Fetch employee data on component mount or when employeeCode changes
   useEffect(() => {
     const employeeData = getEmployeeData(employeeCode);
-    setRows(fillEmptyRows(employeeData, minRows));
+    setRows(employeeData);
   }, [employeeCode]);
-
 
   return (
     <div
@@ -111,7 +95,6 @@ const StaffLedgerTable: React.FC<StaffLedgerTableProps> = ({ employeeCode }) => 
                   color: '#6b7280',
                   fontWeight: '600',
                   padding: '15px',
-                  
                   textTransform: 'uppercase',
                   fontSize: '12px',
                   letterSpacing: '0.5px',
@@ -124,7 +107,6 @@ const StaffLedgerTable: React.FC<StaffLedgerTableProps> = ({ employeeCode }) => 
               <div
                 style={{
                   padding: '10px 15px',
-                  
                   color: '#1a1f36',
                   fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
                 }}
@@ -134,8 +116,14 @@ const StaffLedgerTable: React.FC<StaffLedgerTableProps> = ({ employeeCode }) => 
             )}
           />
         ))}
-        <Paging enabled={false} />
-        <Scrolling mode="virtual" />
+        <Paging enabled={true} />
+        <Scrolling mode="standard" />
+        <Pager
+            showInfo={true}
+            infoText="Page {0} of {1}"
+            visible={true}
+            displayMode="compact"
+          />
       </DataGrid>
     </div>
   );

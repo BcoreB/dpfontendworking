@@ -1,12 +1,10 @@
 "use client"
 // components/RequestTables.tsx
 import React, { useState } from 'react';
-import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
-import { TableCell, Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField,MenuItem, Select, } from '@mui/material';
+import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
+import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, Select } from '@mui/material';
 
 const LoanRequestTables = () => {
-  const minRows = 8; // Minimum number of rows to fill table
-
   // Column definitions for each table
   const loanColumns = [
     { name: 'type', title: 'Type' },
@@ -51,7 +49,6 @@ const LoanRequestTables = () => {
   const typeOptions = ['Personal Loan', 'Car Loan', 'Home Loan']; // Options for Loan Request
   const expenseTypeOptions = ['Travel', 'Office Supplies', 'Meals']; // Options for Expense Request
 
-
   // Function to open Loan dialog
   const handleOpenLoanDialog = () => {
     setOpenLoanDialog(true);
@@ -88,20 +85,18 @@ const LoanRequestTables = () => {
 
   // Function to handle Loan form submission
   const handleLoanFormSubmit = () => {
-    // Add the form data to loanRows
     setLoanRows([...loanRows, loanFormData]);
     handleCloseLoanDialog();
   };
 
   // Function to handle Expense form submission
   const handleExpenseFormSubmit = () => {
-    // Add the form data to expenseRows
     setExpenseRows([...expenseRows, expenseFormData]);
     handleCloseExpenseDialog();
   };
 
   // Function to handle Loan form input change
-  const handleLoanInputChange = (e:any) => {
+  const handleLoanInputChange = (e: any) => {
     const { name, value } = e.target;
     setLoanFormData({
       ...loanFormData,
@@ -110,7 +105,7 @@ const LoanRequestTables = () => {
   };
 
   // Function to handle Expense form input change
-  const handleExpenseInputChange = (e:any) => {
+  const handleExpenseInputChange = (e: any) => {
     const { name, value } = e.target;
     setExpenseFormData({
       ...expenseFormData,
@@ -118,67 +113,30 @@ const LoanRequestTables = () => {
     });
   };
 
-  // Function to add empty rows if not enough data is present
-  const fillEmptyRows = (rows, columns) => {
-    const emptyRow = columns.reduce((acc, column) => {
-      acc[column.name] = '';
-      return acc;
-    }, {});
-
-    const filledRows = [...rows];
-    while (filledRows.length < minRows) {
-      filledRows.push({ ...emptyRow });
-    }
-    return filledRows;
-  };
-
-  const displayedLoanRows = fillEmptyRows(loanRows, loanColumns);
-  const displayedExpenseRows = fillEmptyRows(expenseRows, expenseColumns);
-
-  // Custom Table Header Cell component to set background color
-  const CustomTableHeaderCell = (props:any) => (
-    <TableHeaderRow.Cell
-      {...props}
-      style={{
-        ...props.style,
-        backgroundColor: '#f3e8ff',
-        color: '#000',
-        fontWeight: 'medium',
-        borderRight: '1px solid #ccc',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '14px',
-      }}
-    />
-  );
-
-  const CustomTableCell = (props:any) => (
-    <Table.Cell
-      {...props}
-      style={{
-        ...props.style,
-        border: 'none', // Remove row borders
-        textAlign: 'center',
-        fontSize: '0.875rem', // Smaller font size
-      }}
-    />
-  );
-
   return (
     <div>
       {/* Loan Request Table */}
-      <div className="bg-white shadow-md rounded-md mb-16 p-4">
+      <div className="bg-white shadow-md rounded-md mb-16 p-4 mt-20 md:mt-0">
         <h3 className="text-lg text-left font-semibold py-2 text-center">Loan Request</h3>
         <Box
           sx={{
-            height: 200,
+            height: 250,
             overflowY: 'auto',
             border: '1px solid #ddd',
           }}
         >
-          <Grid rows={displayedLoanRows} columns={loanColumns}>
-            <Table cellComponent={CustomTableCell} />
-            <TableHeaderRow cellComponent={CustomTableHeaderCell} />
-          </Grid>
+          <DataGrid
+            dataSource={loanRows}
+            showBorders={true}
+            columnAutoWidth={true}
+            height={200}
+          >
+            {loanColumns.map((col) => (
+              <Column key={col.name} dataField={col.name} caption={col.title} />
+            ))}
+            <Paging enabled={false} />
+            <Scrolling mode="virtual" />
+          </DataGrid>
         </Box>
         <Button
           variant="contained"
@@ -195,15 +153,23 @@ const LoanRequestTables = () => {
         <h3 className="text-lg text-left font-semibold py-2 text-center">Expense Request</h3>
         <Box
           sx={{
-            height: 200,
+            height: 250,
             overflowY: 'auto',
             border: '1px solid #ddd',
           }}
         >
-          <Grid rows={displayedExpenseRows} columns={expenseColumns}>
-            <Table cellComponent={CustomTableCell} />
-            <TableHeaderRow cellComponent={CustomTableHeaderCell} />
-          </Grid>
+          <DataGrid
+            dataSource={expenseRows}
+            showBorders={true}
+            columnAutoWidth={true}
+            height={200}
+          >
+            {expenseColumns.map((col) => (
+              <Column key={col.name} dataField={col.name} caption={col.title} />
+            ))}
+            <Paging enabled={false} />
+            <Scrolling mode="virtual" />
+          </DataGrid>
         </Box>
         <Button
           variant="contained"
