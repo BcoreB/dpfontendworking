@@ -103,7 +103,7 @@ const PaySlipTable: React.FC = () => {
             )}
           />
         ))}
-        <Paging enabled={true} pageSize={10} />
+        <Paging enabled={true} pageSize={9} />
         <Scrolling mode="standard" />
         <Pager
           showInfo={true}
