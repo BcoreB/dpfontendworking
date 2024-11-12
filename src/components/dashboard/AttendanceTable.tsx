@@ -57,7 +57,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
           Attendance
         </h3>
       </div>
-
+      
       <DataGrid
         dataSource={rows}
         showBorders={false}
@@ -111,7 +111,6 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
           />
         ))}
         <Paging enabled={false} />
-        <Scrolling mode="virtual" />
       </DataGrid>
     </div>
   );

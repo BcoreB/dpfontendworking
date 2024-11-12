@@ -2,7 +2,7 @@
 // components/RequestTables.tsx
 import React, { useState } from 'react';
 import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
-import { TableCell, Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { TableCell, Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField,MenuItem, Select, } from '@mui/material';
 
 const LoanRequestTables = () => {
   const minRows = 8; // Minimum number of rows to fill table
@@ -31,7 +31,7 @@ const LoanRequestTables = () => {
   // State for Loan dialog
   const [openLoanDialog, setOpenLoanDialog] = useState(false);
   const [loanFormData, setLoanFormData] = useState({
-    type: '',
+    type: 'Personal Loan',
     amount: '',
     guarantor: '',
     reason: '',
@@ -41,12 +41,16 @@ const LoanRequestTables = () => {
   // State for Expense dialog
   const [openExpenseDialog, setOpenExpenseDialog] = useState(false);
   const [expenseFormData, setExpenseFormData] = useState({
-    type: '',
+    type: 'Travel',
     voucher: '',
     amount: '',
     reason: '',
     status: 'Pending',
   });
+
+  const typeOptions = ['Personal Loan', 'Car Loan', 'Home Loan']; // Options for Loan Request
+  const expenseTypeOptions = ['Travel', 'Office Supplies', 'Meals']; // Options for Expense Request
+
 
   // Function to open Loan dialog
   const handleOpenLoanDialog = () => {
@@ -97,7 +101,7 @@ const LoanRequestTables = () => {
   };
 
   // Function to handle Loan form input change
-  const handleLoanInputChange = (e) => {
+  const handleLoanInputChange = (e:any) => {
     const { name, value } = e.target;
     setLoanFormData({
       ...loanFormData,
@@ -215,11 +219,20 @@ const LoanRequestTables = () => {
       <Dialog open={openLoanDialog} onClose={handleCloseLoanDialog}>
         <DialogTitle>New Loan Request</DialogTitle>
         <DialogContent>
-          <TextField className='my-4' label="Type" name="type" fullWidth value={loanFormData.type} onChange={handleLoanInputChange} />
-          <TextField className='my-4' label="Amount" name="amount" fullWidth value={loanFormData.amount} onChange={handleLoanInputChange} />
-          <TextField className='my-4' label="Guarantor" name="guarantor" fullWidth value={loanFormData.guarantor} onChange={handleLoanInputChange} />
-          <TextField className='my-4' label="Reason" name="reason" fullWidth value={loanFormData.reason} onChange={handleLoanInputChange} />
-          
+          <Select
+            fullWidth
+            name="type"
+            value={loanFormData.type}
+            onChange={handleLoanInputChange}
+            className="my-4"
+          >
+            {typeOptions.map((option) => (
+              <MenuItem key={option} value={option}>{option}</MenuItem>
+            ))}
+          </Select>
+          <TextField className="my-4" label="Amount" name="amount" fullWidth value={loanFormData.amount} onChange={handleLoanInputChange} />
+          <TextField className="my-4" label="Guarantor" name="guarantor" fullWidth value={loanFormData.guarantor} onChange={handleLoanInputChange} />
+          <TextField className="my-4" label="Reason" name="reason" fullWidth value={loanFormData.reason} onChange={handleLoanInputChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseLoanDialog} color="primary">Cancel</Button>
@@ -231,11 +244,20 @@ const LoanRequestTables = () => {
       <Dialog open={openExpenseDialog} onClose={handleCloseExpenseDialog}>
         <DialogTitle>New Expense Request</DialogTitle>
         <DialogContent>
-          <TextField className='my-4' label="Type" name="type" fullWidth value={expenseFormData.type} onChange={handleExpenseInputChange} />
-          <TextField className='my-4' label="Voucher" name="voucher" fullWidth value={expenseFormData.voucher} onChange={handleExpenseInputChange} />
-          <TextField className='my-4' label="Amount" name="amount" fullWidth value={expenseFormData.amount} onChange={handleExpenseInputChange} />
-          <TextField className='my-4' label="Reason" name="reason" fullWidth value={expenseFormData.reason} onChange={handleExpenseInputChange} />
-          
+          <Select
+            fullWidth
+            name="type"
+            value={expenseFormData.type}
+            onChange={handleExpenseInputChange}
+            className="my-4"
+          >
+            {expenseTypeOptions.map((option) => (
+              <MenuItem key={option} value={option}>{option}</MenuItem>
+            ))}
+          </Select>
+          <TextField className="my-4" label="Voucher" name="voucher" fullWidth value={expenseFormData.voucher} onChange={handleExpenseInputChange} />
+          <TextField className="my-4" label="Amount" name="amount" fullWidth value={expenseFormData.amount} onChange={handleExpenseInputChange} />
+          <TextField className="my-4" label="Reason" name="reason" fullWidth value={expenseFormData.reason} onChange={handleExpenseInputChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseExpenseDialog} color="primary">Cancel</Button>

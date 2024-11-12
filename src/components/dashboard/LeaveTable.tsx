@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
 import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
-import { Box, TableCell, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select, FormControl, InputLabel, Switch, FormControlLabel } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select, FormControl, InputLabel, Switch, FormControlLabel } from '@mui/material';
 
 const LeaveTable = () => {
   const minRows = 8; // Minimum number of rows to display in the table
 
   const [columns] = useState([
-    { name: 'date', title: 'Date' },
     { name: 'type', title: 'Type' },
+    { name: 'fromDate', title: 'From Date' },
+    { name: 'toDate', title: 'To Date' },
     { name: 'remarks', title: 'Remarks' },
+    { name: 'status', title: 'Status' },
   ]);
 
   const [rows, setRows] = useState([
-    { date: '2024-11-02', type: 'Sick Leave', remarks: 'N/A' },
-    { date: '2024-11-03', type: 'Casual Leave', remarks: 'Personal' },
-    { date: '2024-11-04', type: 'Sick Leave', remarks: 'Flu' },
-    { date: '2024-11-05', type: 'Paid Leave', remarks: 'Vacation' },
-    { date: '2024-11-06', type: 'Work from Home', remarks: 'Project work' },
-    { date: '2024-11-07', type: 'Casual Leave', remarks: 'Family Event' },
-    { date: '2024-11-08', type: 'Sick Leave', remarks: 'Medical Appointment' },
+    { type: 'Sick Leave', fromDate: '02-11-2024', toDate: '02-11-2024', remarks: 'N/A', status: 'Pending' },
+    { type: 'Casual Leave', fromDate: '03-11-2024', toDate: '03-11-2024', remarks: 'Personal', status: 'Approved' },
+    { type: 'Sick Leave', fromDate: '04-11-2024', toDate: '04-11-2024', remarks: 'Flu', status: 'Pending' },
+    { type: 'Paid Leave', fromDate: '05-11-2024', toDate: '05-11-2024', remarks: 'Vacation', status: 'Approved' },
+    { type: 'Work from Home', fromDate: '06-11-2024', toDate: '06-11-2024', remarks: 'Project work', status: 'Pending' },
+    { type: 'Casual Leave', fromDate: '07-11-2024', toDate: '07-11-2024', remarks: 'Family Event', status: 'Approved' },
+    { type: 'Sick Leave', fromDate: '08-11-2024', toDate: '08-11-2024', remarks: 'Medical Appointment', status: 'Pending' },
   ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,13 +58,15 @@ const LeaveTable = () => {
     // Close the modal
     handleCloseModal();
 
-    // Add form data to rows in the table
+    // Add form data to rows in the table with default status 'Pending'
     setRows((prevRows) => [
       ...prevRows,
       {
-        date: formData.fromDate,
         type: formData.type,
-        remarks: formData.remarks
+        fromDate: formData.fromDate,
+        toDate: formData.toDate,
+        remarks: formData.remarks,
+        status: 'Pending'
       }
     ]);
 
@@ -99,7 +103,7 @@ const LeaveTable = () => {
         className="bg-white shadow-lg rounded-lg p-4"
         style={{
           maxWidth: '100%',
-          overflowX: 'auto', // Enable horizontal scrolling
+          overflowX: 'auto',
           borderRadius: '16px',
           border: '1px solid #e0e0e0',
           padding: '20px',
@@ -133,13 +137,13 @@ const LeaveTable = () => {
           hoverStateEnabled={true}
           height={500}
           columnAutoWidth={true}
-          noDataText="" // This will hide any default no data text
+          noDataText=""
           style={{
             border: 'none',
             fontFamily: 'Arial, sans-serif',
             fontSize: '14px',
           }}
-          width="100%" // Set DataGrid width to take full container space
+          width="100%"
         >
           {columns.map((column) => (
             <Column
@@ -153,7 +157,6 @@ const LeaveTable = () => {
                     color: '#6b7280',
                     fontWeight: '600',
                     padding: '15px',
-                    
                     textTransform: 'uppercase',
                     fontSize: '12px',
                     letterSpacing: '0.5px',
@@ -166,7 +169,6 @@ const LeaveTable = () => {
                 <div
                   style={{
                     padding: '10px 15px',
-                   
                     color: '#1a1f36',
                     fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
                   }}
@@ -180,7 +182,7 @@ const LeaveTable = () => {
           <Scrolling mode="virtual" />
         </DataGrid>
       </div>
-      <Button variant="contained" color="warning" sx={{ mt: 2, float: 'right', mr: 1, color:'black' }} onClick={handleOpenModal}>
+      <Button variant="contained" color="warning" sx={{ mt: 2, float: 'right', mr: 1, color: 'black' }} onClick={handleOpenModal}>
         Request
       </Button>
 

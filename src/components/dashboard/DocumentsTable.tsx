@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { getDocumentsByEmployeeCode, DocumentRow } from '../Menu/data/documentData';
 import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
+
 interface Column {
   name: string;
   title: string;
@@ -43,17 +44,13 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
   };
 
   const displayedRows = fillEmptyRows(rows, columns);
-  const isRowEmpty = (row: DocumentRow) => {
-    return !row.type && !row.number && !row.expiry && !row.image;
-  };
- 
 
   return (
     <div
       className="bg-white shadow-lg rounded-lg p-4"
       style={{
         maxWidth: '100%',
-        overflowX: 'auto', // Enable horizontal scrolling
+        overflowX: 'auto',
         borderRadius: '16px',
         border: '1px solid #e0e0e0',
         padding: '20px',
@@ -103,7 +100,6 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
                   color: '#6b7280',
                   fontWeight: '600',
                   padding: '15px',
-                  
                   textTransform: 'uppercase',
                   fontSize: '12px',
                   letterSpacing: '0.5px',
@@ -113,16 +109,25 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
               </div>
             )}
             cellRender={(cellData) => (
-              <div
-                style={{
-                  padding: '10px 15px',
-                  
-                  color: '#1a1f36',
-                  fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
-                }}
-              >
-                {cellData.text}
-              </div>
+              column.name === 'image' && cellData.value ? (
+                <div style={{ padding: '10px 15px' }}>
+                  <img
+                    src={cellData.value}
+                    alt="Document Thumbnail"
+                    style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }}
+                  />
+                </div>
+              ) : (
+                <div
+                  style={{
+                    padding: '10px 15px',
+                    color: '#1a1f36',
+                    fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
+                  }}
+                >
+                  {cellData.text}
+                </div>
+              )
             )}
           />
         ))}

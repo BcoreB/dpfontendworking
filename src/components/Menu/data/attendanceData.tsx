@@ -1,37 +1,35 @@
-// attendanceData.ts
-
 export interface RowData {
-    date: string;
-    in: string;
-    out: string;
-    shift: string;
-  }
-  
-  // Attendance data for each employee code
-  const attendanceData: { [key: string]: RowData[] } = {
-    12345: [
-      { date: '2024-11-01', in: '9:00 AM', out: '5:00 PM', shift: 'Morning' },
-      { date: '2024-11-02', in: '9:15 AM', out: '5:10 PM', shift: 'Morning' },
-      { date: '2024-11-03', in: '10:00 AM', out: '6:00 PM', shift: 'Afternoon' },
-      { date: '2024-11-04', in: '8:45 AM', out: '4:45 PM', shift: 'Morning' },
-      { date: '2024-11-05', in: '9:30 AM', out: '5:30 PM', shift: 'Morning' },
-      { date: '2024-11-06', in: '10:15 AM', out: '6:15 PM', shift: 'Afternoon' },
-    ],
-    67890: [
-      { date: '2024-11-01', in: '8:30 AM', out: '4:30 PM', shift: 'Morning' },
-      { date: '2024-11-02', in: '8:45 AM', out: '4:45 PM', shift: 'Morning' },
-      { date: '2024-11-03', in: '9:00 AM', out: '5:00 PM', shift: 'Morning' },
-      { date: '2024-11-04', in: '9:15 AM', out: '5:15 PM', shift: 'Morning' },
-      { date: '2024-11-05', in: '9:30 AM', out: '5:30 PM', shift: 'Afternoon' },
-      { date: '2024-11-06', in: '10:00 AM', out: '6:00 PM', shift: 'Afternoon' },
-    ],
-    E003: [
-      { date: '2024-11-01', in: '9:00 AM', out: '6:00 PM', shift: 'Afternoon' },
-      { date: '2024-11-02', in: '9:15 AM', out: '6:10 PM', shift: 'Afternoon' },
-      { date: '2024-11-03', in: '9:45 AM', out: '5:45 PM', shift: 'Afternoon' },
-      { date: '2024-11-04', in: '10:00 AM', out: '6:30 PM', shift: 'Afternoon' },
-      { date: '2024-11-05', in: '10:15 AM', out: '6:15 PM', shift: 'Evening' },
-      { date: '2024-11-06', in: '10:30 AM', out: '6:30 PM', shift: 'Evening' },
-    ],
-  };
-  export default attendanceData
+  date: string;
+  in: string;
+  out: string;
+  shift: string;
+}
+
+// Attendance data for each employee code
+const attendanceData: { [key: string]: RowData[] } = {
+  12345: [
+      { date: '01-11-2024', in: '09:00:000 AM', out: '05:00:000 PM', shift: 'Morning' },
+      { date: '02-11-2024', in: '09:15:000 AM', out: '05:10:000 PM', shift: 'Morning' },
+      { date: '03-11-2024', in: '10:00:000 AM', out: '06:00:000 PM', shift: 'Afternoon' },
+      { date: '04-11-2024', in: '08:45:000 AM', out: '04:45:000 PM', shift: 'Morning' },
+      { date: '05-11-2024', in: '09:30:000 AM', out: '05:30:000 PM', shift: 'Morning' },
+      { date: '06-11-2024', in: '10:15:000 AM', out: '06:15:000 PM', shift: 'Afternoon' },
+  ],
+  67890: [
+      { date: '01-11-2024', in: '08:30:000 AM', out: '04:30:000 PM', shift: 'Morning' },
+      { date: '02-11-2024', in: '08:45:000 AM', out: '04:45:000 PM', shift: 'Morning' },
+      { date: '03-11-2024', in: '09:00:000 AM', out: '05:00:000 PM', shift: 'Morning' },
+      { date: '04-11-2024', in: '09:15:000 AM', out: '05:15:000 PM', shift: 'Morning' },
+      { date: '05-11-2024', in: '09:30:000 AM', out: '05:30:000 PM', shift: 'Afternoon' },
+      { date: '06-11-2024', in: '10:00:000 AM', out: '06:00:000 PM', shift: 'Afternoon' },
+  ],
+  E003: [
+      { date: '01-11-2024', in: '09:00:000 AM', out: '06:00:000 PM', shift: 'Afternoon' },
+      { date: '02-11-2024', in: '09:15:000 AM', out: '06:10:000 PM', shift: 'Afternoon' },
+      { date: '03-11-2024', in: '09:45:000 AM', out: '05:45:000 PM', shift: 'Afternoon' },
+      { date: '04-11-2024', in: '10:00:000 AM', out: '06:30:000 PM', shift: 'Afternoon' },
+      { date: '05-11-2024', in: '10:15:000 AM', out: '06:15:000 PM', shift: 'Evening' },
+      { date: '06-11-2024', in: '10:30:000 AM', out: '06:30:000 PM', shift: 'Evening' },
+  ],
+};
+export default attendanceData;
