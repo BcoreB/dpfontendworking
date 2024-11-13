@@ -1,7 +1,7 @@
 "use client";
 // components/DocumentsTable.tsx
 import React, { useState, useEffect } from 'react';
-import { getDocumentsByEmployeeCode, DocumentRow } from '../Menu/data/documentData';
+import { getDocumentsByEmployeeCode, DocumentRow, updateDocumentImage } from '../Menu/data/documentData';
 import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 
 interface Column {
@@ -19,6 +19,7 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
     { name: 'number', title: 'Number' },
     { name: 'expiry', title: 'Expiry' },
     { name: 'image', title: 'Image' },
+    { name: 'actions', title: 'Actions' },
   ]);
 
   const [rows, setRows] = useState<DocumentRow[]>([]);
@@ -27,6 +28,23 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
     const employeeData = getDocumentsByEmployeeCode(employeeCode);
     setRows(employeeData);
   }, [employeeCode]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, rowIndex: number) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+
+      // Update the specific row's image URL in state
+      setRows((prevRows) =>
+        prevRows.map((row, index) =>
+          index === rowIndex ? { ...row, image: imageUrl } : row
+        )
+      );
+
+      // Update the image URL in documentData for persistent changes
+      updateDocumentImage(employeeCode, rowIndex, imageUrl);
+    }
+  };
 
   return (
     <div
@@ -91,39 +109,63 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
                 {header.column.caption}
               </div>
             )}
-            cellRender={(cellData) => (
-              column.name === 'image' && cellData.value ? (
-                <div style={{ padding: '10px 15px' }}>
-                  <img
-                    src={cellData.value}
-                    alt="Document Thumbnail"
-                    style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }}
-                  />
-                </div>
-              ) : (
-                <div
-                  style={{
-                    padding: '10px 15px',
-                    color: '#1a1f36',
-                    fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
-                  }}
-                >
-                  {cellData.text}
-                </div>
-              )
-            )}
+            cellRender={(cellData) => {
+              if (column.name === 'image' && cellData.value) {
+                return (
+                  <div style={{ padding: '10px 15px' }}>
+                    <img
+                      src={cellData.value}
+                      alt="Document Thumbnail"
+                      style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }}
+                    />
+                  </div>
+                );
+              } else if (column.name === 'actions') {
+                return (
+                  <div style={{ padding: '10px 15px' }}>
+                    <button
+                      onClick={() => document.getElementById(`fileInput-${cellData.rowIndex}`)?.click()}
+                      style={{
+                        padding: '6px 10px',
+                        borderRadius: '4px',
+                        backgroundColor: '#007bff',
+                        color: '#fff',
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      +
+                    </button>
+                    <input
+                      id={`fileInput-${cellData.rowIndex}`}
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={(e) => handleImageChange(e, cellData.rowIndex)}
+                    />
+                  </div>
+                );
+              } else {
+                return (
+                  <div
+                    style={{
+                      padding: '10px 15px',
+                      color: '#1a1f36',
+                      fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
+                    }}
+                  >
+                    {cellData.text}
+                  </div>
+                );
+              }
+            }}
           />
         ))}
-        
+
         <Paging enabled={true} pageSize={5} />
         <Scrolling mode="standard" />
-        
-        <Pager
-          showInfo={true}
-          infoText="Page {0} of {1}"
-          visible={true}
-          displayMode="compact"
-        />
+
+        <Pager showInfo={true} infoText="Page {0} of {1}" visible={true} displayMode="compact" />
       </DataGrid>
     </div>
   );
