@@ -46,15 +46,13 @@ export default function RootLayout({
 }>) {
   return (
     <DirectionProvider>
-<<<<<<< HEAD
       <EmployeeProvider>
-        <div className={inter.className}>
-=======
+
         <div className='{inter.className}'>
->>>>>>> 0e71afe813de9cf64f5ddfbbe7141072d4f33def
           <HideableNavbar />
           {children}
         </div>
+      </EmployeeProvider>
     </DirectionProvider>
   );
 }
