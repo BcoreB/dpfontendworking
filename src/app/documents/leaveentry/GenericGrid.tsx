@@ -6,6 +6,7 @@ import { Popup } from 'devextreme-react/popup';
 import { AiFillCaretDown } from 'react-icons/ai';
 import { DateBox } from 'devextreme-react/date-box';
 import Button from 'devextreme-react/cjs/button';
+import getLanguageByEnglish from '@/utils/languages'
 interface GridProps<T> {
   columns: {
     dataField: keyof T;
@@ -292,7 +293,7 @@ const handleRowDoubleClick = (e: any) => {
               <Column
                 key={String(column.dataField)}
                 dataField={String(column.dataField)}
-                caption={column.caption}
+                caption={getLanguageByEnglish(column.caption)}
                 dataType={isDateColumn ? 'date' : isTimeColumn ? 'datetime' : undefined}
                 allowEditing={!column.disabled}
                 editorOptions={

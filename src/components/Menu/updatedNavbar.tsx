@@ -55,15 +55,15 @@ export default function Navbar() {
       <div className="controls flex flex-col gap-4">
         <div className="flex items-center">
           <Image src={'/header/help.png'} height={25} width={25} alt="Help" />
-          {isExpanded && <span className="ml-2 text-sm font-medium">Help & Support</span>}
+          {isExpanded && <span className="ml-2 text-sm font-medium">{getLanguageByEnglish('Help & Support')}</span>}
         </div>
         <div className="flex items-center">
           <Image src={'/header/Notification.png'} height={25} width={25} alt="Notifications" />
-          {isExpanded && <span className="ml-2 text-sm font-medium">Notifications</span>}
+          {isExpanded && <span className="ml-2 text-sm font-medium">{getLanguageByEnglish('Notifications')}</span>}
         </div>
         <div className="flex items-center">
           <Image src={'/header/Settings.png'} height={25} width={25} alt="Settings" />
-          {isExpanded && <span className="ml-2 text-sm font-medium">Settings</span>}
+          {isExpanded && <span className="ml-2 text-sm font-medium">{getLanguageByEnglish('Settings')}</span>}
         </div>
       </div>
     </main>

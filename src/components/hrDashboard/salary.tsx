@@ -1,6 +1,6 @@
 import React from 'react';
 import { Chart, Series, ArgumentAxis, ValueAxis, Title, Legend, Label } from 'devextreme-react/chart';
-
+import getLanguageByEnglish from '@/utils/languages'
 const data = [
   { month: 'JAN', series1: 50000, series2: 40000 },
   { month: 'FEB', series1: 48000, series2: 38000 },
@@ -19,7 +19,7 @@ const data = [
 const SalaryChart: React.FC = () => {
   return (
     <div className='p-4'>
-        <h4 className='text-start text-xl font-semibold mb-6'>SALARY</h4>
+        <h4 className='text-start text-xl font-semibold mb-6'>{getLanguageByEnglish('SALARY')}</h4>
         <Chart dataSource={data}>
             <ArgumentAxis>
                 <Label visible={true} /> {/* Ensure month labels are visible */}

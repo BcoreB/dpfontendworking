@@ -5,7 +5,7 @@ import DataGrid, {
   Paging,
   Scrolling,
 } from 'devextreme-react/data-grid';
-
+import getLanguageByEnglish from '@/utils/languages'
 const dataSource = [
   { location: 'ARAD BRANCH', '2020': 45, '2021': 44, '2022': 36, '2023': 25 },
   { location: 'MANAMA BRANCH', '2020': 36, '2021': 30, '2022': 25, '2023': 33 },
@@ -16,7 +16,7 @@ const dataSource = [
 const LocationWise: React.FC = () => {
   return (
     <div className="p-8">
-      <h2 className="text-left  text-xl font-bold mb-4">LOCATION WISE</h2>
+      <h2 className="text-left  text-xl font-bold mb-4">{getLanguageByEnglish('LOCATION WISE')}</h2>
       <DataGrid
         dataSource={dataSource}
         showBorders={true}

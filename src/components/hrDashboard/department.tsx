@@ -6,7 +6,7 @@ import PieChart, {
   Export,
   HoverStyle,
 } from 'devextreme-react/pie-chart';
-
+import getLanguageByEnglish from '@/utils/languages'
 type DepartmentData = {
     department: string;
     count: number;
@@ -26,7 +26,7 @@ type DepartmentData = {
 function DepartmentWise() {
   return (
     <div className='p-4'>
-        <h4 className='text-start text-xl font-semibold mb-6'>DEPARTMENT WISE</h4>
+        <h4 className='text-start text-xl font-semibold mb-6'>{getLanguageByEnglish('DEPARTMENT WISE')}</h4>
         <PieChart
             id="pie"
             type="doughnut"

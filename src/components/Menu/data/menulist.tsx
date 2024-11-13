@@ -150,4 +150,4 @@ const DROPDOWN_ITEM_DATA_MASTER_SETUP = transformMenuList(menulist.find(menu => 
 const DROPDOWN_ITEM_DATA_EXPLOYEE_SELF_SERVICE = transformMenuList(menulist.find(menu => menu.Name === "Employee Self Service")?.Sub || []);
 const DROPDOWN_ITEM_DATA_EMPLOYEE_MANAGEMENT = transformMenuList(menulist.find(menu => menu.Name === "Employee Management")?.Sub || []);
 
-export { menulist, DROPDOWN_ITEM_DATA_SYSTEM, DROPDOWN_ITEM_DATA_MASTER_SETUP, DROPDOWN_ITEM_DATA_EXPLOYEE_SELF_SERVICE, DROPDOWN_ITEM_DATA_EMPLOYEE_MANAGEMENT };
+export { menulist, DROPDOWN_ITEM_DATA_SYSTEM, DROPDOWN_ITEM_DATA_MASTER_SETUP, DROPDOWN_ITEM_DATA_EXPLOYEE_SELF_SERVICE, DROPDOWN_ITEM_DATA_EMPLOYEE_MANAGEMENT, type MenuItem };

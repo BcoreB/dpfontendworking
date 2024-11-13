@@ -11,7 +11,7 @@ import LocationWise from './locationWise';
 import ComponentSalaryChart from './componentSalary';
 import SalaryByDashboard from './salarybycomponent';
 import 'devextreme/dist/css/dx.light.css';
-
+import getLanguageByEnglish from '@/utils/languages'
 interface EmpProps {
   employeeCode: string;
 }
@@ -48,7 +48,7 @@ const HRDashboard: React.FC<EmpProps> = ({ employeeCode }) => {
         <>
           <div>
             <button onClick={() => toggleAccordion("attendance")} className="w-full text-left font-medium p-4 bg-gray-100 rounded-md shadow">
-              Nationality & Department Wise
+              {getLanguageByEnglish('Nationality & Department Wise')}
             </button>
             {openAccordion === "attendance" && (
               <div className="p-4 space-y-4">
@@ -60,7 +60,7 @@ const HRDashboard: React.FC<EmpProps> = ({ employeeCode }) => {
 
           <div>
             <button onClick={() => toggleAccordion("documents")} className="w-full text-left font-medium p-4 bg-gray-100 rounded-md shadow">
-            Salary and Announcements
+            {getLanguageByEnglish('Salary and Announcements')}
             </button>
             {openAccordion === "documents" && (
               <div className="p-4 space-y-4">
@@ -72,25 +72,17 @@ const HRDashboard: React.FC<EmpProps> = ({ employeeCode }) => {
 
           <div>
             <button onClick={() => toggleAccordion("salaryAnnouncements")} className="w-full text-left font-medium p-4 bg-gray-100 rounded-md shadow">
-              Location Wise
+            {getLanguageByEnglish('Location Wise & Component Wise')}
             </button>
             {openAccordion === "salaryAnnouncements" && (
               <div className="p-4 space-y-4">
                 <LocationWise/>
+                <ComponentSalaryChart/>
+                <SalaryByDashboard />
               </div>
             )}
           </div>
 
-          <div>
-            <button onClick={() => toggleAccordion("others")} className="w-full text-left font-medium p-4 bg-gray-100 rounded-md shadow">
-              Pay Slip, Leave, and Loan Requests
-            </button>
-            {openAccordion === "others" && (
-              <div className="p-4 space-y-4">
-               
-              </div>
-            )}
-          </div>
         </>
       ) : (
         <>
@@ -119,10 +111,6 @@ const HRDashboard: React.FC<EmpProps> = ({ employeeCode }) => {
             <LocationWise/>
             <ComponentSalaryChart/>
             <SalaryByDashboard />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            
           </div>
         </>
       )}
