@@ -15,6 +15,7 @@ import Sidebar from '@/components/Menu/documentSideBar';
 import TrailManagement from './trailGrid';
 import DPDatePicker from '@/components/ui/dpdatepicker';
 import LeaveManagement from './LeaveDetails';
+
 const LeaveEntry = () => {
   const docCd = 6;
   const docKey = 101;

@@ -103,7 +103,9 @@
   border: none ; /* Removes the border */
   box-shadow: none !important; /* Ensures no shadow */
 }
-
+.custom-grid .dx-datagrid-headers {
+  background-color: #f3e8ff !important;
+}
 .vertical-line
 {
   border-left: 2px solid rgba(33, 33, 33,0.1);
