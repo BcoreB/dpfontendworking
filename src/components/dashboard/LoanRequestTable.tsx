@@ -222,7 +222,7 @@ const LoanRequestTables = () => {
             ))}
           </Select>
           <TextField className="my-4" label="Voucher" name="voucher" fullWidth value={expenseFormData.voucher} onChange={handleExpenseInputChange} />
-          <TextField className="my-4" label="Amount" name="amount" fullWidth value={expenseFormData.amount} onChange={handleExpenseInputChange} />
+          <TextField className="my-4" label="Amount" type='number' name="amount" fullWidth value={expenseFormData.amount} onChange={handleExpenseInputChange} />
           <TextField className="my-4" label="Reason" name="reason" fullWidth value={expenseFormData.reason} onChange={handleExpenseInputChange} />
         </DialogContent>
         <DialogActions>
