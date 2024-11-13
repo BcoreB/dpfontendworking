@@ -57,9 +57,9 @@ const DepartmentMaster = () => {
           form={form}
         />
       </div>
-      <Button type="button" onClick={handleAlertFormData}>
+      {/* <Button type="button" onClick={handleAlertFormData}>
         Show Form Data
-      </Button>
+      </Button> */}
       <MaxWidthWrapper className='px-5 py-5 lg:px-20 lg:pb-6 lg:pt-20'>
         <div className='border-solid'>
           <Form {...form}>

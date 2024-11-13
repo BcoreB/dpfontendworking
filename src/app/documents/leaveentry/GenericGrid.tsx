@@ -279,7 +279,7 @@ const handleRowDoubleClick = (e: any) => {
           showBorders={true}
           keyExpr="id"
           onEditorPreparing={handleEditorPreparing}
-          
+          columnHidingEnabled={true}
           repaintChangesOnly={true}
         >
           <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
