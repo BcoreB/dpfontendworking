@@ -1,7 +1,7 @@
 "use client";
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { AppRouterInstance } from 'next/dist/shared/lib/router/router';
+import AppRouterInstance from 'next/dist/shared/lib/router/router';
 import Modal from '@/components/Menu/modal';
 import { UseFormGetValues } from 'react-hook-form';
 import Cookies from 'js-cookie';
@@ -23,8 +23,21 @@ const FormHeader: React.FC<FormHeaderProps> = ({
   setFormValues,
   hideItem,  // Destructure the new prop
 }) => {
-  const draftAlerted = useRef(false);
+ 
+  const [isMobile, setIsMobile] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const draftAlerted = useRef(false);
+
+  // Check if the screen size is mobile
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Adjust the width threshold as needed
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const addNew = useCallback(() => {
     const url = '/masters/accomodationmaster';
@@ -99,20 +112,21 @@ const FormHeader: React.FC<FormHeaderProps> = ({
 
   return (
     <div className="form-header">
-      <div className='flex justify-between bg-purple-100 mb-5 p-2 px-4'>
+      <div className="flex justify-between bg-purple-100 mb-5 p-2 px-4">
         <div>
-          <Button variant='ghost' type="button" onClick={addNew}>New</Button>
-          <Button variant='ghost' type="submit" onClick={onSubmit}>Save</Button> {/* Using onSubmit here */}
-          <Button variant='ghost' type="button" onClick={deleteData}>Delete</Button>
+          <Button variant="ghost" type="button" onClick={addNew}>New</Button>
+          <Button variant="ghost" type="submit" onClick={onSubmit}>Save</Button>
+          <Button variant="ghost" type="button" onClick={deleteData}>Delete</Button>
         </div>
-        <div>
-          <Button variant='ghost' type="button" onClick={printData}>Print</Button>
-          <Button variant='ghost' type="button" onClick={onLogClick}>Log</Button>
-          {/* Conditionally render the Draft button */}
-          {hideItem !== "Draft" && (
-            <Button variant='ghost' type="button" onClick={saveDraft}>Draft</Button>
-          )}
-        </div>
+        {!isMobile && (
+          <div>
+            <Button variant="ghost" type="button" onClick={printData}>Print</Button>
+            <Button variant="ghost" type="button" onClick={onLogClick}>Log</Button>
+            {hideItem !== "Draft" && (
+              <Button variant="ghost" type="button" onClick={saveDraft}>Draft</Button>
+            )}
+          </div>
+        )}
       </div>
       <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)} title="Log Data" docCd={docCd} />
     </div>

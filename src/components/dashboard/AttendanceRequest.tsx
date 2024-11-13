@@ -62,7 +62,7 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
   const [promotionModalOpen, setPromotionModalOpen] = useState(false);
   const [promotionFormData, setPromotionFormData] = useState({
     date: new Date().toISOString().split('T')[0], // Current date
-    toPosition: '',
+    toPosition: 'Manager',
     reason: '',
     status: 'Pending'
   });
@@ -123,14 +123,14 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
     />
   );
 
-  const CustomTableCell = (props: any) => (
+  const CustomTableCell = (props:any) => (
     <Table.Cell
       {...props}
       style={{
         ...props.style,
-        
+        border: 'none', // Remove row borders
         textAlign: 'center',
-        fontSize: '14px',
+        fontSize: '0.875rem', // Smaller font size
       }}
     />
   );
@@ -152,7 +152,7 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
       </div>
 
       {/* Attendance Request Modal */}
-      <Dialog open={attendanceModalOpen} onClose={closeAttendanceModal}>
+      <Dialog open={attendanceModalOpen} onClose={closeAttendanceModal} fullWidth maxWidth="sm">
         <DialogTitle>Attendance Request</DialogTitle>
         <DialogContent>
           <TextField
@@ -209,7 +209,7 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
       </div>
 
       {/* Promotion Request Modal */}
-      <Dialog open={promotionModalOpen} onClose={closePromotionModal}>
+      <Dialog open={promotionModalOpen} onClose={closePromotionModal} fullWidth maxWidth="sm">
         <DialogTitle>Promotion Request</DialogTitle>
         <DialogContent>
         <Select
@@ -220,10 +220,8 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
             fullWidth
             sx={{ mt: 2 }}
           >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
             <MenuItem value="Manager">Manager</MenuItem>
+            <MenuItem value="Chief">Chief</MenuItem>
             <MenuItem value="Supervisor">Supervisor</MenuItem>
             {/* Add more positions as needed */}
           </Select>

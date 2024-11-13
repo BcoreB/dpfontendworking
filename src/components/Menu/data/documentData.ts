@@ -6,15 +6,16 @@ export interface DocumentRow {
     image: string;
   }
   
+
   // Data organized by employee code
   const documentData: { [key: string]: DocumentRow[] } = {
     '12345': [
-      { type: 'Passport', number: '123456', expiry: '2025-12-31', image: 'passport.jpg' },
-      { type: 'Driver’s License', number: '789012', expiry: '2026-06-15', image: 'license.jpg' },
+      { type: 'Passport', number: '123456', expiry: '31/12/2024', image: '/Images/11597.jpeg' },
+      { type: 'Driver’s License', number: '789012', expiry: '15/08/2024', image: '/Images/12132.jpeg' },
     ],
     '67890': [
-      { type: 'ID Card', number: '345678', expiry: '2027-01-01', image: 'idcard.jpg' },
-      { type: 'Residence Permit', number: '901234', expiry: '2028-05-20', image: 'residence.jpg' },
+      { type: 'ID Card', number: '345678', expiry: '01/01/2028', image: '/Images/11597.jpeg' },
+      { type: 'Residence Permit', number: '901234', expiry: '20/06/2025', image: '/Images/12132.jpeg' },
     ],
     // Add more employees as needed
   };

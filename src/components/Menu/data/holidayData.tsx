@@ -6,12 +6,12 @@ export interface HolidayRow {
   
   const holidaysData: Record<string, HolidayRow[]> = {
     '12345': [
-      { date: '2024-11-02', description: 'Sick Leave' },
-      { date: '2024-12-25', description: 'Christmas Holiday' },
+      { date: '02-01-2024', description: 'Sick Leave' },
+      { date: '25-12-2024', description: 'Christmas Holiday' },
     ],
     '67890': [
-      { date: '2024-11-10', description: 'Personal Day' },
-      { date: '2025-01-01', description: 'New Year’s Day' },
+      { date: '20-02-2024', description: 'Personal Day' },
+      { date: '20-06-2024', description: 'New Year’s Day' },
     ],
     // Add more employee codes and holiday data as needed
   };

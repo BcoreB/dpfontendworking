@@ -1,36 +1,33 @@
 "use client"
-// components/DocumentsTable.tsx
-import React, { useState } from 'react';
-import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
+// components/PaySlipTable.tsx
+import React, { useState, useEffect } from 'react';
+import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
+import { getPaySlipData, PaySlipRow } from '../Menu/data/paySlipData'; // Assume this function fetches PaySlip data
 
-const PaySlipTable = () => {
-  const columns = [
+const PaySlipTable: React.FC = () => {
+  // Define columns with specified widths
+  const [columns] = useState([
     { name: 'date', title: 'Date', width: 200 },
     { name: 'account', title: 'Account', width: 300 },
     { name: 'ref', title: 'Ref#', width: 200 },
     { name: 'amount', title: 'Amount', width: 200 },
     { name: 'remarks', title: 'Remarks', width: 400 },
-  ];
+  ]);
 
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState<PaySlipRow[]>([]);
 
-  const minRows = 20;
-  const fillEmptyRows = (rows, minRows) => {
-    const emptyRow = { date: '', account: '', ref: '', amount: '', remarks: '' };
-    const filledRows = [...rows];
-    while (filledRows.length < minRows) {
-      filledRows.push({ ...emptyRow });
-    }
-    return filledRows;
-  };
-  const displayedRows = fillEmptyRows(rows, minRows);
+  // Fetch payslip data when the component mounts
+  useEffect(() => {
+    const paySlipData = getPaySlipData(); // Fetches the data
+    setRows(paySlipData);
+  }, []);
 
   return (
     <div
       className="bg-white shadow-lg rounded-lg p-4"
       style={{
-        width: '100%',
-        overflowX: 'auto', // Enable horizontal scrolling
+        maxWidth: '100%',
+        overflowX: 'auto',
         borderRadius: '16px',
         border: '1px solid #e0e0e0',
         padding: '20px',
@@ -53,24 +50,24 @@ const PaySlipTable = () => {
             color: '#1a1f36',
           }}
         >
-          Payslip
+          Pay Slip
         </h3>
       </div>
 
       <DataGrid
-        dataSource={displayedRows}
+        dataSource={rows}
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled={true}
-        height={500}
-        columnAutoWidth={false} // Disable automatic column width to allow set widths
-        noDataText="" // Hide default no data text
+        height={650}
+        columnAutoWidth={false} // Disable auto width as we have specific column widths
+        noDataText=""
         style={{
           border: 'none',
           fontFamily: 'Arial, sans-serif',
           fontSize: '14px',
-          width: '700px', // Set a fixed width wider than the container
         }}
+        width="100%"
       >
         {columns.map((column) => (
           <Column
@@ -78,14 +75,13 @@ const PaySlipTable = () => {
             dataField={column.name}
             caption={column.title.toUpperCase()}
             alignment="left"
-            width={column.width} // Set specific width for each column
+            width={column.width} // Set the specified width for each column
             headerCellRender={(header) => (
               <div
                 style={{
                   color: '#6b7280',
                   fontWeight: '600',
                   padding: '15px',
-                  borderBottom: '1px solid #e5e7eb',
                   textTransform: 'uppercase',
                   fontSize: '12px',
                   letterSpacing: '0.5px',
@@ -98,7 +94,6 @@ const PaySlipTable = () => {
               <div
                 style={{
                   padding: '10px 15px',
-                  borderBottom: '1px solid #f0f0f5',
                   color: '#1a1f36',
                   fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
                 }}
@@ -108,8 +103,14 @@ const PaySlipTable = () => {
             )}
           />
         ))}
-        <Paging enabled={false} />
-        <Scrolling mode="standard" /> {/* Use standard scrolling for horizontal support */}
+        <Paging enabled={true} pageSize={9} />
+        <Scrolling mode="standard" />
+        <Pager
+          showInfo={true}
+          infoText="Page {0} of {1}"
+          visible={true}
+          displayMode="compact"
+        />
       </DataGrid>
     </div>
   );

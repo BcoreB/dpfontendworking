@@ -1,7 +1,7 @@
 "use client";
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { AppRouterInstance } from 'next/dist/shared/lib/router/router';
+import  AppRouterInstance from 'next/dist/shared/lib/router/router';
 import Modal from '@/components/Menu/modal'; // Import Modal component
 import { UseFormGetValues } from 'react-hook-form';
 import Cookies from 'js-cookie';

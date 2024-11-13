@@ -1,44 +1,83 @@
-"use client"
-// components/LeaveTable.tsx
 import React, { useState } from 'react';
-import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
-import { Box, TableCell, Button } from '@mui/material';
+import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select, FormControl, InputLabel, Switch, FormControlLabel } from '@mui/material';
 
 const LeaveTable = () => {
-  const minRows = 8; // Minimum number of rows to display in the table
-
   const [columns] = useState([
-    { name: 'date', title: 'Date' },
     { name: 'type', title: 'Type' },
+    { name: 'fromDate', title: 'From Date' },
+    { name: 'toDate', title: 'To Date' },
     { name: 'remarks', title: 'Remarks' },
+    { name: 'status', title: 'Status' },
   ]);
 
-  const [rows] = useState([
-    { date: '2024-11-02', type: 'Sick Leave', remarks: 'N/A' },
-    { date: '2024-11-03', type: 'Casual Leave', remarks: 'Personal' },
-    { date: '2024-11-04', type: 'Sick Leave', remarks: 'Flu' },
-    { date: '2024-11-05', type: 'Paid Leave', remarks: 'Vacation' },
-    { date: '2024-11-06', type: 'Work from Home', remarks: 'Project work' },
-    { date: '2024-11-07', type: 'Casual Leave', remarks: 'Family Event' },
-    { date: '2024-11-08', type: 'Sick Leave', remarks: 'Medical Appointment' },
+  const [rows, setRows] = useState([
+    { type: 'Sick Leave', fromDate: '02-11-2024', toDate: '02-11-2024', remarks: 'N/A', status: 'Pending' },
+    { type: 'Casual Leave', fromDate: '03-11-2024', toDate: '03-11-2024', remarks: 'Personal', status: 'Approved' },
+    { type: 'Sick Leave', fromDate: '04-11-2024', toDate: '04-11-2024', remarks: 'Flu', status: 'Pending' },
+    { type: 'Paid Leave', fromDate: '05-11-2024', toDate: '05-11-2024', remarks: 'Vacation', status: 'Approved' },
+    { type: 'Work from Home', fromDate: '06-11-2024', toDate: '06-11-2024', remarks: 'Project work', status: 'Pending' },
+    { type: 'Casual Leave', fromDate: '07-11-2024', toDate: '07-11-2024', remarks: 'Family Event', status: 'Approved' },
+    { type: 'Sick Leave', fromDate: '08-11-2024', toDate: '08-11-2024', remarks: 'Medical Appointment', status: 'Pending' },
   ]);
 
-  
-  // Fill table with empty rows if data is not sufficient
-  const fillEmptyRows = (dataRows:any, columns:any) => {
-    const emptyRow = columns.reduce((acc:any, column:any) => {
-      acc[column.name] = ''; // Fill each cell with an empty string
-      return acc;
-    }, {});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    type: '',
+    fromDate: '',
+    toDate: '',
+    halfDay: false,
+    reason: '',
+    remarks: ''
+  });
 
-    const filledRows = [...dataRows];
-    while (filledRows.length < minRows) {
-      filledRows.push({ ...emptyRow });
-    }
-    return filledRows;
+  // Open the modal
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
   };
 
-  const displayedRows = fillEmptyRows(rows, columns);
+  // Close the modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // Handle form data change
+  const handleChange = (e:any) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleHalfDayToggle = () => {
+    setFormData((prev) => ({ ...prev, halfDay: !prev.halfDay }));
+  };
+
+  // Handle form submission
+  const handleSubmit = () => {
+    // Close the modal
+    handleCloseModal();
+
+    // Add form data to rows in the table with default status 'Pending'
+    setRows((prevRows) => [
+      ...prevRows,
+      {
+        type: formData.type,
+        fromDate: formData.fromDate,
+        toDate: formData.toDate,
+        remarks: formData.remarks,
+        status: 'Pending'
+      }
+    ]);
+
+    // Clear form data
+    setFormData({
+      type: '',
+      fromDate: '',
+      toDate: '',
+      halfDay: false,
+      reason: '',
+      remarks: ''
+    });
+  };
 
   return (
     <div className="bg-white shadow-md rounded-md">
@@ -46,7 +85,7 @@ const LeaveTable = () => {
         className="bg-white shadow-lg rounded-lg p-4"
         style={{
           maxWidth: '100%',
-          overflowX: 'auto', // Enable horizontal scrolling
+          overflowX: 'auto',
           borderRadius: '16px',
           border: '1px solid #e0e0e0',
           padding: '20px',
@@ -74,19 +113,19 @@ const LeaveTable = () => {
         </div>
 
         <DataGrid
-          dataSource={displayedRows}
+          dataSource={rows}
           showBorders={false}
           rowAlternationEnabled={false}
           hoverStateEnabled={true}
-          height={500}
+          height={600}
           columnAutoWidth={true}
-          noDataText="" // This will hide any default no data text
+          noDataText=""
           style={{
             border: 'none',
             fontFamily: 'Arial, sans-serif',
             fontSize: '14px',
           }}
-          width="100%" // Set DataGrid width to take full container space
+          width="100%"
         >
           {columns.map((column) => (
             <Column
@@ -100,7 +139,6 @@ const LeaveTable = () => {
                     color: '#6b7280',
                     fontWeight: '600',
                     padding: '15px',
-                    borderBottom: '1px solid #e5e7eb',
                     textTransform: 'uppercase',
                     fontSize: '12px',
                     letterSpacing: '0.5px',
@@ -113,7 +151,6 @@ const LeaveTable = () => {
                 <div
                   style={{
                     padding: '10px 15px',
-                    borderBottom: '1px solid #f0f0f5',
                     color: '#1a1f36',
                     fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
                   }}
@@ -123,13 +160,78 @@ const LeaveTable = () => {
               )}
             />
           ))}
-          <Paging enabled={false} />
-          <Scrolling mode="virtual" />
+          <Paging enabled={true} />
+          <Scrolling mode="standard" />
+          <Pager
+            showInfo={true}
+            infoText="Page {0} of {1}"
+            visible={true}
+            displayMode="compact"
+          />
         </DataGrid>
       </div>
-      <Button variant="contained" color="warning" sx={{ mt: 2, float: 'right', mr: 1, color:'black' }}>
-          Request
+      <Button variant="contained" color="warning" sx={{ mt: 2, float: 'right', mr: 1, color: 'black' }} onClick={handleOpenModal}>
+        Request
       </Button>
+
+      {/* Modal for Leave Request */}
+      <Dialog open={isModalOpen} onClose={handleCloseModal}>
+        <DialogTitle>Leave Request</DialogTitle>
+        <DialogContent>
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Type</InputLabel>
+            <Select name="type" value={formData.type} onChange={handleChange}>
+              <MenuItem value="Sick Leave">Sick Leave</MenuItem>
+              <MenuItem value="Casual Leave">Casual Leave</MenuItem>
+              <MenuItem value="Paid Leave">Paid Leave</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            name="fromDate"
+            label="From Date"
+            type="date"
+            value={formData.fromDate}
+            onChange={handleChange}
+            fullWidth
+            margin="dense"
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            name="toDate"
+            label="To Date"
+            type="date"
+            value={formData.toDate}
+            onChange={handleChange}
+            fullWidth
+            margin="dense"
+            InputLabelProps={{ shrink: true }}
+          />
+          <FormControlLabel
+            control={<Switch checked={formData.halfDay} onChange={handleHalfDayToggle} />}
+            label="Half Day"
+          />
+          <TextField
+            name="reason"
+            label="Reason"
+            value={formData.reason}
+            onChange={handleChange}
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            name="remarks"
+            label="Remarks"
+            value={formData.remarks}
+            onChange={handleChange}
+            fullWidth
+            margin="dense"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="error">Cancel</Button>
+          <Button onClick={handleSubmit} color="primary">Save</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

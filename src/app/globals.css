@@ -94,6 +94,16 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
+/* Custom pager styling */
+.dx-pager {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  color: #1a1f36 !important;
+  border: none ; /* Removes the border */
+  box-shadow: none !important; /* Ensures no shadow */
+}
+
 .vertical-line
 {
   border-left: 2px solid rgba(33, 33, 33,0.1);

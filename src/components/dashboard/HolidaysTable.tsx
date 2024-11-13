@@ -1,7 +1,7 @@
 "use client"
 // components/HolidaysTable.tsx
 import React, { useState, useEffect } from 'react';
-import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
+import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 
 import { getHolidaysByEmployeeCode, HolidayRow } from '../Menu/data/holidayData'
 
@@ -16,8 +16,6 @@ interface HolidaysTableProps {
 }
 
 const HolidaysTable: React.FC<HolidaysTableProps> = ({ employeeCode }) => {
-  const minRows = 19;
-
   const [columns] = useState<Column[]>([
     { name: 'date', title: 'Date' },
     { name: 'description', title: 'Description' },
@@ -31,23 +29,6 @@ const HolidaysTable: React.FC<HolidaysTableProps> = ({ employeeCode }) => {
     setRows(holidayData);
   }, [employeeCode]);
 
-  // Fill table with empty rows if data is not sufficient
-  const fillEmptyRows = (dataRows: HolidayRow[], columns: Column[]): HolidayRow[] => {
-    const emptyRow = columns.reduce((acc, column) => {
-      acc[column.name as keyof HolidayRow] = '';
-      return acc;
-    }, {} as HolidayRow);
-
-    const filledRows = [...dataRows];
-    while (filledRows.length < minRows) {
-      filledRows.push({ ...emptyRow });
-    }
-    return filledRows;
-  };
-
-  const displayedRows = fillEmptyRows(rows, columns);
-
-  
   return (
     <div
       className="bg-white shadow-lg rounded-lg p-4"
@@ -81,7 +62,7 @@ const HolidaysTable: React.FC<HolidaysTableProps> = ({ employeeCode }) => {
       </div>
 
       <DataGrid
-        dataSource={displayedRows}
+        dataSource={rows} // Directly use rows without filling empty ones
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled={true}
@@ -107,7 +88,6 @@ const HolidaysTable: React.FC<HolidaysTableProps> = ({ employeeCode }) => {
                   color: '#6b7280',
                   fontWeight: '600',
                   padding: '15px',
-                  borderBottom: '1px solid #e5e7eb',
                   textTransform: 'uppercase',
                   fontSize: '12px',
                   letterSpacing: '0.5px',
@@ -120,7 +100,6 @@ const HolidaysTable: React.FC<HolidaysTableProps> = ({ employeeCode }) => {
               <div
                 style={{
                   padding: '10px 15px',
-                  borderBottom: '1px solid #f0f0f5',
                   color: '#1a1f36',
                   fontWeight: cellData.rowIndex === 0 ? '500' : 'normal',
                 }}
@@ -130,8 +109,14 @@ const HolidaysTable: React.FC<HolidaysTableProps> = ({ employeeCode }) => {
             )}
           />
         ))}
-        <Paging enabled={false} />
-        <Scrolling mode="virtual" />
+        <Paging enabled={true} pageSize={10} />
+        <Scrolling mode="standard" />
+        <Pager
+          showInfo={true}
+          infoText="Page {0} of {1}"
+          visible={true}
+          displayMode="compact"
+        />
       </DataGrid>
     </div>
   );

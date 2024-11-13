@@ -60,18 +60,18 @@ export default function Home() {
   const slides = [
     {
       image: "/home/image1.png",
-      title: "Slide 1 Title",
-      text: "This is the description for slide 1.",
+      title: "Redefining Employee Management",
+      text: "Foster a connected workforce with our all-in-one ERP solution.",
     },
     {
       image: "/home/image2.png",
-      title: "Slide 2 Title",
-      text: "This is the description for slide 2.",
+      title: "Complete Employee Management Platform",
+      text: "From recruitment to retirement, manage every employee journey seamlessly and efficiently.",
     },
     {
       image: "/home/image3.png",
-      title: "Slide 3 Title",
-      text: "This is the description for slide 3.",
+      title: "The Future of Workforce Management",
+      text: "Boost Engagement and Compliance with Intuitive ERP Solutions.",
     },
   ];
 
@@ -112,8 +112,8 @@ export default function Home() {
                 className="w-7/12 h-auto m-auto rounded-md object-cover"
               />
               <div className='pt-20'>
-                <h2 className="text-3xl font-bold">{slides[currentIndex].title}</h2>
-                <p className="mt-2 text-lg">{slides[currentIndex].text}</p>
+                <h2 className="text-2xl font-bold">{slides[currentIndex].title}</h2>
+                <p className="mt-2 text-md">{slides[currentIndex].text}</p>
               </div>
             </div>
 

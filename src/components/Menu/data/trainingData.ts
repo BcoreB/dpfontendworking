@@ -7,12 +7,12 @@ export interface TrainingData {
   
   export const trainingData: { [key: string]: TrainingData[] } = {
     '12345': [
-      { date: '2024-11-02', training: 'React Basics', attenddate: '2024-11-03' },
-      { date: '2024-11-10', training: 'Advanced JavaScript', attenddate: '2024-11-11' },
+      { date: '20-11-2024', training: 'React Basics', attenddate: '25-11-2024' },
+      { date: '24-12-2024', training: 'Advanced JavaScript', attenddate: '27-12-2024' },
     ],
     '67890': [
-      { date: '2024-12-01', training: 'TypeScript Essentials', attenddate: '2024-12-02' },
-      { date: '2024-12-15', training: 'Node.js Fundamentals', attenddate: '2024-12-16' },
+      { date: '20-11-2024', training: 'TypeScript Essentials', attenddate: '26-11-2024' },
+      { date: '24-12-2024', training: 'Node.js Fundamentals', attenddate: '29-12-2024' },
     ],
     // Add more employee data as needed
   };
