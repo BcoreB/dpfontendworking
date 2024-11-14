@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import getLanguageByEnglish from '@/utils/languages'
+import {getLanguageByEnglish} from '@/utils/languages'
 const AnnouncementComponent: React.FC = () => {
   const [message, setMessage] = useState('');
 

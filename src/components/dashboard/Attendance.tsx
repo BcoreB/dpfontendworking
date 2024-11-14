@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { LoadScript, GoogleMap, Marker } from '@react-google-maps/api';
-
+import { getLanguageByEnglish } from '@/utils/languages';
 const containerStyle = {
   width: '100%',
   height: '340px',
@@ -51,22 +51,22 @@ const Attendance: React.FC<AttendanceProps> = ({ onAddEntry }) => {
 
   return (
     <Paper className="p-4 shadow-md rounded-md w-full max-w-md max-h-[600px] mx-auto">
-      <h2 className="text-center font-semibold mb-4">Attendance</h2>
+      <h2 className="text-center font-semibold mb-4">{ getLanguageByEnglish('Attendance')}</h2>
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
-          <label className="block mb-1 text-sm font-medium">Type</label>
+          <label className="block mb-1 text-sm font-medium">{ getLanguageByEnglish('Type')}</label>
           <Select
             value={attendanceType}
             onChange={handleAttendanceTypeChange}
             fullWidth
           >
-            <MenuItem value="Office">Office</MenuItem>
-            <MenuItem value="Client">Client</MenuItem>
-            <MenuItem value="Home">Home</MenuItem>
+            <MenuItem value="Office">{ getLanguageByEnglish('Office')}</MenuItem>
+            <MenuItem value="Client">{ getLanguageByEnglish('Client')}</MenuItem>
+            <MenuItem value="Home">{ getLanguageByEnglish('Home')}</MenuItem>
           </Select>
         </div>
         <div>
-          <label className="block mb-1 text-sm font-medium">Remarks</label>
+          <label className="block mb-1 text-sm font-medium">{ getLanguageByEnglish('Remarks')}</label>
           <TextField
             value={remarks}
             onChange={(e) => setRemarks(e.target.value)}
@@ -77,7 +77,7 @@ const Attendance: React.FC<AttendanceProps> = ({ onAddEntry }) => {
         </div>
       </div>
       <div className="mb-4">
-        <label className="block mb-1 text-sm font-medium">Location</label>
+        <label className="block mb-1 text-sm font-medium">{ getLanguageByEnglish('Location')}</label>
         <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}>
           <GoogleMap
             mapContainerStyle={containerStyle}
@@ -90,10 +90,10 @@ const Attendance: React.FC<AttendanceProps> = ({ onAddEntry }) => {
       </div>
       <div className="flex justify-between">
         <Button variant="contained" sx={{ mt: 2, color: 'black' }} onClick={handleCheckIn}>
-          Check In
+          { getLanguageByEnglish('Check In')}
         </Button>
         <Button variant="contained" sx={{ mt: 2, color: 'black' }} onClick={handleCheckOut}>
-          Check Out
+          { getLanguageByEnglish('Check Out')}
         </Button>
       </div>
     </Paper>

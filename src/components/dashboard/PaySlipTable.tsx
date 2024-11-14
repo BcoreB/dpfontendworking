@@ -3,15 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 import { getPaySlipData, PaySlipRow } from '../Menu/data/paySlipData'; // Assume this function fetches PaySlip data
-
+import { getLanguageByEnglish } from '@/utils/languages';
 const PaySlipTable: React.FC = () => {
   // Define columns with specified widths
   const [columns] = useState([
-    { name: 'date', title: 'Date', width: 200 },
-    { name: 'account', title: 'Account', width: 300 },
-    { name: 'ref', title: 'Ref#', width: 200 },
-    { name: 'amount', title: 'Amount', width: 200 },
-    { name: 'remarks', title: 'Remarks', width: 400 },
+    { name: 'date', title: 'Date', width: 150 },
+    { name: 'account', title: 'Account', width: 250 },
+    { name: 'ref', title: 'Ref#', width: 150 },
+    { name: 'amount', title: 'Amount', width: 150 },
+    { name: 'remarks', title: 'Remarks', width: 300 },
   ]);
 
   const [rows, setRows] = useState<PaySlipRow[]>([]);
@@ -50,7 +50,7 @@ const PaySlipTable: React.FC = () => {
             color: '#1a1f36',
           }}
         >
-          Pay Slip
+          { getLanguageByEnglish('Pay Slip')}
         </h3>
       </div>
 
@@ -59,6 +59,7 @@ const PaySlipTable: React.FC = () => {
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled={true}
+        rtlEnabled={true} // Enable RTL layout for DataGrid
         height={650}
         columnAutoWidth={false} // Disable auto width as we have specific column widths
         noDataText=""
@@ -73,7 +74,7 @@ const PaySlipTable: React.FC = () => {
           <Column
             key={column.name}
             dataField={column.name}
-            caption={column.title.toUpperCase()}
+            caption={ getLanguageByEnglish(column.title)}
             alignment="left"
             width={column.width} // Set the specified width for each column
             headerCellRender={(header) => (

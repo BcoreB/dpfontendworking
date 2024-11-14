@@ -9,7 +9,7 @@ import DPInput from '@/components/ui/dpinput';
 import DpRadioGroup from '@/components/ui/dpradiogroup';
 import { InitializeForm, formSchema, DisplayForm, saveData, company, radioOptions, sublevels } from './formSchema';
 import { useRouter, useSearchParams } from 'next/navigation';
-import getLanguageByEnglish from '@/utils/languages';
+import {getLanguageByEnglish} from '@/utils/languages';
 import FormHeader from '@/components/Menu/formHeader';
 import Sidebar from '@/components/Menu/SideBar';
 import Modal from '@/components/Menu/modal';

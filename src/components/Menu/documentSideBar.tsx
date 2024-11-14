@@ -10,6 +10,7 @@ import Button from 'devextreme-react/cjs/button';
 import {SelectBox} from 'devextreme-react'
 import { sampleDocListData } from './data/docListData';
 import ComboBox from '../ui/combobox';
+import { getLanguageByEnglish } from '@/utils/languages';
 interface Section {
   name: string;
   content: string;
@@ -254,7 +255,7 @@ const handleOpenClick = () => {
     }
   };
 
-  const handleReferenceData = (refNo) => {
+  const handleReferenceData = (refNo:string) => {
     const referenceData = getReferenceData(refNo);
     if (referenceData) {
       Object.entries(referenceData).forEach(([field, value]) => {
@@ -309,7 +310,7 @@ const handleOpenClick = () => {
             onClick={() => toggleSection(index)}
           >
             <div className=''>
-              {section.name}
+              {getLanguageByEnglish(section.name)}
             </div>
           </button>
         ))}
@@ -324,27 +325,27 @@ const handleOpenClick = () => {
           leave="transition-transform duration-300"
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
-          className="sidebar-slide absolute right-0 pr-12 h-full mt-16 shadow-lg p-4"
+          className="sidebar-slide absolute right-0 pr-12 h-full mt-24 shadow-lg p-4"
           style={{ width: '28rem', background:'#FFF7FC',}}
         >
           <div ref={sidebarRef}>
             {section.name === 'Document Actions' && (
               <>
-                <h2 className="text-xl font-bold">Document Actions</h2>
+                <h2 className="text-xl font-bold">{getLanguageByEnglish('Document Actions')}</h2>
                 <button
                   onClick={handlePredefinedData}
                   className="mb-4 mt-5 px-4 py-2 bg-blue-500 text-white rounded"
                 >
-                  Fill Form
+                  {getLanguageByEnglish('Fill Form')}
                 </button>
               </>
             )}
             {section.name === 'References' && (
               
 <>
-    <h2 className="text-xl font-bold pb-8">References</h2>
+    <h2 className="text-xl font-bold pb-8">{getLanguageByEnglish('References')}</h2>
       <div className="flex items-center mb-4">
-            <label htmlFor="referenceType" className="mr-2 font-semibold">Reference Type:</label>
+            <label htmlFor="referenceType" className="mr-2 font-semibold">{getLanguageByEnglish('Reference Type:')}</label>
             <select
                 id="referenceType"
                 value={selectedDataKey}
@@ -362,10 +363,11 @@ const handleOpenClick = () => {
             dataSource={referencesData[selectedDataKey]} // Use the selected key to get the right data
             showBorders={true}
             keyExpr={selectedDataKey === 'a' ? "DocNo" : "DocumentID"} // Update keyExpr based on selected data
-            searchPanel={{ visible: true, width: 365, placeholder: 'Search references...' }}
+            searchPanel={{ visible: true, width: 365, placeholder: getLanguageByEnglish('Search references...') }}
             selection={{ mode: 'multiple', showCheckBoxesMode: 'always' }} // Enable multi-row selection with checkboxes
             columnAutoWidth={true} // Auto-adjust column width
             onSelectionChanged={(e) => setSelectedRowsData(e.selectedRowsData)} // Store the selected rows
+            rtlEnabled={true} // Enable RTL layout for DataGrid
           />
     </div>
     <button
@@ -386,7 +388,7 @@ const handleOpenClick = () => {
         }}
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
     >
-        Download
+        {getLanguageByEnglish('Download')}
     </button>
 
     {/* Bottom DataGrid for selected row */}
@@ -397,26 +399,27 @@ const handleOpenClick = () => {
             showBorders={true}
             keyExpr="DocNo" // Unique key for the rows
             columnAutoWidth={true} // Auto-adjust column width
+            rtlEnabled={true} // Enable RTL layout for DataGrid
             columns={[
-                { dataField: 'DocCd', caption: 'DocCd' },
-                { dataField: 'CompID', caption: 'CompID' },
-                { dataField: 'SiteID', caption: 'SiteID' },
-                { dataField: 'DocNo', caption: 'DocNo' },
-                { dataField: 'RefNo', caption: 'RefNo' },
-                { dataField: 'EmpCode', caption: 'EmpCode' },
+                { dataField: 'DocCd', caption: getLanguageByEnglish('DocCd') },
+                { dataField: 'CompID', caption: getLanguageByEnglish('CompID') },
+                { dataField: 'SiteID', caption: getLanguageByEnglish('SiteID') },
+                { dataField: 'DocNo', caption: getLanguageByEnglish('DocNo') },
+                { dataField: 'RefNo', caption: getLanguageByEnglish('RefNo') },
+                { dataField: 'EmpCode', caption: getLanguageByEnglish('EmpCode') },
             ]}
         />
     </div>
 
     {/* Buttons to Clear and Ok */}
-    <div className="mt-4 flex justify-end space-x-4">
+    <div className="mt-4 flex justify-end gap-4 space-x-4">
         <button
             onClick={() => {
                 setBottomGridData([]); // Clear the data in the second DataGrid
             }}
             className="px-4 py-2 bg-red-500 text-white rounded"
         >
-            Clear
+            {getLanguageByEnglish('Clear')}
         </button>
         <button
             onClick={() => {
@@ -430,7 +433,7 @@ const handleOpenClick = () => {
             }}
             className="px-4 py-2 bg-green-500 text-white rounded"
         >
-            Ok
+            {getLanguageByEnglish('Ok')}
         </button>
     </div>
 </>
@@ -445,17 +448,17 @@ const handleOpenClick = () => {
                 <textarea
                   value={newNote}
                   onChange={(e) => setNewNote(e.target.value)}
-                  placeholder="Add a note"
+                  placeholder={getLanguageByEnglish("Add a note")}
                   className="w-11/12 mb-4 p-2 h-28 text-sm border border-gray-300 rounded resize-none overflow-y-scroll"
                 />
                 <button
                   onClick={handleAddNote}
                   className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
                 >
-                  Add
+                  {getLanguageByEnglish('Add')}
                 </button>
                 <div>
-                  <h2 className="text-xl font-bold mb-4">Notes</h2>
+                  <h2 className="text-xl font-bold mb-4">{getLanguageByEnglish('Notes')}</h2>
                   {notes.map((note, noteIndex) => (
                     <div key={noteIndex} className="mb-2 w-11/12">
                       <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleNote(noteIndex)}>
@@ -471,7 +474,7 @@ const handleOpenClick = () => {
             )}
             {section.name === 'Attachments' && (
               <div className="flex flex-col h-full">
-                <h2 className="text-xl font-bold">Attachments</h2>
+                <h2 className="text-xl font-bold">{getLanguageByEnglish('Attachments')}</h2>
                 <input
                   type="file"
                   multiple
@@ -497,28 +500,28 @@ const handleOpenClick = () => {
                     className="px-4 py-2 bg-purple-200 text-black rounded"
                     onClick={handleBrowse}
                   >
-                    Browse
+                    {getLanguageByEnglish('Browse')}
                   </button>
                   <button
                     className="px-4 py-2 bg-purple-200 text-black rounded"
                     onClick={() => handleOpen()}
                     disabled={selectedFileIndex === null}
                   >
-                    Open
+                    {getLanguageByEnglish('Open')}
                   </button>
                   <button
                     className="px-4 py-2 bg-purple-200 text-black rounded"
                     onClick={handleDelete}
                     disabled={selectedFileIndex === null}
                   >
-                    Delete
+                    {getLanguageByEnglish('Delete')}
                   </button>
                 </div>
               </div>
             )}
             {section.name === 'Drafts' && (
               <>
-                <h2 className="text-xl font-bold mb-4">Drafts</h2>
+                <h2 className="text-xl font-bold mb-4">{getLanguageByEnglish('Drafts')}</h2>
                 {Object.keys(drafts).map((draftKey, index) => (
                   <div
                     key={draftKey}
@@ -533,26 +536,26 @@ const handleOpenClick = () => {
                   onClick={handleDeleteDraft}
                   disabled={!selectedDraftKey}
                 >
-                  Delete
+                  {getLanguageByEnglish('Delete')}
                 </button>
               </>
             )}
            {section.name === 'Document List' && (
   <>
-    <h2 className="text-xl font-bold">Document List</h2>
+    <h2 className="text-xl font-bold">{getLanguageByEnglish('Document List')}</h2>
 
     {/* Date pickers for fromDate and toDate */}
     <div className="mb-4 mt-5 flex justify-between">
       <div className="flex space-x-2">
         <DateBox
           value={fromDate ?? undefined}
-          placeholder="From Date"
+          placeholder={getLanguageByEnglish("From Date")}
           onValueChanged={(e) => setFromDate(e.value)}
           dropDownOptions={{ showCloseButton: true }}
         />
         <DateBox
           value={toDate ?? undefined} 
-          placeholder="To Date"
+          placeholder={getLanguageByEnglish("To Date")}
           onValueChanged={(e) => setToDate(e.value)}
           dropDownOptions={{ showCloseButton: true }}
         />
@@ -563,7 +566,7 @@ const handleOpenClick = () => {
     <div className="mb-4 mt-5 flex justify-between">
       <SelectBox
         dataSource={['a', 'b']}  // Options for LeaveType
-        placeholder="Select Leave Type"
+        placeholder={getLanguageByEnglish("Select Leave Type")}
         value={selectedLeaveType}
         onValueChanged={(e) => setSelectedLeaveType(e.value)}
         searchEnabled={true}
@@ -572,7 +575,7 @@ const handleOpenClick = () => {
 
       {/* Refresh button */}
       <Button
-        text="Refresh"
+        text={getLanguageByEnglish("Refresh")}
         onClick={handleRefresh}
         type="success"
         className="ml-4"
@@ -584,13 +587,14 @@ const handleOpenClick = () => {
       <DataGrid
         dataSource={filteredData}
         showBorders={true}
-        searchPanel={{ visible: true, width: '380px', placeholder: 'Search...', highlightSearchText: false }}
+        searchPanel={{ visible: true, width: '380px', placeholder: getLanguageByEnglish('Search...'), highlightSearchText: false }}
         headerFilter={{ visible: false }}
         columnAutoWidth={true}
         selection={{ mode: 'single' }}  // Single row selection
         onSelectionChanged={onRowSelectionChanged}  // Single click to select
         onRowDblClick={onRowDoubleClick}  // Double-click event to alert row data
         style={{ userSelect: 'none' }} // Disable text selection in the grid
+        rtlEnabled={true} // Enable RTL layout for DataGrid
       />
     </div>
 

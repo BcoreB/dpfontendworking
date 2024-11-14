@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { menulist, MenuItem } from './data/menulist';
 import Navbar from "@/components/Menu/updatedNavbar";
-import getLanguageByEnglish from '@/utils/languages';
+import {getLanguageByEnglish} from '@/utils/languages';
 
 // Sample employee data based on employee code
 const employeeData: Record<string, { name: string; profileImg: string }> = {
@@ -81,17 +81,17 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
             />
           </div>
         )}
-        <div className="flex items-center space-x-2 md:w-1/6">
+        <div className="flex items-center gap-4 space-x-2 md:w-1/6">
           <Image height={50} width={50} alt="Logo" src={'/BcoreLogo.png'} className="max-w-full" />
           <div className="hidden md:block vertical-line"></div>
         </div>
 
-        <div className="hidden md:flex items-center space-x-4 md:w-3/6">
+        <div className="hidden md:flex items-center gap-6 md:w-3/6">
           <div className="relative flex-1">
             <input
               type="text"
               className="bg-[#EAF6FC] px-4 py-2 border-0 w-full max-w-full shadow-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Search for an item..."
+              placeholder={getLanguageByEnglish("Search for an item...")}
               value={searchTerm}
               onChange={handleSearch}
             />
@@ -119,7 +119,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
           </div>
         </div>
 
-        <div className="flex items-center space-x-2 md:w-1/6 relative">
+        <div className="flex items-center space-x-2 md:w-1/6 gap-4 relative">
           <div className="hidden md:block vertical-line"></div>
           <Image
             width={20}

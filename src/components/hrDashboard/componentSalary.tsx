@@ -1,6 +1,6 @@
 import React from 'react';
 import { Chart, Series, ArgumentAxis, ValueAxis, Title, Legend, Label } from 'devextreme-react/chart';
-import getLanguageByEnglish from '@/utils/languages'
+import {getLanguageByEnglish} from '@/utils/languages'
 const data = [
   { month: 'Jan-24', basic: 500, hr: 100, ot: 600, specialAllowance: 150 },
   { month: 'Feb-24', basic: 600, hr: 150, ot: 300, specialAllowance: 150 },

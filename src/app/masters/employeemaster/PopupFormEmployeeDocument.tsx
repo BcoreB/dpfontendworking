@@ -12,7 +12,7 @@ import { getSysDocs  } from '@/app/datalayer/employeedata'
 import DPInput from '@/components/ui/dpinput'
  
 
-import getLanguageByEnglish from '@/utils/languages'
+import {getLanguageByEnglish} from '@/utils/languages'
 import DPTextArea from '@/components/ui/dptextarea'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'

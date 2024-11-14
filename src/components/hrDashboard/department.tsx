@@ -6,7 +6,7 @@ import PieChart, {
   Export,
   HoverStyle,
 } from 'devextreme-react/pie-chart';
-import getLanguageByEnglish from '@/utils/languages'
+import {getLanguageByEnglish} from '@/utils/languages'
 type DepartmentData = {
     department: string;
     count: number;

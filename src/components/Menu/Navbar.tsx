@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import getLanguageByEnglish from '@/utils/languages';
+import {getLanguageByEnglish} from '@/utils/languages';
 import {
   NavigationMenu,
   NavigationMenuContent,

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 import { Button, Modal, Box, Typography, MenuItem, Select, TextField } from '@mui/material';
 import { trainingData, TrainingData } from '../Menu/data/trainingData';
-
+import { getLanguageByEnglish } from '@/utils/languages';
 interface Column {
   name: string;
   title: string;
@@ -63,11 +63,12 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '15px' }}>
-          <h3 style={{ fontSize: '25px', fontWeight: '600', color: '#1a1f36' }}>Training</h3>
+          <h3 style={{ fontSize: '25px', fontWeight: '600', color: '#1a1f36' }}>{ getLanguageByEnglish('Training')}</h3>
         </div>
 
         <DataGrid
           dataSource={rows}
+          rtlEnabled={true} // Enable RTL layout for DataGrid
           showBorders={false}
           rowAlternationEnabled={false}
           hoverStateEnabled
@@ -81,7 +82,7 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
             <Column
               key={column.name}
               dataField={column.name}
-              caption={column.title.toUpperCase()}
+              caption={ getLanguageByEnglish(column.title)}
               alignment="left"
               headerCellRender={(header) => (
                 <div style={{ color: '#6b7280', fontWeight: '600', padding: '15px', fontSize: '12px', letterSpacing: '0.5px' }}>
@@ -106,30 +107,30 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
         </DataGrid>
 
         <Button variant="contained" onClick={handleOpenModal} sx={{ color: 'black', marginTop:1 }}>
-          Request Training
+        { getLanguageByEnglish('Request Training')}
         </Button>
       </div>
 
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 600, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 24, p: 4 }}>
           <Typography variant="h6" component="h2">
-            Select Training
+          { getLanguageByEnglish('Select Training')}
           </Typography>
           <Select fullWidth value={selectedTraining} onChange={(e) => setSelectedTraining(e.target.value)} displayEmpty sx={{ mt: 2, mb: 4 }}>
-            <MenuItem value="" disabled>Choose a training</MenuItem>
+            <MenuItem value="" disabled>{ getLanguageByEnglish('Choose a training')}</MenuItem>
             {trainingOptions.map((option, index) => (
-              <MenuItem key={index} value={option}>{option}</MenuItem>
+              <MenuItem key={index} value={option}>{ getLanguageByEnglish(option)}</MenuItem>
             ))}
           </Select>
 
-          <TextField label="Pref. Date" type="date" value={prefDate} onChange={(e) => setPrefDate(e.target.value)} fullWidth sx={{ mt: 2, mb: 2 }} InputLabelProps={{ shrink: true }} />
-          <TextField label="Reason" value={reason} onChange={(e) => setReason(e.target.value)} fullWidth sx={{ mb: 2 }} />
+          <TextField label={ getLanguageByEnglish("Pref. Date")} type="date" value={prefDate} onChange={(e) => setPrefDate(e.target.value)} fullWidth sx={{ mt: 2, mb: 2 }} InputLabelProps={{ shrink: true }} />
+          <TextField label={ getLanguageByEnglish("Reason")} value={reason} onChange={(e) => setReason(e.target.value)} fullWidth sx={{ mb: 2 }} />
 
           <Button variant="contained" onClick={handleRequestTraining} sx={{ mt: 2, color: 'black' }} disabled={!selectedTraining || !prefDate || !reason}>
-            Save
+          { getLanguageByEnglish('Save')}
           </Button>
           <Button variant="outlined" onClick={handleCloseModal} sx={{ mt: 2, ml: 2 }}>
-            Cancel
+          { getLanguageByEnglish('Cancel')}
           </Button>
         </Box>
       </Modal>

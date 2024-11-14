@@ -11,7 +11,7 @@ import MaxWidthWrapper from '@/components/MaxWidthWrapper'
 import DPInput from '@/components/ui/dpinput'
 import { InitializeForm, formSchema, DisplayForm, saveData, defaultAirlines} from './formSchema'
 import { useRouter , useSearchParams } from 'next/navigation'
-import getLanguageByEnglish from '@/utils/languages'
+import {getLanguageByEnglish} from '@/utils/languages'
 import { DocStaus } from '@/dptype'
 
 import DPComboBox from '@/components/ui/dpcombobox'

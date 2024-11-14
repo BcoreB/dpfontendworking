@@ -5,6 +5,7 @@ import AppRouterInstance from 'next/dist/shared/lib/router/router';
 import Modal from '@/components/Menu/modal';
 import { UseFormGetValues } from 'react-hook-form';
 import Cookies from 'js-cookie';
+import { getLanguageByEnglish } from '@/utils/languages';
 interface FormHeaderProps {
   docCd: number;
   docKey: number;
@@ -114,17 +115,17 @@ const FormHeader: React.FC<FormHeaderProps> = ({
     <div className="form-header">
       <div className="flex justify-between bg-purple-100 mb-5 p-2 px-4">
         <div>
-          <Button variant="ghost" type="button" onClick={addNew}>New</Button>
-          <Button variant="ghost" type="submit" onClick={onSubmit}>Save</Button>
-          <Button variant="ghost" type="button" onClick={deleteData}>Delete</Button>
+        <Button variant='ghost' type="button" onClick={addNew}>{getLanguageByEnglish('New')}</Button>
+          <Button variant='ghost' type="submit" onClick={onSubmit}>{getLanguageByEnglish('Save')}</Button>
+          <Button variant='ghost' type="button" onClick={deleteData}>{getLanguageByEnglish('Delete')}</Button>
         </div>
         {!isMobile && (
           <div>
-            <Button variant="ghost" type="button" onClick={printData}>Print</Button>
-            <Button variant="ghost" type="button" onClick={onLogClick}>Log</Button>
+            <Button variant='ghost' type="button" onClick={printData}>{getLanguageByEnglish('Print')}</Button>
+            <Button variant='ghost' type="button" onClick={onLogClick}>{getLanguageByEnglish('Log')}</Button>
             {hideItem !== "Draft" && (
               <Button variant="ghost" type="button" onClick={saveDraft}>Draft</Button>
-            )}
+            )}<Button variant='ghost' type="button" onClick={saveDraft}>{getLanguageByEnglish('Draft')}</Button>
           </div>
         )}
       </div>

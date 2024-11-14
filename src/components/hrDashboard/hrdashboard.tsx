@@ -11,7 +11,7 @@ import LocationWise from './locationWise';
 import ComponentSalaryChart from './componentSalary';
 import SalaryByDashboard from './salarybycomponent';
 import 'devextreme/dist/css/dx.light.css';
-import getLanguageByEnglish from '@/utils/languages'
+import {getLanguageByEnglish} from '@/utils/languages'
 interface EmpProps {
   employeeCode: string;
 }

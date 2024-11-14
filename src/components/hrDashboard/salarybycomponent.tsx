@@ -10,7 +10,7 @@ import {
   Label,
   SeriesTemplate
 } from 'devextreme-react/chart';
-import getLanguageByEnglish from '@/utils/languages'
+import {getLanguageByEnglish} from '@/utils/languages'
 import PieChart, {
     PieChartTypes,
     HoverStyle,

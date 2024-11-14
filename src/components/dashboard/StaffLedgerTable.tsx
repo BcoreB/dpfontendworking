@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 import { getEmployeeData } from '../Menu/data/employeeData';
-
+import { getLanguageByEnglish } from '@/utils/languages';
 // Define props interface to accept employeeCode
 interface StaffLedgerTableProps {
   employeeCode: string;
@@ -17,6 +17,7 @@ interface RowData {
   amount: string;
   remarks: string;
 }
+
 
 const StaffLedgerTable: React.FC<StaffLedgerTableProps> = ({ employeeCode }) => {
   const columns = [
@@ -64,7 +65,7 @@ const StaffLedgerTable: React.FC<StaffLedgerTableProps> = ({ employeeCode }) => 
             color: '#1a1f36',
           }}
         >
-          Staff Ledger
+          {getLanguageByEnglish('Staff Ledger')}
         </h3>
       </div>
 
@@ -73,6 +74,7 @@ const StaffLedgerTable: React.FC<StaffLedgerTableProps> = ({ employeeCode }) => 
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled={true}
+        rtlEnabled={true} // Enable RTL layout for DataGrid
         height={450}
         columnWidth={150}
         noDataText="" // This will hide any default no data text
@@ -87,7 +89,7 @@ const StaffLedgerTable: React.FC<StaffLedgerTableProps> = ({ employeeCode }) => 
           <Column
             key={column.name}
             dataField={column.name}
-            caption={column.title.toUpperCase()}
+            caption={getLanguageByEnglish(column.title)}
             alignment="left"
             headerCellRender={(header) => (
               <div

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Chart, Series } from 'devextreme-react/chart';
-import getLanguageByEnglish from '@/utils/languages'
+import {getLanguageByEnglish} from '@/utils/languages'
 type NationalityData = {
   country: string;
   count: number;

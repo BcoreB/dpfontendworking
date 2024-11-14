@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
-import getLanguageByEnglish from '@/utils/languages'
+import {getLanguageByEnglish} from '@/utils/languages'
 interface SummaryCardProps {
   employeeCode: string;
 }

@@ -4,7 +4,7 @@ import { getNotes, addNote } from './data/notes';
 import Cookies from 'js-cookie';
 import { getPredefinedData } from '@/components/Menu/data/prefillData' // Import the utility function for predefined data
 
-import getLanguageByEnglish from '@/utils/languages'
+import {getLanguageByEnglish} from '@/utils/languages'
 interface Section {
   name: string;
   content: string;
@@ -204,7 +204,7 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
             onClick={() => toggleSection(index)}
           >
             <div className=''>
-              {section.name}
+            {getLanguageByEnglish(section.name)}
             </div>
           </button>
         ))}

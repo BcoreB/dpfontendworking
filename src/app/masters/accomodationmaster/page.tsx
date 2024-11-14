@@ -8,7 +8,7 @@ import DPInput from '@/components/ui/dpinput';
 import DPTextArea from '@/components/ui/dptextarea';
 import { InitializeForm, formSchema, accoType } from './formSchema';
 import { useRouter } from 'next/navigation';
-import getLanguageByEnglish from '@/utils/languages';
+import {getLanguageByEnglish} from '@/utils/languages';
 import Sidebar from '@/components/Menu/SideBar';
 import FormHeader from '@/components/Menu/formHeader';
 import Modal from '@/components/Menu/modal';

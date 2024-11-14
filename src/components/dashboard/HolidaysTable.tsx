@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 
 import { getHolidaysByEmployeeCode, HolidayRow } from '../Menu/data/holidayData'
-
+import { getLanguageByEnglish } from '@/utils/languages';
 // Define types for columns and component props
 interface Column {
   name: string;
@@ -57,7 +57,7 @@ const HolidaysTable: React.FC<HolidaysTableProps> = ({ employeeCode }) => {
             color: '#1a1f36',
           }}
         >
-          Holidays
+          {getLanguageByEnglish('Holidays')}
         </h3>
       </div>
 
@@ -66,6 +66,7 @@ const HolidaysTable: React.FC<HolidaysTableProps> = ({ employeeCode }) => {
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled={true}
+        rtlEnabled={true} // Enable RTL layout for DataGrid
         height={500}
         columnAutoWidth={true}
         noDataText="" // This will hide any default no data text
@@ -80,7 +81,7 @@ const HolidaysTable: React.FC<HolidaysTableProps> = ({ employeeCode }) => {
           <Column
             key={column.name}
             dataField={column.name}
-            caption={column.title.toUpperCase()}
+            caption={getLanguageByEnglish(column.title)}
             alignment="left"
             headerCellRender={(header) => (
               <div
