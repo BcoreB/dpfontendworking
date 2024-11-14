@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import {getLanguageByEnglish} from '@/utils/languages'
 const AnnouncementComponent: React.FC = () => {
   const [message, setMessage] = useState('');
 
@@ -16,7 +16,7 @@ const AnnouncementComponent: React.FC = () => {
     <div className="max-w-lg mx-auto h-full mt-10">
       {/* Announcement Header */}
       <div className="bg-[#a855f7] text-white text-xl text-center font-semibold py-2 rounded-t-lg">
-        Announcement
+      {getLanguageByEnglish('Announcement')}
       </div>
       {/* Text Area */}
       <textarea
@@ -30,7 +30,7 @@ const AnnouncementComponent: React.FC = () => {
         onClick={handleSend}
         className="mt-4 bg-white text-black font-semibold py-2 px-6 rounded-lg focus:outline-none"
       >
-        SEND
+        {getLanguageByEnglish('SEND')}
       </button>
     </div>
   );

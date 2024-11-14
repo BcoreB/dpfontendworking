@@ -7,7 +7,7 @@ import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import DPInput from '@/components/ui/dpinput';
 import { InitializeForm,EmployeeLeaveDetSave, formSchema, EmployeeLeaveDet, leaveType, payrolPeriod } from './formSchema';
 import { useRouter } from 'next/navigation';
-import getLanguageByEnglish from '@/utils/languages';
+import {getLanguageByEnglish} from '@/utils/languages';
 import DPComboBox from '@/components/ui/dpcombobox';
 import DocumentHeader from '@/components/Menu/documentHeader';
 // import Sidebar from '@/components/Menu/SideBar';

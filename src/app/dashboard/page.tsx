@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import getLanguageByEnglish from '@/utils/languages'
+import {getLanguageByEnglish} from '@/utils/languages'
 import Navheader from "@/components/Menu/updatedHeader";
 import HRDashboard from "@/components/hrDashboard/hrdashboard";
 import { useEmployee } from '@/app/EmployeeContext';

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
-
+import {getLanguageByEnglish} from '@/utils/languages'
 interface SummaryCardProps {
   employeeCode: string;
 }
@@ -34,14 +34,14 @@ const SummaryCards: React.FC<SummaryCardProps> = ({ employeeCode }) => {
     return null; // Return null on server-side render to avoid mismatch
   }
   const cards = summaryData[employeeCode]?.[selectedMonth] || [
-    { title: 'HEAD COUNT', count: 150 },
-    { title: 'MALE', count:50 },
-    { title: 'FEMALE', count: 100 },
-    { title: 'FULL TIME', count: 100 },
-    { title: 'PART TIME', count: 50 },
-    { title: 'HIRE', count: 10 },
-    { title: 'TERMINATION', count: 0 },
-    { title: 'RESIGNATION', count: 4 },
+    { title: getLanguageByEnglish('HEAD COUNT'), count: 150 },
+    { title: getLanguageByEnglish('MALE'), count:50 },
+    { title: getLanguageByEnglish('FEMALE'), count: 100 },
+    { title: getLanguageByEnglish('FULL TIME'), count: 100 },
+    { title: getLanguageByEnglish('PART TIME'), count: 50 },
+    { title: getLanguageByEnglish('HIRE'), count: 10 },
+    { title: getLanguageByEnglish('TERMINATION'), count: 0 },
+    { title: getLanguageByEnglish('RESIGNATION'), count: 4 },
   ];
 
   return (

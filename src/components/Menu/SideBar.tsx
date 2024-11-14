@@ -4,9 +4,18 @@ import { getNotes, addNote } from './data/notes';
 import Cookies from 'js-cookie';
 import { getPredefinedData } from '@/components/Menu/data/prefillData' // Import the utility function for predefined data
 
+import {getLanguageByEnglish} from '@/utils/languages'
 interface Section {
   name: string;
   content: string;
+}
+interface Note {
+  text: string;
+  expanded: boolean;
+}
+interface Attachment {
+  file: File;
+  thumbnail: string;
 }
 
 const sections: Section[] = [
@@ -21,14 +30,18 @@ interface SidebarProps {
   docKey: number;
   form: any; // Replace with actual type
 }
-
+const fileIcons: { [key: string]: string } = {
+  'image/jpeg': 'path/to/imageIcon.jpg',
+  'image/png': 'path/to/pngIcon.png',
+  'default': 'path/to/defaultIcon.jpg'
+};
 const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState<string>('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
-  const [drafts, setDrafts] = useState<{ [key: string]: any }>({}); // State for storing drafts
+  const [drafts, setDrafts] = useState<Record<string, any>>({});
   const [selectedDraftKey, setSelectedDraftKey] = useState<string | null>(null); // State for selected draft
 
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -191,7 +204,7 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
             onClick={() => toggleSection(index)}
           >
             <div className=''>
-              {section.name}
+            {getLanguageByEnglish(section.name)}
             </div>
           </button>
         ))}
@@ -212,12 +225,12 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
           <div ref={sidebarRef}>
             {section.name === 'Document Actions' && (
               <>
-                <h2 className="text-xl font-bold">Document Actions</h2>
+                <h2 className="text-xl font-bold">{getLanguageByEnglish('Document Actions')}</h2>
                 <button
                   onClick={handlePredefinedData}
                   className="mb-4 mt-5 px-4 py-2 bg-blue-500 text-white rounded"
                 >
-                  Fill Form
+                  {getLanguageByEnglish('Fill Form')}
                 </button>
               </>
             )}
@@ -233,10 +246,10 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
                   onClick={handleAddNote}
                   className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
                 >
-                  Add
+                  {getLanguageByEnglish('Add')}
                 </button>
                 <div>
-                  <h2 className="text-xl font-bold mb-4">Notes</h2>
+                  <h2 className="text-xl font-bold mb-4">{getLanguageByEnglish('Notes')}</h2>
                   {notes.map((note, noteIndex) => (
                     <div key={noteIndex} className="mb-2 w-11/12">
                       <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleNote(noteIndex)}>
@@ -252,7 +265,7 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
             )}
             {section.name === 'Attachments' && (
               <div className="flex flex-col h-full">
-                <h2 className="text-xl font-bold">Attachments</h2>
+                <h2 className="text-xl font-bold">{getLanguageByEnglish('Attachments')}</h2>
                 <input
                   type="file"
                   multiple
@@ -278,28 +291,28 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
                     className="px-4 py-2 bg-purple-200 text-black rounded"
                     onClick={handleBrowse}
                   >
-                    Browse
+                    {getLanguageByEnglish('Browse')}
                   </button>
                   <button
                     className="px-4 py-2 bg-purple-200 text-black rounded"
                     onClick={() => handleOpen()}
                     disabled={selectedFileIndex === null}
                   >
-                    Open
+                    {getLanguageByEnglish('Open')}
                   </button>
                   <button
                     className="px-4 py-2 bg-purple-200 text-black rounded"
                     onClick={handleDelete}
                     disabled={selectedFileIndex === null}
                   >
-                    Delete
+                    {getLanguageByEnglish('Delete')}
                   </button>
                 </div>
               </div>
             )}
             {section.name === 'Drafts' && (
               <>
-                <h2 className="text-xl font-bold mb-4">Drafts</h2>
+                <h2 className="text-xl font-bold mb-4">{getLanguageByEnglish('Drafts')}</h2>
                 {Object.keys(drafts).map((draftKey, index) => (
                   <div
                     key={draftKey}
@@ -314,7 +327,7 @@ const Sidebar: React.FC<SidebarProps> = ({ docCd, docKey, form }) => {
                   onClick={handleDeleteDraft}
                   disabled={!selectedDraftKey}
                 >
-                  Delete
+                  {getLanguageByEnglish('Delete')}
                 </button>
               </>
             )}

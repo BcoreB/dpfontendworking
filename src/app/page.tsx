@@ -40,6 +40,7 @@
 import { useState, useEffect } from 'react'; // Import useState hook
 import Image from 'next/image';
 import LoginForm from '../components/Menu/LoginForm';
+import { getLanguageByEnglish } from '@/utils/languages';
 
 export default function Home() {
   const [language, setLanguage] = useState('EN'); // State to track language
@@ -98,8 +99,8 @@ export default function Home() {
               alt='logo'
             />
           </div>
-          <h4 className='pt-12'><span dir="ltr">welcome Back!</span></h4>
-          <h1 className='text-3xl font-bold mt-2'>Login to your account</h1>
+          <h4 className='pt-12'><span dir="ltr">{getLanguageByEnglish('welcome Back!')}</span></h4>
+          <h1 className='text-3xl font-bold mt-2'>{getLanguageByEnglish('Login to your account')}</h1>
           <LoginForm />
         </div>
         <div className="landing-carousel bg-[#818CF8] w-1/2">
@@ -112,13 +113,13 @@ export default function Home() {
                 className="w-7/12 h-auto m-auto rounded-md object-cover"
               />
               <div className='pt-20'>
-                <h2 className="text-2xl font-bold">{slides[currentIndex].title}</h2>
-                <p className="mt-2 text-md">{slides[currentIndex].text}</p>
+                <h2 className="text-2xl font-bold">{getLanguageByEnglish(slides[currentIndex].title)}</h2>
+                <p className="mt-2 text-md">{getLanguageByEnglish(slides[currentIndex].text)}</p>
               </div>
             </div>
 
             {/* Indicator */}
-            <div className="flex justify-center mt-4 space-x-2">
+            <div className="flex justify-center gap-2">
               {slides.map((_, index) => (
                 <button
                   key={index}

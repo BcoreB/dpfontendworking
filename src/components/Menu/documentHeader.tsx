@@ -5,7 +5,7 @@ import  AppRouterInstance from 'next/dist/shared/lib/router/router';
 import Modal from '@/components/Menu/modal'; // Import Modal component
 import { UseFormGetValues } from 'react-hook-form';
 import Cookies from 'js-cookie';
-
+import { getLanguageByEnglish } from '@/utils/languages';
 interface FormHeaderProps {
   docCd: number;
   docKey: number;
@@ -156,17 +156,17 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
       <div className="flex justify-between items-center bg-purple-100 mb-5 p-4">
         
         <div className="flex space-x-2">
-          <Button variant='ghost' type="button" onClick={addNew}>New</Button>
-          <Button variant='ghost' type="submit" onClick={onSubmit}>Save</Button>
-          <Button variant='ghost' type="button" onClick={deleteData}>Delete</Button>
-          <Button variant='ghost' type="button" onClick={printData}>Print</Button>
-          <Button variant='ghost' type="button" onClick={onLogClick}>Log</Button>
-          <Button variant='ghost' type="button" onClick={saveDraft}>Draft</Button>
+          <Button variant='ghost' type="button" onClick={addNew}>{getLanguageByEnglish('New')}</Button>
+          <Button variant='ghost' type="submit" onClick={onSubmit}>{getLanguageByEnglish('Save')}</Button>
+          <Button variant='ghost' type="button" onClick={deleteData}>{getLanguageByEnglish('Delete')}</Button>
+          <Button variant='ghost' type="button" onClick={printData}>{getLanguageByEnglish('Print')}</Button>
+          <Button variant='ghost' type="button" onClick={onLogClick}>{getLanguageByEnglish('Log')}</Button>
+          <Button variant='ghost' type="button" onClick={saveDraft}>{getLanguageByEnglish('Draft')}</Button>
         </div>
         <div className="flex items-center space-x-2">
           <div>
             <label className='px-2'>
-              Doc No:
+              {getLanguageByEnglish('Doc No:')}
             </label>
             <input
                 type="text"
@@ -176,7 +176,7 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
           </div>
           <div>
             <label className='px-2'>
-              Doc Date:
+              {getLanguageByEnglish('Doc Date:')}
             </label>
             <input
                 type="date"

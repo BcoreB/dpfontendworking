@@ -2,8 +2,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { menulist } from './data/menulist';
+import { menulist, MenuItem } from './data/menulist';
 import Navbar from "@/components/Menu/updatedNavbar";
+import {getLanguageByEnglish} from '@/utils/languages';
 
 // Sample employee data based on employee code
 const employeeData: Record<string, { name: string; profileImg: string }> = {
@@ -21,25 +22,20 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isNavbarVisible, setIsNavbarVisible] = useState(false);
-  const [isClient, setIsClient] = useState(false);  // Track client-only state
-  const sidebarRef = useRef<HTMLDivElement>(null);  // Reference to sidebar
+  const [isClient, setIsClient] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   const employee = employeeData[employeeCode] || { name: 'Unknown', profileImg: '/header/default-profile.jpg' };
 
   useEffect(() => {
-    // Ensure this runs only on the client
     setIsClient(true);
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const toggleNavbar = () => {
-    setIsNavbarVisible((prev) => !prev);
-  };
+  const toggleNavbar = () => setIsNavbarVisible((prev) => !prev);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -52,34 +48,29 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
     }
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
-  const handleDropdownClick = (option: string) => {
-    setIsDropdownOpen(false);
-  };
+  const handleDropdownClick = (option: string) => setIsDropdownOpen(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-        setIsNavbarVisible(false);  // Close the sidebar when clicking outside
+        setIsNavbarVisible(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const filteredItems = menulist.filter(item =>
+    item.Name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
-      <div 
-        className={`nav-header fixed z-10 bg-white h-20 flex w-full justify-between md:justify-evenly items-center px-4 md:px-10 
-          ${isMobile ? "w-[90%] mx-auto mt-4 rounded-lg shadow-lg " : ""}`}
-      >
-
+      <div className={`nav-header fixed z-10 bg-white h-20 flex w-full justify-between md:justify-evenly items-center px-4 md:px-10 ${isMobile ? "w-[90%] mx-auto mt-4 rounded-lg shadow-lg " : ""}`}>
         {isMobile && (
-          <div className=" top-4 left-4 z-10">
+          <div className="top-4 left-4 z-10">
             <Image
               src="/menu/menu.png"
               alt="Open Navbar"
@@ -90,17 +81,17 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
             />
           </div>
         )}
-        <div className="flex items-center space-x-2 md:w-1/6">
+        <div className="flex items-center gap-4 space-x-2 md:w-1/6">
           <Image height={50} width={50} alt="Logo" src={'/BcoreLogo.png'} className="max-w-full" />
           <div className="hidden md:block vertical-line"></div>
         </div>
 
-        <div className="hidden md:flex items-center space-x-4 md:w-3/6">
+        <div className="hidden md:flex items-center gap-6 md:w-3/6">
           <div className="relative flex-1">
             <input
               type="text"
               className="bg-[#EAF6FC] px-4 py-2 border-0 w-full max-w-full shadow-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Search for an item..."
+              placeholder={getLanguageByEnglish("Search for an item...")}
               value={searchTerm}
               onChange={handleSearch}
             />
@@ -110,14 +101,14 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
                   filteredItems.map((item, index) => (
                     <li
                       key={index}
-                      onClick={() => handleItemClick(item.path)}
+                      onClick={() => handleItemClick(item.Link)}
                       className="p-3 cursor-pointer hover:bg-gray-100"
                     >
-                      {item.name}
+                      {item.Name}
                     </li>
                   ))
                 ) : (
-                  <li className="p-3 text-red-500">No items found</li>
+                  <li className="p-3 text-red-500">{getLanguageByEnglish('No items found')}</li>
                 )}
               </ul>
             )}
@@ -127,7 +118,8 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
             <Image width={20} height={20} alt="Notification" src={'/header/Notification.png'} className="opacity-50" />
           </div>
         </div>
-        <div className="flex items-center space-x-2 md:w-1/6 relative">
+
+        <div className="flex items-center space-x-2 md:w-1/6 gap-4 relative">
           <div className="hidden md:block vertical-line"></div>
           <Image
             width={20}
@@ -152,7 +144,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
                   onClick={() => handleDropdownClick('View Profile')}
                 >
                   <Image width={20} height={20} alt="User" src={'/header/user.png'} />
-                  View Profile
+                  {getLanguageByEnglish('View Profile')}
                 </li>
                 <hr />
                 <li
@@ -160,7 +152,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
                   onClick={() => handleDropdownClick('Change Password')}
                 >
                   <Image width={20} height={20} alt="Password" src={'/header/password.png'} />
-                  Change Password
+                  {getLanguageByEnglish('Change Password')}
                 </li>
                 <hr />
                 <li
@@ -168,13 +160,14 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
                   onClick={() => handleDropdownClick('Logout')}
                 >
                   <Image width={20} height={20} alt="Logout" src={'/header/logout.png'} />
-                  Logout
+                  {getLanguageByEnglish('Logout')}
                 </li>
               </ul>
             </div>
           )}
         </div>
       </div>
+
       {isMobile && isNavbarVisible && (
         <div className="absolute top-0 left-0 h-full w-full bg-black bg-opacity-50 z-40">
           <div ref={sidebarRef} className="absolute left-0 navbar-div bg-white z-50">

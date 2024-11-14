@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useDirection } from '../../app/DirectionContext';
 import { useEmployee } from '@/app/EmployeeContext';
+import { getLanguageByEnglish } from '@/utils/languages';
 const LoginForm: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -39,7 +40,7 @@ const LoginForm: React.FC = () => {
           className={`px-6 w-10/12 py-2 rounded-lg text-black focus:outline-none ${isRtl ? 'text-right' : ''}`}
           id="username"
           type="text"
-          placeholder="User Email"
+          placeholder={getLanguageByEnglish("User Email")}
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
@@ -49,7 +50,7 @@ const LoginForm: React.FC = () => {
           className={`px-6 w-10/12 py-2 rounded-lg text-black focus:outline-none ${isRtl ? 'text-right' : ''}`}
           id="password"
           type="password"
-          placeholder="Password"
+          placeholder={getLanguageByEnglish('Password')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -61,9 +62,9 @@ const LoginForm: React.FC = () => {
           value={location}
           onChange={(e) => setLocation(e.target.value)}
         >
-          <option value="">Select Location</option>
-          <option value="Location 1">Location 1</option>
-          <option value="Location 2">Location 2</option>
+          <option value="">{getLanguageByEnglish('Select Location')}</option>
+          <option value="Location 1">{getLanguageByEnglish('Location 1')}</option>
+          <option value="Location 2">{getLanguageByEnglish('Location 2')}</option>
         </select>
       </div>
       {error && (
@@ -74,16 +75,16 @@ const LoginForm: React.FC = () => {
       <div className="flex w-10/12 pb-4 items-center justify-between">
         <div className="remember">
           <input type="checkbox" className='bg-blue' id="remember" name="remember" value="true" />
-          <label> Remember me</label>
+          <label> {getLanguageByEnglish('Remember me')}</label>
         </div>
-        <a href="" className='text-blue-500'><span dir="ltr">Forgot password?</span></a>
+        <a href="" className='text-blue-500'><span dir="ltr">{getLanguageByEnglish('Forgot password?')}</span></a>
       </div>
       <div className="">
         <button
           className="bg-black text-white w-10/12 font-bold py-2 p-4 rounded-lg focus:outline-none focus:shadow-outline"
           type="submit"
         >
-          LOGIN
+          {getLanguageByEnglish('LOGIN')}
         </button>
         <div className='mt-5'>
           <input

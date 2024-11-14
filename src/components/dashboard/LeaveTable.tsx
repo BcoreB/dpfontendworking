@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select, FormControl, InputLabel, Switch, FormControlLabel } from '@mui/material';
-
+import { getLanguageByEnglish } from '@/utils/languages';
 const LeaveTable = () => {
   const [columns] = useState([
     { name: 'type', title: 'Type' },
@@ -108,7 +108,7 @@ const LeaveTable = () => {
               color: '#1a1f36',
             }}
           >
-            Leave
+            { getLanguageByEnglish('Leave')}
           </h3>
         </div>
 
@@ -118,6 +118,7 @@ const LeaveTable = () => {
           rowAlternationEnabled={false}
           hoverStateEnabled={true}
           height={600}
+          rtlEnabled={true} // Enable RTL layout for DataGrid
           columnAutoWidth={true}
           noDataText=""
           style={{
@@ -131,7 +132,7 @@ const LeaveTable = () => {
             <Column
               key={column.name}
               dataField={column.name}
-              caption={column.title.toUpperCase()}
+              caption={ getLanguageByEnglish(column.title)}
               alignment="left"
               headerCellRender={(header) => (
                 <div
@@ -171,24 +172,24 @@ const LeaveTable = () => {
         </DataGrid>
       </div>
       <Button variant="contained" color="warning" sx={{ mt: 2, float: 'right', mr: 1, color: 'black' }} onClick={handleOpenModal}>
-        Request
+        { getLanguageByEnglish('Request')}
       </Button>
 
       {/* Modal for Leave Request */}
       <Dialog open={isModalOpen} onClose={handleCloseModal}>
-        <DialogTitle>Leave Request</DialogTitle>
+        <DialogTitle>{ getLanguageByEnglish('Leave Request')}</DialogTitle>
         <DialogContent>
           <FormControl fullWidth margin="dense">
-            <InputLabel>Type</InputLabel>
+            <InputLabel>{ getLanguageByEnglish('Type')}</InputLabel>
             <Select name="type" value={formData.type} onChange={handleChange}>
-              <MenuItem value="Sick Leave">Sick Leave</MenuItem>
-              <MenuItem value="Casual Leave">Casual Leave</MenuItem>
-              <MenuItem value="Paid Leave">Paid Leave</MenuItem>
+              <MenuItem value="Sick Leave">{ getLanguageByEnglish('Sick Leave')}</MenuItem>
+              <MenuItem value="Casual Leave">{ getLanguageByEnglish('Casual Leave')}</MenuItem>
+              <MenuItem value="Paid Leave">{ getLanguageByEnglish('Paid Leave')}</MenuItem>
             </Select>
           </FormControl>
           <TextField
             name="fromDate"
-            label="From Date"
+            label={ getLanguageByEnglish("From Date")}
             type="date"
             value={formData.fromDate}
             onChange={handleChange}
@@ -198,7 +199,7 @@ const LeaveTable = () => {
           />
           <TextField
             name="toDate"
-            label="To Date"
+            label={ getLanguageByEnglish("To Date")}
             type="date"
             value={formData.toDate}
             onChange={handleChange}
@@ -208,11 +209,11 @@ const LeaveTable = () => {
           />
           <FormControlLabel
             control={<Switch checked={formData.halfDay} onChange={handleHalfDayToggle} />}
-            label="Half Day"
+            label={ getLanguageByEnglish("Half Day")}
           />
           <TextField
             name="reason"
-            label="Reason"
+            label={ getLanguageByEnglish("Reason")}
             value={formData.reason}
             onChange={handleChange}
             fullWidth
@@ -220,7 +221,7 @@ const LeaveTable = () => {
           />
           <TextField
             name="remarks"
-            label="Remarks"
+            label={ getLanguageByEnglish("Remarks")}
             value={formData.remarks}
             onChange={handleChange}
             fullWidth
@@ -228,8 +229,8 @@ const LeaveTable = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal} color="error">Cancel</Button>
-          <Button onClick={handleSubmit} color="primary">Save</Button>
+          <Button onClick={handleCloseModal} color="error">{ getLanguageByEnglish("Cancel")}</Button>
+          <Button onClick={handleSubmit} color="primary">{ getLanguageByEnglish("Save")}</Button>
         </DialogActions>
       </Dialog>
     </div>

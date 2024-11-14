@@ -10,6 +10,7 @@ import {
   Label,
   SeriesTemplate
 } from 'devextreme-react/chart';
+import {getLanguageByEnglish} from '@/utils/languages'
 import PieChart, {
     PieChartTypes,
     HoverStyle,
@@ -31,7 +32,7 @@ const salaryData: ProductSale[] = [
 const SalaryByDashboard: React.FC = () => {
   return (
     <div className='p-4'>
-        <h4 className='text-start text-xl font-semibold mb-6'>SALARY BY COMPONENT</h4>
+        <h4 className='text-start text-xl font-semibold mb-6'>{getLanguageByEnglish('SALARY BY COMPONENT')}</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-4">
             {/* Pie Chart */}
             <div className="">

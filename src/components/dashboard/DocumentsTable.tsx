@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { getDocumentsByEmployeeCode, DocumentRow, updateDocumentImage } from '../Menu/data/documentData';
 import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
-
+import { getLanguageByEnglish } from '@/utils/languages';
 interface Column {
   name: string;
   title: string;
@@ -74,7 +74,7 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
             color: '#1a1f36',
           }}
         >
-          Documents
+          {getLanguageByEnglish('Documents')}
         </h3>
       </div>
 
@@ -83,6 +83,7 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled
+        rtlEnabled={true} // Enable RTL layout for DataGrid
         height={500}
         columnWidth={150}
         noDataText=""
@@ -93,7 +94,7 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
           <Column
             key={column.name}
             dataField={column.name}
-            caption={column.title.toUpperCase()}
+            caption={getLanguageByEnglish(column.title)}
             alignment="left"
             headerCellRender={(header) => (
               <div

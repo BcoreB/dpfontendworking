@@ -7,7 +7,7 @@ import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import DPInput from '@/components/ui/dpinput';
 import { InitializeForm,EmpAllowanceDeductionFormulaDet, formSchema, Type, SubType,EmpAllowanceDeductionGrid , InputType } from './formSchema';
 import { useRouter } from 'next/navigation';
-import getLanguageByEnglish from '@/utils/languages';
+import {getLanguageByEnglish} from '@/utils/languages';
 import DPComboBox from '@/components/ui/dpcombobox';
 import FormHeader from '@/components/Menu/formHeader';
 import DPInputBrowse from '@/components/ui/dpinputbrowse';

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 import attendanceData from '../Menu/data/attendanceData';
 import { RowData } from '../Menu/data/attendanceData';
-
+import { getLanguageByEnglish } from '@/utils/languages';
 interface AttendanceTableProps {
   employeeCode: string;
   attendanceEntries: { date: string; in: string; out: string }[];
@@ -50,7 +50,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
             color: '#1a1f36',
           }}
         >
-          Attendance
+          {getLanguageByEnglish('Attendance')}
         </h3>
       </div>
       
@@ -59,6 +59,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled={true}
+        rtlEnabled={true}
         height={500}
         columnAutoWidth={true}
         noDataText=""
@@ -74,7 +75,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
           <Column
             key={column.name}
             dataField={column.name}
-            caption={column.title.toUpperCase()}
+            caption={getLanguageByEnglish(column.title)}
             alignment="left"
             headerCellRender={(header) => (
               <div

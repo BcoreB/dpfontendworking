@@ -1,12 +1,6 @@
-"use client"
+"use client";
 import React, { useState } from 'react';
 import {
-  Grid,
-  Table,
-  TableHeaderRow
-} from '@devexpress/dx-react-grid-material-ui';
-import {
-  TableCell,
   Button,
   Box,
   Dialog,
@@ -20,76 +14,57 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
+import DataGrid, {
+  Column,
+  HeaderFilter,
+  FilterRow,
+  Pager,
+  Paging,
+} from 'devextreme-react/data-grid';
 import requestData from '../Menu/data/requestData';
-
+import { getLanguageByEnglish } from '@/utils/languages';
 interface RequestTablesProps {
   employeeCode: string;
 }
 
 const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
-  // Columns for each table
-  const attendanceColumns = [
-    { name: 'date', title: 'Date' },
-    { name: 'time', title: 'Time' },
-    { name: 'action', title: 'Action' },
-    { name: 'reason', title: 'Reason' },
-    { name: 'status', title: 'Status' },
-  ];
-
-  const promotionColumns = [
-    { name: 'date', title: 'Date' },
-    { name: 'positionTo', title: 'Position To' },
-    { name: 'reason', title: 'Reason' },
-    { name: 'status', title: 'Status' },
-  ];
-
-  // Fetch rows based on employeeCode or default to empty arrays
   const { attendance = [], promotion = [] } = requestData[employeeCode as keyof typeof requestData] || {};
 
-  // State for attendance data
   const [attendanceData, setAttendanceData] = useState(attendance);
-  
-  // State for attendance request modal
   const [attendanceModalOpen, setAttendanceModalOpen] = useState(false);
   const [attendanceFormData, setAttendanceFormData] = useState({
     dateTime: '',
-    action: 'Cancel',  // Default to 'Cancel'
-    reason: ''
+    action: 'Cancel',
+    reason: '',
   });
 
-  // State for promotion data and promotion request modal
   const [promotionData, setPromotionData] = useState(promotion);
   const [promotionModalOpen, setPromotionModalOpen] = useState(false);
   const [promotionFormData, setPromotionFormData] = useState({
-    date: new Date().toISOString().split('T')[0], // Current date
+    date: new Date().toISOString().split('T')[0],
     toPosition: 'Manager',
     reason: '',
-    status: 'Pending'
+    status: 'Pending',
   });
 
-  // Helper to open and close modals
   const openAttendanceModal = () => setAttendanceModalOpen(true);
   const closeAttendanceModal = () => setAttendanceModalOpen(false);
   const openPromotionModal = () => setPromotionModalOpen(true);
   const closePromotionModal = () => setPromotionModalOpen(false);
 
-  // Update attendance form data
   const handleAttendanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setAttendanceFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Update promotion form data
   const handlePromotionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPromotionFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Handle attendance form submission
   const handleSaveAttendance = () => {
     const { dateTime, action, reason } = attendanceFormData;
-    const [date, time] = dateTime.split('T');  // Split datetime for date and time
-
+    const [date, time] = dateTime.split('T');
     const newEntry = { date, time, action, reason, status: 'Pending' };
     setAttendanceData(prev => [newEntry, ...prev]);
     closeAttendanceModal();
@@ -98,65 +73,46 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
   const handleSavePromotion = () => {
     const newEntry = {
       date: promotionFormData.date,
-      positionTo: promotionFormData.toPosition, // Map to `positionTo`
+      positionTo: promotionFormData.toPosition,
       reason: promotionFormData.reason,
-      status: promotionFormData.status
+      status: promotionFormData.status,
     };
-  
     setPromotionData(prev => [newEntry, ...prev]);
     closePromotionModal();
   };
-  
-
-  // Custom Header and Cell Styling
-  const CustomTableHeaderCell = (props: any) => (
-    <TableHeaderRow.Cell
-      {...props}
-      style={{
-        ...props.style,
-        backgroundColor: '#f5f2fd',
-        color: '#000',
-        fontWeight: 'medium',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '14px',
-      }}
-    />
-  );
-
-  const CustomTableCell = (props:any) => (
-    <Table.Cell
-      {...props}
-      style={{
-        ...props.style,
-        border: 'none', // Remove row borders
-        textAlign: 'center',
-        fontSize: '0.875rem', // Smaller font size
-      }}
-    />
-  );
 
   return (
     <div>
       {/* Attendance Request Table */}
       <div className="bg-white shadow-md rounded-md mb-4 py-2 px-4">
-        <h3 className="text-lg font-semibold text-left py-2">Attendance Request</h3>
-        <Box sx={{ height: 200, overflowY: 'auto', border: '1px solid #ddd' }}>
-          <Grid rows={attendanceData} columns={attendanceColumns}>
-            <Table cellComponent={CustomTableCell} />
-            <TableHeaderRow cellComponent={CustomTableHeaderCell} />
-          </Grid>
+        <h3 className="text-lg font-semibold text-center py-2">{getLanguageByEnglish('Attendance Request')}</h3>
+        <Box sx={{ height: 170, overflowY: 'auto', border: '1px solid #ddd' }}>
+          <DataGrid
+            dataSource={attendanceData}
+            showBorders={false}
+            rowAlternationEnabled={true}
+          >
+           
+            <Column dataField="date" caption={getLanguageByEnglish("Date")} />
+            <Column dataField="time" caption={getLanguageByEnglish("Time")} />
+            <Column dataField="action" caption={getLanguageByEnglish("Action")} />
+            <Column dataField="reason" caption={getLanguageByEnglish("Reason")} />
+            <Column dataField="status" caption={getLanguageByEnglish("Status")} />
+            <Pager allowedPageSizes={[5, 10, 20]} showPageSizeSelector={true} />
+            <Paging defaultPageSize={5} />
+          </DataGrid>
         </Box>
         <Button variant="contained" sx={{ mt: 2, color: 'black' }} onClick={openAttendanceModal}>
-          Request
+          {getLanguageByEnglish('Request')}
         </Button>
       </div>
 
       {/* Attendance Request Modal */}
       <Dialog open={attendanceModalOpen} onClose={closeAttendanceModal} fullWidth maxWidth="sm">
-        <DialogTitle>Attendance Request</DialogTitle>
+        <DialogTitle>{getLanguageByEnglish('Attendance Request')}</DialogTitle>
         <DialogContent>
           <TextField
-            label="Date & Time"
+            label={getLanguageByEnglish("Date & Time")}
             type="datetime-local"
             name="dateTime"
             value={attendanceFormData.dateTime}
@@ -172,11 +128,11 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
             row
             sx={{ mt: 2 }}
           >
-            <FormControlLabel value="Cancel" control={<Radio />} label="Cancel" />
-            <FormControlLabel value="New" control={<Radio />} label="New" />
+            <FormControlLabel value="Cancel" control={<Radio />} label={getLanguageByEnglish("Cancel")} />
+            <FormControlLabel value="New" control={<Radio />} label={getLanguageByEnglish("New")} />
           </RadioGroup>
           <TextField
-            label="Reason"
+            label={getLanguageByEnglish("Reason")}
             name="reason"
             value={attendanceFormData.reason}
             onChange={handleAttendanceChange}
@@ -187,46 +143,53 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={closeAttendanceModal}>Cancel</Button>
+          <Button onClick={closeAttendanceModal}>{getLanguageByEnglish("Cancel")}</Button>
           <Button onClick={handleSaveAttendance} variant="contained" sx={{ color: 'black', backgroundColor: 'green' }}>
-            Save
+           {getLanguageByEnglish("Submit")}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Promotion Requests Table */}
       <div className="bg-white shadow-md rounded-md p-4">
-        <h3 className="text-lg font-semibold text-left py-2">Promotion Requests</h3>
-        <Box sx={{height: 200, overflowY: 'auto', border: '1px solid #ddd' }}>
-          <Grid rows={promotionData} columns={promotionColumns}>
-            <Table cellComponent={CustomTableCell} />
-            <TableHeaderRow cellComponent={CustomTableHeaderCell} />
-          </Grid>
+        <h3 className="text-lg font-semibold text-center py-2">{getLanguageByEnglish('Promotion Requests')}</h3>
+        <Box sx={{ height: 170, overflowY: 'auto', border: '1px solid #ddd' }}>
+          <DataGrid
+            dataSource={promotionData}
+            showBorders={false}
+            rowAlternationEnabled={true}
+          >
+            <Column dataField="date" caption={getLanguageByEnglish("Date")} />
+            <Column dataField="positionTo" caption={getLanguageByEnglish("Position To")} />
+            <Column dataField="reason" caption={getLanguageByEnglish("Reason")} />
+            <Column dataField="status" caption={getLanguageByEnglish("Status")} />
+            <Pager allowedPageSizes={[5, 10, 20]} showPageSizeSelector={true} />
+            <Paging defaultPageSize={5} />
+          </DataGrid>
         </Box>
         <Button variant="contained" sx={{ mt: 2, color: 'black' }} onClick={openPromotionModal}>
-          Request
+        {getLanguageByEnglish('Request')}
         </Button>
       </div>
 
       {/* Promotion Request Modal */}
       <Dialog open={promotionModalOpen} onClose={closePromotionModal} fullWidth maxWidth="sm">
-        <DialogTitle>Promotion Request</DialogTitle>
+        <DialogTitle>{getLanguageByEnglish('Promotion Requests')}</DialogTitle>
         <DialogContent>
-        <Select
+          <Select
             label="Position To"
-            name="toPosition" // Match this with the state key
+            name="toPosition"
             value={promotionFormData.toPosition}
             onChange={handlePromotionChange}
             fullWidth
             sx={{ mt: 2 }}
           >
-            <MenuItem value="Manager">Manager</MenuItem>
-            <MenuItem value="Chief">Chief</MenuItem>
-            <MenuItem value="Supervisor">Supervisor</MenuItem>
-            {/* Add more positions as needed */}
+            <MenuItem value="Manager">{getLanguageByEnglish('Manager')}</MenuItem>
+            <MenuItem value="Chief">{getLanguageByEnglish('Chief')}</MenuItem>
+            <MenuItem value="Supervisor">{getLanguageByEnglish('Supervisor')}</MenuItem>
           </Select>
           <TextField
-            label="Reason"
+            label={getLanguageByEnglish("Reason")}
             name="reason"
             value={promotionFormData.reason}
             onChange={handlePromotionChange}
@@ -237,9 +200,9 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={closePromotionModal}>Cancel</Button>
+          <Button onClick={closePromotionModal}>{getLanguageByEnglish("Cancel")}</Button>
           <Button onClick={handleSavePromotion} variant="contained" sx={{ color: 'black', backgroundColor: 'green' }}>
-            Save
+            {getLanguageByEnglish("Submit")}
           </Button>
         </DialogActions>
       </Dialog>

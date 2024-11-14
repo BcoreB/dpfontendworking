@@ -15,7 +15,7 @@ import { getEmployeeCompany, getEmployeeDepartments, getEmployeeDesignations, ge
 import DPInput from '@/components/ui/dpinput'
 import { InitializeForm, formSchema, DisplayFrom, saveData, salutationData, sex, maritalstatus, bloodgroup, relation, DPDocument, DPContract } from './formschema'
 import { useRouter , useSearchParams } from 'next/navigation'
-import getLanguageByEnglish from '@/utils/languages'
+import {getLanguageByEnglish} from '@/utils/languages'
 import { DocStaus } from '@/dptype'
 import { DPAlertDialog, useDialog } from '@/components/ui/dpdialogbox'
 import { getFileNames } from '@/lib/Image'

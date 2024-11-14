@@ -1,5 +1,5 @@
 import Image from "next/image";
-import getLanguageByEnglish from '@/utils/languages'
+import {getLanguageByEnglish} from '@/utils/languages'
 import Navbar from "../../components/Menu/Navbar";
 export default function Home() {
   return (

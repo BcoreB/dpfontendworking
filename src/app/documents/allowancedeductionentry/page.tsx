@@ -7,7 +7,7 @@ import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import DPInput from '@/components/ui/dpinput';
 import { InitializeForm,payrollPeriod, formSchema, AlldedCode, Company, Department, inputType,EmployeeVariableAllDedDetSave, EmployeeVariableAllDedDetGrid } from './formSchema';
 import { useRouter } from 'next/navigation';
-import getLanguageByEnglish from '@/utils/languages';
+import {getLanguageByEnglish} from '@/utils/languages';
 import DPComboBox from '@/components/ui/dpcombobox';
 import DocumentHeader from '@/components/Menu/documentHeader';
 // import Sidebar from '@/components/Menu/SideBar';

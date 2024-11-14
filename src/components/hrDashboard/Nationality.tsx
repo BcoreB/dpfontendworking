@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Chart, Series } from 'devextreme-react/chart';
-
+import {getLanguageByEnglish} from '@/utils/languages'
 type NationalityData = {
   country: string;
   count: number;
@@ -24,7 +24,7 @@ const NationalityChart: React.FC = () => {
 
   return (
     <div className='p-4'>
-        <h4 className='text-start text-xl font-semibold mb-6'>NATIONALITY WISE</h4>
+        <h4 className='text-start text-xl font-semibold mb-6'>{getLanguageByEnglish('NATIONALITY WISE')}</h4>
         <Chart id="chart" dataSource={data}>
             <Series
             valueField="count"

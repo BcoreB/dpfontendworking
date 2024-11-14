@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
-
+import { getLanguageByEnglish } from '@/utils/languages';
 interface SummaryCardProps {
   employeeCode: string;
 }
@@ -71,16 +71,16 @@ const SummaryCards: React.FC<SummaryCardProps> = ({ employeeCode }) => {
     <div className="flex flex-col py-4">
       {/* Month Dropdown */}
       <FormControl variant="outlined" sx={{ minWidth: 120, mb: 4 ,ml: 'auto',}}>
-        <InputLabel className='ml-0'>Month</InputLabel>
+        <InputLabel className='ml-0'>{getLanguageByEnglish('Month')}</InputLabel>
         <Select
           value={selectedMonth}
           onChange={handleMonthChange}
-          label="Month"
+          label={getLanguageByEnglish("Month")}
           sx={{ backgroundColor: '#f0f0f0', borderRadius: 1 , width:160 }}
         >
           {months.map((month, index) => (
             <MenuItem key={index} value={index}>
-              {month}
+              {getLanguageByEnglish(month)}
             </MenuItem>
           ))}
         </Select>
@@ -91,7 +91,7 @@ const SummaryCards: React.FC<SummaryCardProps> = ({ employeeCode }) => {
         {cards.map((card, index) => (
           <div
             key={index}
-            className="flex items-center bg-white shadow rounded-xl p-4"
+            className="flex items-center justify-between bg-white shadow rounded-xl p-4"
           >
             {/* Icon */}
             <div className="flex items-center justify-center bg-purple-100 rounded-full w-12 h-12 mr-4">
@@ -100,7 +100,7 @@ const SummaryCards: React.FC<SummaryCardProps> = ({ employeeCode }) => {
             
             {/* Title and Count */}
             <div>
-              <p className="text-sm text-gray-500">{card.title}</p>
+              <p className="text-sm text-gray-500">{getLanguageByEnglish(card.title)}</p>
               <p className="text-2xl font-bold text-gray-800">{card.count}</p>
             </div>
           </div>

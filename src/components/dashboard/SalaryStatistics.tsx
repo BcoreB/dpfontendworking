@@ -2,6 +2,7 @@
 // components/SalaryStatistics.tsx
 import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
+import { getLanguageByEnglish } from "@/utils/languages";
 import {
   Chart,
   BarSeries,
@@ -40,7 +41,7 @@ const SalaryStatistics: React.FC<SalaryStatisticsProps> = ({ employeeCode }) => 
         <ValueAxis />
 
         <BarSeries valueField="salary" argumentField="month" />
-        <Title text="Monthly Salary Statistics" />
+        <Title text={getLanguageByEnglish("Monthly Salary Statistics")} />
         <Animation />
       </Chart>
     </Paper>
