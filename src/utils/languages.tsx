@@ -115,8 +115,17 @@ const englishToArabic: Record<string, string> = {
   'Drafts':"المسودات",
   'Document List':"قائمة المستندات",
   'Notes':'ملحوظات',
-  
-
+  'Search for an item...':'البحث عن عنصر',
+  'Help & Support':"المساعدة والدعم",
+  'Notifications':'إشعارات',
+  'Settings':'إعدادات',
+  "System":"نظام",
+  "Master Setup":"الإعداد الرئيسي",
+  "Employee Self Service":"خدمة الموظفين الذاتية",
+  "Employee Management":"إدارة الموظفين",
+  "View Profile":"عرض الملف الشخصي",
+  "Change Password":"تغيير كلمة المرور",
+  "Logout":"تسجيل الخروج"
    // Add more translations as needed
  };
  

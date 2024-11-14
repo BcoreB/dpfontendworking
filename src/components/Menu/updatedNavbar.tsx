@@ -119,7 +119,7 @@ function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuIte
         />
         {isExpanded && dropdownData?.length > 0 && (
           <span className="ml-2 text-sm font-medium transition-opacity duration-300">
-            {dropdownData[0].parentName}
+            {getLanguageByEnglish(dropdownData[0].parentName)}
           </span>
         )}
       </div>
