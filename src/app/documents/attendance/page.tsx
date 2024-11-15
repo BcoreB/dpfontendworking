@@ -222,8 +222,8 @@ const handleValuesChange = (changedValues: any) => {
                 </div>
                 <div className="grid gap-1 py-1 lg:col-span-1">
                     <div className="flex items-end justify-start gap-4">
-                        <Button type="button">Fill Reference</Button>
-                        <Button type='button'>Refresh</Button>
+                        <Button type="button">{getLanguageByEnglish("Fill Reference")}</Button>
+                        <Button type='button'>{getLanguageByEnglish("Refresh")}</Button>
                         
                     </div>
                 </div>

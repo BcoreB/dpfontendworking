@@ -52,7 +52,7 @@ const SummaryCards: React.FC<SummaryCardProps> = ({ employeeCode }) => {
         {cards.map((card, index) => (
           <div
             key={index}
-            className="flex items-center bg-white shadow rounded-xl p-4"
+            className="flex gap-4 items-center bg-white shadow rounded-xl p-4"
           >
             {/* Icon */}
             <div className="flex items-center justify-center bg-purple-100 rounded-full w-12 h-12 mr-4">

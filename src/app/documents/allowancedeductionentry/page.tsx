@@ -238,9 +238,9 @@ const lookupData = [
                 </div>
                 <div className="grid gap-1 py-1 lg:col-span-2">
                     <div className="flex items-end justify-start gap-4">
-                        <Button type="button" onClick={handleImportClick}>Import Excel</Button>
-                        <Button >Export Excel</Button>
-                        <a href="">Load Data</a>
+                        <Button type="button" onClick={handleImportClick}>{getLanguageByEnglish("Import Excel")}</Button>
+                        <Button >{getLanguageByEnglish("Export Excel")}</Button>
+                        <a href="">{getLanguageByEnglish("Load Data")}</a>
                         {/* Hidden file input for importing excel */}
                         <input 
                           type="file" 

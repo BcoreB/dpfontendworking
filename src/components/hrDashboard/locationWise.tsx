@@ -31,7 +31,7 @@ const LocationWise: React.FC = () => {
         className="custom-grid" 
       >
         {/* Define the columns */}
-        <Column dataField="location" caption="Location"/>
+        <Column dataField="location" caption={getLanguageByEnglish("Location")}/>
         <Column dataField="2020" alignment="center" />
         <Column dataField="2021" alignment="center" />
         <Column dataField="2022" alignment="center" />
