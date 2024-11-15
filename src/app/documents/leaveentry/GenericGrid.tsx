@@ -7,6 +7,7 @@ import { AiFillCaretDown } from 'react-icons/ai';
 import { DateBox } from 'devextreme-react/date-box';
 import Button from 'devextreme-react/cjs/button';
 import {getLanguageByEnglish} from '@/utils/languages'
+import { useDirection } from '@/app/DirectionContext';
 interface GridProps<T> {
   columns: {
     dataField: keyof T;
@@ -270,7 +271,7 @@ const handleRowDoubleClick = (e: any) => {
   }
 };
 
-
+  const { isRtl } = useDirection();
 
   return (
     <>
@@ -282,7 +283,7 @@ const handleRowDoubleClick = (e: any) => {
           onEditorPreparing={handleEditorPreparing}
           columnHidingEnabled={true}
           repaintChangesOnly={true}
-          rtlEnabled={true} // Enable RTL layout for DataGrid
+          rtlEnabled={isRtl} // Enable RTL layout for DataGrid
         >
           <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
 
@@ -425,7 +426,7 @@ const handleRowDoubleClick = (e: any) => {
             onRowDblClick={handleRowDoubleClick}
             columnAutoWidth={true}  // Auto-adjust column widths to content
             style={{ userSelect: 'none' }} // Disable text selection in the grid
-            rtlEnabled={true} // Enable RTL layout for DataGrid
+            rtlEnabled={isRtl} // Enable RTL layout for DataGrid
           >
             {filteredLookupDataSource.length > 0 &&
               Object.keys(filteredLookupDataSource[0]).map((field) => (

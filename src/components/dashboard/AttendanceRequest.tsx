@@ -26,8 +26,12 @@ import { getLanguageByEnglish } from '@/utils/languages';
 interface RequestTablesProps {
   employeeCode: string;
 }
+import { useDirection } from '@/app/DirectionContext';
 
 const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
+
+  const { isRtl } = useDirection();
+  
   const { attendance = [], promotion = [] } = requestData[employeeCode as keyof typeof requestData] || {};
 
   const [attendanceData, setAttendanceData] = useState(attendance);
@@ -90,6 +94,7 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
           <DataGrid
             dataSource={attendanceData}
             showBorders={false}
+            rtlEnabled={isRtl}
             rowAlternationEnabled={true}
           >
            
@@ -158,6 +163,7 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
             dataSource={promotionData}
             showBorders={false}
             rowAlternationEnabled={true}
+            rtlEnabled={isRtl}
           >
             <Column dataField="date" caption={getLanguageByEnglish("Date")} />
             <Column dataField="positionTo" caption={getLanguageByEnglish("Position To")} />

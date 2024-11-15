@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
 import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, Select } from '@mui/material';
 import { getLanguageByEnglish } from '@/utils/languages';
+import { useDirection } from '@/app/DirectionContext';
 const LoanRequestTables = () => {
   // Column definitions for each table
   const loanColumns = [
@@ -112,7 +113,7 @@ const LoanRequestTables = () => {
       [name]: value,
     });
   };
-
+  const { isRtl } = useDirection();
   return (
     <div>
       {/* Loan Request Table */}
@@ -130,7 +131,7 @@ const LoanRequestTables = () => {
             showBorders={true}
             columnAutoWidth={true}
             height={200}
-            rtlEnabled={true} // Enable RTL layout for DataGrid
+            rtlEnabled={isRtl} // Enable RTL layout for DataGrid
           >
             {loanColumns.map((col) => (
               <Column key={col.name} dataField={col.name} caption={ getLanguageByEnglish(col.title)} />
@@ -164,7 +165,7 @@ const LoanRequestTables = () => {
             showBorders={true}
             columnAutoWidth={true}
             height={200}
-            rtlEnabled={true} // Enable RTL layout for DataGrid
+            rtlEnabled={isRtl} // Enable RTL layout for DataGrid
           >
             {expenseColumns.map((col) => (
               <Column key={col.name} dataField={col.name} caption={ getLanguageByEnglish(col.title)} />

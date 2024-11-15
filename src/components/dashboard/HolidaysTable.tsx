@@ -5,6 +5,7 @@ import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/dat
 
 import { getHolidaysByEmployeeCode, HolidayRow } from '../Menu/data/holidayData'
 import { getLanguageByEnglish } from '@/utils/languages';
+import { useDirection } from '@/app/DirectionContext';
 // Define types for columns and component props
 interface Column {
   name: string;
@@ -16,6 +17,7 @@ interface HolidaysTableProps {
 }
 
 const HolidaysTable: React.FC<HolidaysTableProps> = ({ employeeCode }) => {
+  const { isRtl } = useDirection();
   const [columns] = useState<Column[]>([
     { name: 'date', title: 'Date' },
     { name: 'description', title: 'Description' },
@@ -66,7 +68,7 @@ const HolidaysTable: React.FC<HolidaysTableProps> = ({ employeeCode }) => {
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled={true}
-        rtlEnabled={true} // Enable RTL layout for DataGrid
+        rtlEnabled={isRtl} // Enable RTL layout for DataGrid
         height={500}
         columnAutoWidth={true}
         noDataText="" // This will hide any default no data text

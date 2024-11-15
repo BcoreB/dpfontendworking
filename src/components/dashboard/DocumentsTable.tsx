@@ -12,6 +12,7 @@ interface Column {
 interface DocumentsTableProps {
   employeeCode: string;
 }
+import { useDirection } from '@/app/DirectionContext';
 
 const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
   const [columns] = useState<Column[]>([
@@ -21,6 +22,8 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
     { name: 'image', title: 'Image' },
     { name: 'actions', title: 'Actions' },
   ]);
+
+  const { isRtl } = useDirection();
 
   const [rows, setRows] = useState<DocumentRow[]>([]);
 
@@ -83,7 +86,7 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled
-        rtlEnabled={true} // Enable RTL layout for DataGrid
+        rtlEnabled={isRtl} // Enable RTL layout for DataGrid
         height={500}
         columnWidth={150}
         noDataText=""

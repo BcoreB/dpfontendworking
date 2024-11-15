@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select, FormControl, InputLabel, Switch, FormControlLabel } from '@mui/material';
 import { getLanguageByEnglish } from '@/utils/languages';
+import { useDirection } from '@/app/DirectionContext';
 const LeaveTable = () => {
   const [columns] = useState([
     { name: 'type', title: 'Type' },
@@ -78,7 +79,7 @@ const LeaveTable = () => {
       remarks: ''
     });
   };
-
+  const { isRtl } = useDirection();
   return (
     <div className="bg-white shadow-md rounded-md">
       <div
@@ -118,7 +119,7 @@ const LeaveTable = () => {
           rowAlternationEnabled={false}
           hoverStateEnabled={true}
           height={600}
-          rtlEnabled={true} // Enable RTL layout for DataGrid
+          rtlEnabled={isRtl} // Enable RTL layout for DataGrid
           columnAutoWidth={true}
           noDataText=""
           style={{

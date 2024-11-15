@@ -4,6 +4,7 @@ import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/dat
 import { Button, Modal, Box, Typography, MenuItem, Select, TextField } from '@mui/material';
 import { trainingData, TrainingData } from '../Menu/data/trainingData';
 import { getLanguageByEnglish } from '@/utils/languages';
+import { useDirection } from '@/app/DirectionContext';
 interface Column {
   name: string;
   title: string;
@@ -14,6 +15,7 @@ interface TrainingTableProps {
 }
 
 const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
+  const { isRtl } = useDirection();
   const [columns] = useState<Column[]>([
     { name: 'date', title: 'Date' },
     { name: 'training', title: 'Training' },
@@ -68,7 +70,7 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
 
         <DataGrid
           dataSource={rows}
-          rtlEnabled={true} // Enable RTL layout for DataGrid
+          rtlEnabled={isRtl} // Enable RTL layout for DataGrid
           showBorders={false}
           rowAlternationEnabled={false}
           hoverStateEnabled

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Chart, Series } from 'devextreme-react/chart';
+import { Chart, CommonSeriesSettings, Legend, Series, SeriesTemplate } from 'devextreme-react/chart';
 import {getLanguageByEnglish} from '@/utils/languages'
 type NationalityData = {
   country: string;
@@ -25,13 +25,21 @@ const NationalityChart: React.FC = () => {
   return (
     <div className='p-4'>
         <h4 className='text-start text-xl font-semibold mb-6'>{getLanguageByEnglish('NATIONALITY WISE')}</h4>
-        <Chart id="chart" dataSource={data}>
-            <Series
-            valueField="count"
-            argumentField="country"
-            name="Nationality"
-            type="bar"
-            color="#ffaa66" />
+        <Chart
+            id="bar-chart"
+            dataSource={data}
+            palette="Pastel"
+                    >
+                
+            <CommonSeriesSettings
+                        argumentField="country"
+                        valueField="count"
+                        type="bar"
+                        ignoreEmptyPoints={true}
+                />
+            <SeriesTemplate nameField="country" />
+            <Legend visible={false} />
+                
         </Chart>
     </div>
     
