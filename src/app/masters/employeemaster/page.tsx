@@ -340,8 +340,15 @@ const getFileExtension = (mime: string) => {
 
     }
 
+    const [isClient, setIsClient] = useState(false)
+ 
+    useEffect(() => {
+        setIsClient(true)
+    }, [])
    
     return (
+      <>
+        {isClient ?
         <MaxWidthWrapper>
             <div className="border-solid ">
               
@@ -1087,7 +1094,10 @@ const getFileExtension = (mime: string) => {
             }
            
         </MaxWidthWrapper>
-        
+        : ''
+      }
+          
+      </>
       )
  
 }

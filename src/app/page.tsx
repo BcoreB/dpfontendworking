@@ -55,7 +55,12 @@ export default function Home() {
   };
 
   // carousel
-  
+  const [isClient, setIsClient] = useState(false)
+ 
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const slides = [
@@ -89,7 +94,9 @@ export default function Home() {
 
 
   return (
-    <main className="flex h-full w-full justify-between max-w-screen-2xl p-5 m-auto lg:px-60 lg:p-14">
+    <>
+      {isClient?
+        <main className="flex h-full w-full justify-between max-w-screen-2xl p-5 m-auto lg:px-60 lg:p-14">
         <div className="landing-text bg-white w-1/2  pt-8 px-12">
           <div className="logo">
             <Image
@@ -133,5 +140,10 @@ export default function Home() {
           </div>
         </div>
     </main>
+    :
+    ''
+    }
+    </>
+    
   );
 }

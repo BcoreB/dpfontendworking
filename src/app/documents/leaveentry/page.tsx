@@ -23,7 +23,11 @@ const LeaveEntry = () => {
   const [employeeLeaveDetails, setEmployeeLeaveDetails] = useState<EmployeeLeaveDet[]>([]);
   const router = useRouter();
 
-
+  const [isClient, setIsClient] = useState(false)
+ 
+  useEffect(() => {
+      setIsClient(true)
+  }, [])
   
 
   // Initialize the form
@@ -110,6 +114,8 @@ const LeaveEntry = () => {
   };
 
   return (
+    <>
+        {isClient ?
     <div className="w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8">
       <div className="absolute top-0 right-0 z-5">
         <Sidebar docCd={docCd} docKey={docKey} form={form} />
@@ -198,6 +204,10 @@ const LeaveEntry = () => {
         </div>
       </MaxWidthWrapper>
     </div>
+    : ''
+  }
+      
+  </>
   );
 };
 

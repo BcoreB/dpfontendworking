@@ -89,8 +89,14 @@ const handleValuesChange = (changedValues: any) => {
   }
 };
 
-
+const [isClient, setIsClient] = useState(false)
+ 
+    useEffect(() => {
+        setIsClient(true)
+    }, [])
   return (
+    <>
+        {isClient ?
     <div className="w-full h-full px-5 py-5 lg:px-20 lg:pb-14 ">
       <div className="absolute top-0 right-0 z-5">
         <Sidebar docCd={docCd} docKey={docKey} form={form} />
@@ -276,6 +282,8 @@ const handleValuesChange = (changedValues: any) => {
         </div>
       </MaxWidthWrapper>
     </div>
+    :''}
+        </>
   );
 };
 
