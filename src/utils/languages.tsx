@@ -9,7 +9,7 @@ let translations: Record<string, string> = {};
 // Function to read translations from Excel
 const loadTranslationsFromExcel = async () => {
   try {
-    const response = await fetch('/translations.xlsx');
+    const response = await fetch('/Updatedtranslations.xlsx');
     const data = await response.arrayBuffer();
     const workbook = XLSX.read(data, { type: 'array' });
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -36,7 +36,7 @@ const saveTranslationsToExcel = () => {
   // Save the updated Excel file
   const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
   const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-  saveAs(blob, 'translations.xlsx'); // Ensure the file is downloaded
+  // saveAs(blob, 'translations.xlsx'); // Ensure the file is downloaded
 };
 
 // Load translations on initial run
