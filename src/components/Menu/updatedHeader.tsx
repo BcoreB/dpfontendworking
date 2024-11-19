@@ -85,7 +85,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
           <Image height={50} width={50} alt="Logo" src={'/BcoreLogo.png'} className="max-w-full" />
           <div className="hidden md:block vertical-line"></div>
         </div>
-
+        
         <div className="hidden md:flex items-center gap-6 md:w-3/6">
           <div className="relative flex-1">
             <input

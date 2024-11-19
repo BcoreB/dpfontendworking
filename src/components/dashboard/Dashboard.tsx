@@ -17,6 +17,7 @@ import LoanRequestTables from './LoanRequestTable';
 import PaySlipTable from './PaySlipTable';
 
 import 'devextreme/dist/css/dx.light.css';
+import { getLanguageByEnglish } from '@/utils/languages';
 
 interface EmpProps {
   employeeCode: string;
@@ -47,6 +48,7 @@ const Dashboard: React.FC<EmpProps> = ({ employeeCode }) => {
 
   return (
     <div className="p-4 md:p-10 space-y-6 max-h-lvh">
+      
       {/* Profile and Summary Cards */}
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
         <div className="w-full md:w-1/3"><ProfileCard employeeCode={safeEmployeeCode}/></div>

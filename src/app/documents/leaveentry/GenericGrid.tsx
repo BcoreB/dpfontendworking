@@ -87,42 +87,36 @@ const addNewRow = () => {
 
 
 const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
-  
   if (e.parentType === 'dataRow') {
-    // Check if the column being edited is in the watchColumns array
-    if (watchColumns.includes(e.dataField as keyof T)) {
-      e.editorOptions.onValueChanged = (args: { value: any }) => {
-        const rowIndex = e.row?.rowIndex;
-        if (rowIndex !== undefined) {
-          const updatedData = [...dataSource];
-          const updatedRow = { ...updatedData[rowIndex] };
+    const isLookupColumn = columns.find(
+      (column) => column.dataField === e.dataField && column.inputType === 'lookup'
+    );
+    const isDateColumn = columns.find(
+      (column) => column.dataField === e.dataField && column.dataType === 'date'
+    );
 
-          // Update the field that has changed
-          updatedRow[e.dataField as keyof T] = args.value;
-          updatedData[rowIndex] = updatedRow;
-
-          // Create an object of key-value pairs where the key is the column and value is the updated value
-          const currentValues = watchColumns.reduce((acc, column) => {
-            acc[column] = updatedRow[column] || ""; // Assign default empty string if value is undefined
-            return acc;
-          }, {} as Record<keyof T, any>);
-
-          // Check if all fields in watchColumns are filled (non-empty)
-          const allFieldsFilled = watchColumns.every((column) => updatedRow[column]);
-
-          // Only call onValuesChange if all fields in watchColumns are filled
-          if (allFieldsFilled) {
-            onValuesChange?.({ field: e.dataField as keyof T, currentValues });
+    // Add keydown event listener for Lookup and Date columns
+    e.editorOptions.onKeyDown = (args: { event: KeyboardEvent }) => {
+      if (args.event.key === 'ArrowDown') {
+        if (isLookupColumn) {
+          // Show the lookup popup grid
+          if (e.row) {
+            setSelectedRowIndex(e.row.rowIndex);
           }
-
-          // Update the data source
-          setDataSource(updatedData);
-          onValueSelect(updatedData);
+          setLookupDataSource(isLookupColumn?.dataSource || []);
+          setFilteredLookupDataSource(isLookupColumn?.dataSource || []);
+          setShowLookupGrid(true);
+          args.event.preventDefault(); // Prevent default behavior
+        } else if (isDateColumn) {
+          // Open the date picker programmatically
+          const dateBoxInstance = e.editorElement?.querySelector('.dx-datebox')?.dxDateBox;
+          dateBoxInstance?.open();
+          args.event.preventDefault(); // Prevent default behavior
         }
-      };
-    }
+      }
+    };
 
-    // Handle the "Enter" keypress to add a new row
+    // Handle the "Enter" keypress to add a new row for the last column
     if (e.dataField === lastColumn) {
       e.editorOptions.onKeyDown = (args: { event: KeyboardEvent }) => {
         if (args.event.key === 'Enter') {
@@ -132,6 +126,7 @@ const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
     }
   }
 };
+
 
 
 // const handleEditorPreparing = (e: any) => {

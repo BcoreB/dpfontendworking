@@ -17,7 +17,6 @@ export default function Home() {
         <>
         {isClient ?
             <div className="h-full w-full relative " >
-                
             <div className="text-center md:ml-28 md:max-h-[90vh] md:overflow-y-auto">
                     <Dashboard employeeCode={employeeCode||''} />
                 </div>

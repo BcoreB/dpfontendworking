@@ -1,10 +1,10 @@
 // app/utils/language.tsx
 import { useDirection } from '../app/DirectionContext';
 import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
-import { useState, useEffect } from 'react';
 
 let translations: Record<string, string> = {};
+let newWordsBuffer: [string, string][] = []; // Array to store new words
+let logTimeout: NodeJS.Timeout | null = null; // Timeout for batching logs
 
 // Function to read translations from Excel
 const loadTranslationsFromExcel = async () => {
@@ -26,17 +26,19 @@ const loadTranslationsFromExcel = async () => {
   }
 };
 
-// Function to save updated translations to Excel
-const saveTranslationsToExcel = () => {
-  const data = Object.entries(translations).map(([english, arabic]) => [english, arabic]);
-  const worksheet = XLSX.utils.aoa_to_sheet(data);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Translations');
+// Function to log new translations in batches
+const logNewTranslations = () => {
+  if (logTimeout) clearTimeout(logTimeout); // Clear previous timeout if any
 
-  // Save the updated Excel file
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-  // saveAs(blob, 'translations.xlsx'); // Ensure the file is downloaded
+  logTimeout = setTimeout(() => {
+    if (newWordsBuffer.length > 0) {
+      // Copy the buffer to avoid mutation issues during logging
+      const bufferCopy = [...newWordsBuffer];
+      newWordsBuffer = []; // Clear the buffer
+
+      console.log('New words added to translations:', bufferCopy);
+    }
+  }, 500); // Batch log every 500ms
 };
 
 // Load translations on initial run
@@ -49,8 +51,11 @@ export const getLanguageByEnglish = (english: string): string => {
     // Add missing word to translations with an empty Arabic value
     translations[english] = '';
 
-    // Save the updated translations to Excel
-    saveTranslationsToExcel();
+    // Store the new word in the buffer
+    newWordsBuffer.push([english, '']);
+
+    // Log the new translations
+    logNewTranslations();
   }
 
   // Return Arabic if available and direction is RTL, else return English

@@ -153,17 +153,17 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
 
   return (
     <div className="form-header">
-      <div className="flex justify-between items-center bg-purple-100 mb-5 p-4">
+      <div className="flex flex-col gap-5 md:flex-row justify-between items-center  bg-purple-100 mb-5 p-4">
         
         <div className="flex space-x-2">
           <Button variant='ghost' type="button" onClick={addNew}>{getLanguageByEnglish('New')}</Button>
-          <Button variant='ghost' type="submit" onClick={onSubmit}>{getLanguageByEnglish('Save')}</Button>
+          <Button variant='ghost' type="submit"  onClick={onSubmit}>{getLanguageByEnglish('Save')}</Button>
           <Button variant='ghost' type="button" onClick={deleteData}>{getLanguageByEnglish('Delete')}</Button>
-          <Button variant='ghost' type="button" onClick={printData}>{getLanguageByEnglish('Print')}</Button>
-          <Button variant='ghost' type="button" onClick={onLogClick}>{getLanguageByEnglish('Log')}</Button>
-          <Button variant='ghost' type="button" onClick={saveDraft}>{getLanguageByEnglish('Draft')}</Button>
+          <Button variant='ghost' type="button" className='hidden md:block' onClick={printData}>{getLanguageByEnglish('Print')}</Button>
+          <Button variant='ghost' type="button" className='hidden md:block' onClick={onLogClick}>{getLanguageByEnglish('Log')}</Button>
+          <Button variant='ghost' type="button" className='hidden md:block' onClick={saveDraft}>{getLanguageByEnglish('Draft')}</Button>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-4">
           <div>
             <label className='px-2'>
               {getLanguageByEnglish('Doc No:')}
@@ -171,7 +171,7 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
             <input
                 type="text"
                 name="documentNumber"
-                className="p-1 border rounded"
+                className="p-1 border rounded w-28 md:w-40"
               />
           </div>
           <div>
@@ -181,7 +181,7 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
             <input
                 type="date"
                 name="documentDate"
-                className="p-1 border rounded"
+                className="p-1 border rounded w-28 md:w-40"
                 value={documentDate}  // Set default value as current date
                 onChange={(e) => setDocumentDate(e.target.value)} // Allow changing the date
               />
