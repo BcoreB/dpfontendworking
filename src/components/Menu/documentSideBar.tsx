@@ -281,6 +281,11 @@ const handleOpenClick = () => {
     setNotes(prevNotes => prevNotes.map((note, i) => i === index ? { ...note, expanded: !note.expanded } : note));
   };
 
+  const [isSidebarVisible, setSidebarVisible] = useState(false);
+  const toggleSidebar = () => {
+    setSidebarVisible((prev) => !prev);
+  };
+
   const handleClickOutside = (event: MouseEvent) => {
     if (sidebarRef.current) {
       const sidebarRect = sidebarRef.current.getBoundingClientRect();
@@ -288,6 +293,12 @@ const handleOpenClick = () => {
       if (event.clientX < sidebarRect.left) {
         setActiveSection(null); // Close the sidebar
       }
+    }
+    if (
+      sidebarRef.current &&
+      !sidebarRef.current.contains(event.target as Node)
+    ) {
+      setSidebarVisible(false);
     }
   };
 
@@ -301,8 +312,46 @@ const handleOpenClick = () => {
 
   
   return (
-    <div className="flex h-screen relative">
-      <div className="right-0 flex bg-purple-100 h-full flex-col text-sm z-10 pt-2 fixed md:relative justify-evenly items-center mt-24  md:mt-20 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
+    <>
+  
+      
+
+    <div className=" h-screen relative">
+      <div className='absolute top-32 right-1'>
+        {/* Hamburger Menu */}
+        <button
+        onClick={toggleSidebar}
+        className="block md:hidden p-2 text-gray-500 hover:text-black"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+      
+      {/* Sidebar */}
+      <Transition
+        show={isSidebarVisible}
+        enter="transition ease-in-out duration-500 transform"
+        enterFrom="-translate-x-1/4 opacity-0"
+        enterTo="translate-x-0 opacity-100"
+        leave="transition ease-in-out duration-500 transform"
+        leaveFrom="translate-x-0 opacity-100"
+        leaveTo="-translate-x-1/4 opacity-0"
+      >
+
+        <div className="right-0 flex bg-purple-100 h-full flex-col text-sm z-10 pt-2 fixed md:relative justify-evenly items-center mt-24  md:mt-20 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
         {sections.map((section, index) => (
           <button
             key={index}
@@ -314,7 +363,9 @@ const handleOpenClick = () => {
             </div>
           </button>
         ))}
-      </div>
+        </div>
+      </Transition>
+      
       {sections.map((section, index) => (
         <Transition
           key={index}
@@ -625,6 +676,8 @@ const handleOpenClick = () => {
         </Transition>
       ))}
     </div>
+    </>
+    
   );
 };
 
