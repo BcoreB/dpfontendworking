@@ -91,7 +91,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
             <input
               type="text"
               className="bg-[#EAF6FC] px-4 py-2 border-0 w-full max-w-full shadow-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder={getLanguageByEnglish("Search for an item...")}
+              placeholder={getLanguageByEnglish("Search for an item")}
               value={searchTerm}
               onChange={handleSearch}
             />

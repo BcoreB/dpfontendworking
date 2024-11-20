@@ -133,8 +133,8 @@ const DepartmentMaster = () => {
                     setValue={form.setValue} // Pass setValue here
                     docCd={docCd} // Pass docCd
                     fieldMapping={[ // Pass fieldMapping
-                      { column: 'deptHeadCode', formField: 'deptHeadCode' },
-                      { column: 'deptHeadName', formField: 'deptHeadName' },
+                      { column: getLanguageByEnglish('deptHeadCode'), formField: 'deptHeadCode' },
+                      { column: getLanguageByEnglish('deptHeadName'), formField: 'deptHeadName' },
                     ]}
                   />
   

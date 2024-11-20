@@ -24,7 +24,7 @@ interface GridProps<T> {
   lastColumn: keyof T;
   watchColumns?: (keyof T)[];  // Accept new watchColumns prop
   onValuesChange?: (changes: { field: keyof T; currentValues: any[] }) => void; // Add this line
-  
+  PopKeyExp?: keyof T | null; // Add keyExp prop
 }
 
 interface CellInfo<T> {
@@ -39,16 +39,26 @@ const GenericGrid = <T extends {RowId:number }>({
   dataSource: initialDataSource,
   onValueSelect,
   lastColumn,
-  
+  PopKeyExp = null, // Default value
   onValuesChange,
   watchColumns = [], // Initialize watchColumns prop
 }: GridProps<T>) => {
   const [dataSource, setDataSource] = useState<T[]>(initialDataSource);
+  useEffect(() => {
+    if (PopKeyExp) {
+      console.log('PopKeyExp is:', PopKeyExp);
+      // Add any logic needed for PopKeyExp
+    }
+  }, [PopKeyExp]);
+
   const [lookupDataSource, setLookupDataSource] = useState<T[]>([]);
   const [filteredLookupDataSource, setFilteredLookupDataSource] = useState<T[]>([]);
   const [showLookupGrid, setShowLookupGrid] = useState<boolean>(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
   const iconRef = useRef<HTMLElement | null>(null);
+
+  const [popupFocusedRowIndex, setPopupFocusedRowIndex] = useState<number>(0);
+
 
 const addNewRow = () => {
     const isEmptyRowPresent = dataSource.some((row) =>
@@ -95,37 +105,38 @@ const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
       (column) => column.dataField === e.dataField && column.dataType === 'date'
     );
 
-    // Add keydown event listener for Lookup and Date columns
     e.editorOptions.onKeyDown = (args: { event: KeyboardEvent }) => {
+      const currentIndex = selectedRowIndex !== null ? selectedRowIndex : 0;
+
       if (args.event.key === 'ArrowDown') {
         if (isLookupColumn) {
-          // Show the lookup popup grid
-          if (e.row) {
-            setSelectedRowIndex(e.row.rowIndex);
-          }
+          if (e.row) setSelectedRowIndex(e.row.rowIndex);
           setLookupDataSource(isLookupColumn?.dataSource || []);
           setFilteredLookupDataSource(isLookupColumn?.dataSource || []);
           setShowLookupGrid(true);
-          args.event.preventDefault(); // Prevent default behavior
         } else if (isDateColumn) {
-          // Open the date picker programmatically
           const dateBoxInstance = e.editorElement?.querySelector('.dx-datebox')?.dxDateBox;
           dateBoxInstance?.open();
-          args.event.preventDefault(); // Prevent default behavior
+        } else {
+          const nextIndex = Math.min(currentIndex + 1, dataSource.length - 1);
+          setSelectedRowIndex(nextIndex);
         }
+        args.event.preventDefault();
+      }
+
+      if (args.event.key === 'ArrowUp') {
+        const prevIndex = Math.max(currentIndex - 1, 0);
+        setSelectedRowIndex(prevIndex);
+        args.event.preventDefault();
+      }
+
+      if (args.event.key === 'Enter' && e.dataField === lastColumn) {
+        addNewRow();
       }
     };
-
-    // Handle the "Enter" keypress to add a new row for the last column
-    if (e.dataField === lastColumn) {
-      e.editorOptions.onKeyDown = (args: { event: KeyboardEvent }) => {
-        if (args.event.key === 'Enter') {
-          addNewRow();
-        }
-      };
-    }
   }
 };
+
 
 
 
@@ -268,6 +279,47 @@ const handleRowDoubleClick = (e: any) => {
 
   const { isRtl } = useDirection();
 
+
+  const handlePopupRowClick = (e: any) => {
+    const clickedRowIndex = e.rowIndex; // Get the index of the clicked row
+    const clickedRowData = e.data; // Get the data of the clicked row
+  
+    setPopupFocusedRowIndex(clickedRowIndex); // Keep track of the selected row index
+    
+    console.log('Focused Row Index:', clickedRowIndex);
+    console.log('Selected Row Data:', clickedRowData);
+  };
+  
+  // Add keyboard event handler for popup
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!showLookupGrid) return;
+
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault(); // Prevent default scroll behavior
+
+        setPopupFocusedRowIndex(prevIndex => {
+          const maxIndex = filteredLookupDataSource.length - 1;
+          if (e.key === 'ArrowDown') {
+            return Math.min(prevIndex + 1, maxIndex);
+          } else {
+            return Math.max(prevIndex - 1, 0);
+          }
+        });
+      }
+
+      // Handle Enter key to select the focused row
+      if (e.key === 'Enter' && showLookupGrid) {
+        const selectedRow = filteredLookupDataSource[popupFocusedRowIndex];
+        if (selectedRow) {
+          handleRowDoubleClick({ data: selectedRow });
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showLookupGrid, filteredLookupDataSource, popupFocusedRowIndex]);
   return (
     <>
       <div style={{ width: '100%', margin: '0 auto' }}>
@@ -344,11 +396,11 @@ const handleRowDoubleClick = (e: any) => {
           setShowLookupGrid(false);
           iconRef.current = null;
         }}
-        title="Select Employee"
+        title={getLanguageByEnglish("Select Employee")}
         width={600}
         height={'max-content'}
         showCloseButton={true}
-        dragEnabled={true}
+        dragEnabled={false}
         position={() => {
           if (!iconRef.current) return;
           
@@ -389,12 +441,12 @@ const handleRowDoubleClick = (e: any) => {
         <div>
           <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
           <TextBox
-                placeholder="Search..."
+                placeholder={getLanguageByEnglish("Search...")}
                 onValueChanged={(e) => handleSearchChange(e.value)}
                 className='w-1/2'
               />
               <Button
-                text="Search"
+                text={getLanguageByEnglish("Search")}
                 onClick={() => {
                   const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
                   if (input) {
@@ -403,7 +455,7 @@ const handleRowDoubleClick = (e: any) => {
                 }}
               />
               <Button
-                text="Clear"
+                text={getLanguageByEnglish("Clear")}
                 style={{background:'red', fontWeight:600,}}
                 onClick={() => {
                   const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
@@ -417,15 +469,21 @@ const handleRowDoubleClick = (e: any) => {
           <DataGrid
             dataSource={filteredLookupDataSource}
             showBorders={true}
-            selection={{ mode: 'single' }}
+            keyExpr={PopKeyExp}
+            focusedRowIndex={popupFocusedRowIndex}
+            focusedRowEnabled={true}
+            onRowClick={handlePopupRowClick}
             onRowDblClick={handleRowDoubleClick}
-            columnAutoWidth={true}  // Auto-adjust column widths to content
-            style={{ userSelect: 'none' }} // Disable text selection in the grid
-            rtlEnabled={isRtl} // Enable RTL layout for DataGrid
+            columnAutoWidth={true}
+            style={{ userSelect: 'none' }}
+            rtlEnabled={isRtl}
+            focusStateEnabled={false} // Disable default focus handling
+            onKeyDown={(e) => e.stopPropagation()} // Prevent event bubbling
+            
           >
             {filteredLookupDataSource.length > 0 &&
               Object.keys(filteredLookupDataSource[0]).map((field) => (
-                <Column key={field} dataField={field} />
+                <Column key={field} dataField={getLanguageByEnglish(field)} />
               ))}
           </DataGrid>
         </div>

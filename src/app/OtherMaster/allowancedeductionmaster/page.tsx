@@ -285,7 +285,7 @@ const AllowanceDeduction = () => {
                   />
            </div>
            <div className="flex items-end justify-start gap-4">
-                    <Button type="button" onClick={loadSampleData}>Load Sample Data</Button>
+                    <Button type="button" onClick={loadSampleData}>{getLanguageByEnglish("Load Sample Data")}</Button>
               </div>
           </div>
           

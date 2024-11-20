@@ -135,6 +135,7 @@ const handleValuesChange = (changedValues:any) => {
         lastColumn="LeaveType"
         watchColumns={['FromDate','ToDate']}
         onValuesChange={handleValuesChange}
+        PopKeyExp="EmpCode"
       />
     </div>
   );
