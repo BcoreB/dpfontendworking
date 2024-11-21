@@ -60,7 +60,7 @@ const Dashboard: React.FC<EmpProps> = ({ employeeCode }) => {
         <>
           <div>
             <button onClick={() => toggleAccordion("attendance")} className="w-full text-left font-medium p-4 bg-gray-100 rounded-md shadow">
-              Attendance
+              {getLanguageByEnglish('Attendance')}
             </button>
             {openAccordion === "attendance" && (
               <div className="p-4 space-y-4">
@@ -73,7 +73,7 @@ const Dashboard: React.FC<EmpProps> = ({ employeeCode }) => {
 
           <div>
             <button onClick={() => toggleAccordion("documents")} className="w-full text-left font-medium p-4 bg-gray-100 rounded-md shadow">
-              Documents, Holidays, and Training
+            {getLanguageByEnglish('Documents, Holidays, and Training')}
             </button>
             {openAccordion === "documents" && (
               <div className="p-4 space-y-4">
@@ -86,7 +86,7 @@ const Dashboard: React.FC<EmpProps> = ({ employeeCode }) => {
 
           <div>
             <button onClick={() => toggleAccordion("salaryAnnouncements")} className="w-full text-left font-medium p-4 bg-gray-100 rounded-md shadow">
-              Salary and Announcements
+            {getLanguageByEnglish('Salary and Announcements')}
             </button>
             {openAccordion === "salaryAnnouncements" && (
               <div className="p-4 space-y-4">
@@ -99,7 +99,7 @@ const Dashboard: React.FC<EmpProps> = ({ employeeCode }) => {
 
           <div>
             <button onClick={() => toggleAccordion("others")} className="w-full text-left font-medium p-4 bg-gray-100 rounded-md shadow">
-              Pay Slip, Leave, and Loan Requests
+            {getLanguageByEnglish('Pay Slip, Leave, and Loan Requests')}
             </button>
             {openAccordion === "others" && (
               <div className="p-4 space-y-4">

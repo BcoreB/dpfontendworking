@@ -31,7 +31,8 @@ import EmployeeDocuments from './documentslist'
 import PopupForm from './PopupFormEmployeeDocument'
 import EmployeeContract from './contractlist'
 import EmployeeSalary from './salarypage'
-
+import Sidebar from '@/components/Menu/documentSideBar'
+import FormHeader from '@/components/Menu/formHeader'
 interface EmployeeMasterProps {
   code: string | { code: string };
 }
@@ -60,6 +61,8 @@ const EmployeeMaster = () => {
   const [selectedImageFile, setSelectedImageFile] = useState( '');
 
   const [showDialog, setShowDialog] = useState(false);
+  const [docCd, setDocCd] = useState<number>(1); // Default DocCd
+  const [docKey, setDocKey] = useState<number>(101); // Default DocKey
 
   const router = useRouter();
    // 1. Define your form.
@@ -355,21 +358,14 @@ const getFileExtension = (mime: string) => {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit( onSubmit)} className="space-y-8">
                       {/* <NasterHeader onNewButtonClicked={addNew} onSaveButtonClicked={onSubmit}/> */}
-                    <header>
-                      <div className='flex justify-between bg-purple-100'>
-                        <div>
-                          <Button  variant='ghost' type="button" onClick={addNew}>New</Button>
-                          <Button  variant='ghost'  type="submit" >Save</Button>
-                          <Button  variant='ghost'  type="button">Delete</Button>
-                  
-                        </div>
-                        <div>
-                          <Button  variant='ghost'  type="button"  >Print</Button>
-                          <Button  variant='ghost' type="button" onClick={onLogClick}>Log</Button>
-                          <Button  variant='ghost'  type="button">Draft</Button>
-                        </div>
-                      </div>
-                    </header>
+                      <FormHeader
+                        setFormValues={setFormValues}
+                        docCd={docCd}
+                        docKey={docKey}
+                        
+                        router={router}
+                        getValues={form.getValues}
+                      />
                     
                         <div className="grid grid-cols-1 lg:grid-cols-6   gap-1 py-1">
                             <div className="grid gap-1 lg:row-span-3   py-1">
