@@ -398,6 +398,7 @@ const handleRowDoubleClick = (e: any) => {
         }}
         title={getLanguageByEnglish("Select Employee")}
         width={600}
+        minHeight={250}
         height={'max-content'}
         showCloseButton={true}
         dragEnabled={false}
@@ -475,17 +476,17 @@ const handleRowDoubleClick = (e: any) => {
             onRowClick={handlePopupRowClick}
             onRowDblClick={handleRowDoubleClick}
             columnAutoWidth={true}
-            style={{ userSelect: 'none' }}
+            style={{ userSelect: 'none', minHeight: '150px' }} // Set minimum height
             rtlEnabled={isRtl}
             focusStateEnabled={false} // Disable default focus handling
             onKeyDown={(e) => e.stopPropagation()} // Prevent event bubbling
-            
           >
             {filteredLookupDataSource.length > 0 &&
               Object.keys(filteredLookupDataSource[0]).map((field) => (
                 <Column key={field} dataField={getLanguageByEnglish(field)} />
               ))}
           </DataGrid>
+
         </div>
       </Popup>
       
