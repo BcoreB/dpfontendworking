@@ -332,7 +332,6 @@ const handleOpenClick = () => {
         className={`fixed md:relative top-0 right-0  z-10 h-full transition-transform transform ${
           isSidebarOpen ? "translate-x-0" : "translate-x-full"
         } md:translate-x-0`}
-        style={{ width: "14rem" }}
       >
       <div className="right-0 flex bg-purple-100 h-full flex-col text-sm z-10 pt-2 justify-evenly items-center mt-28 md:mt-20 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
         {sections.map((section, index) => (
@@ -634,7 +633,7 @@ const handleOpenClick = () => {
     {/* Open button */}
     <div className="absolute bottom-4 right-4">
       <Button
-        text="Open"
+        text={getLanguageByEnglish("Open")}
         onClick={handleOpenClick}
         type="default"
         className="w-full max-w-xs mr-8"  // max-w-xs sets the max width to 4rem
