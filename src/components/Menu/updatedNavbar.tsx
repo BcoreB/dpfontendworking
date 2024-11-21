@@ -33,7 +33,6 @@ export default function Navbar() {
   const toggleExpand = () => {
     setIsExpanded((prev) => !prev);
   };
-  console.log(DROPDOWN_ITEM_DATA_SYSTEM)
   return (
     <main
       className={`flex ${isExpanded ? 'w-64' : 'w-20'} py-6 justify-between mt-20 items-center flex-col h-screen bg-white transition-width duration-300 ${isRtl ? 'rtl' : 'ltr'}`}

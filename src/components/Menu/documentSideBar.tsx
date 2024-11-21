@@ -281,11 +281,7 @@ const handleOpenClick = () => {
     setNotes(prevNotes => prevNotes.map((note, i) => i === index ? { ...note, expanded: !note.expanded } : note));
   };
 
-  const [isSidebarVisible, setSidebarVisible] = useState(false);
-  const toggleSidebar = () => {
-    setSidebarVisible((prev) => !prev);
-  };
-
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const handleClickOutside = (event: MouseEvent) => {
     if (sidebarRef.current) {
       const sidebarRect = sidebarRef.current.getBoundingClientRect();
@@ -294,34 +290,26 @@ const handleOpenClick = () => {
         setActiveSection(null); // Close the sidebar
       }
     }
-    if (
-      sidebarRef.current &&
-      !sidebarRef.current.contains(event.target as Node)
-    ) {
-      setSidebarVisible(false);
+    if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      setIsSidebarOpen(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
 
   
   return (
-    <>
-  
-      
-
-    <div className=" h-screen relative">
-      <div className='absolute top-32 right-1'>
-        {/* Hamburger Menu */}
-        <button
-        onClick={toggleSidebar}
-        className="block md:hidden p-2 text-gray-500 hover:text-black"
+    <div className="flex h-screen relative">
+      {/* Hamburger Menu */}
+      <button
+        onClick={() => setIsSidebarOpen((prev) => !prev)}
+        className="block md:hidden p-2 absolute top-32 text-gray-500 hover:text-black"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -338,20 +326,15 @@ const handleOpenClick = () => {
             />
           </svg>
         </button>
-      </div>
-      
       {/* Sidebar */}
-      <Transition
-        show={isSidebarVisible}
-        enter="transition ease-in-out duration-500 transform"
-        enterFrom="-translate-x-1/4 opacity-0"
-        enterTo="translate-x-0 opacity-100"
-        leave="transition ease-in-out duration-500 transform"
-        leaveFrom="translate-x-0 opacity-100"
-        leaveTo="-translate-x-1/4 opacity-0"
+      <div
+        ref={sidebarRef}
+        className={`fixed md:relative top-0 right-0  z-10 h-full transition-transform transform ${
+          isSidebarOpen ? "translate-x-0" : "translate-x-full"
+        } md:translate-x-0`}
+        style={{ width: "14rem" }}
       >
-
-        <div className="right-0 flex bg-purple-100 h-full flex-col text-sm z-10 pt-2 fixed md:relative justify-evenly items-center mt-24  md:mt-20 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
+      <div className="right-0 flex bg-purple-100 h-full flex-col text-sm z-10 pt-2 justify-evenly items-center mt-28 md:mt-20 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
         {sections.map((section, index) => (
           <button
             key={index}
@@ -363,9 +346,8 @@ const handleOpenClick = () => {
             </div>
           </button>
         ))}
-        </div>
-      </Transition>
-      
+      </div>
+      </div>
       {sections.map((section, index) => (
         <Transition
           key={index}
@@ -376,7 +358,7 @@ const handleOpenClick = () => {
           leave="transition-transform duration-300"
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
-          className="sidebar-slide absolute w-[20rem] md:w-[28rem] right-0 pr-12 h-full mt-24 shadow-lg p-4"
+          className="sidebar-slide absolute w-[18rem] md:w-[28rem] right-0 pr-12 h-full mt-24 shadow-lg p-4"
           style={{ background:'#FFF7FC',}}
         >
           <div ref={sidebarRef}>
@@ -676,8 +658,6 @@ const handleOpenClick = () => {
         </Transition>
       ))}
     </div>
-    </>
-    
   );
 };
 
