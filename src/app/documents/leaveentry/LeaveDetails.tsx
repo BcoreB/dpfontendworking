@@ -117,7 +117,7 @@ const handleValuesChange = (changedValues:any) => {
           },
           { dataField: 'Employee', caption: 'Employee' },
           { dataField: 'CPR', caption: 'CPR' },
-          { dataField: 'FromDate', caption: 'From Date', dataType: 'date' },
+          { dataField: 'FromDate', caption: 'From Date', dataType: 'date', },
           { dataField: 'ToDate', caption: 'To Date', dataType: 'date' },
           { dataField: 'NoDays', caption: 'No Days', disabled:true ,formula: 'ToDate - FromDate',  },
           { dataField: 'Entitled', caption: 'Entitled' },

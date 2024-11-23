@@ -333,6 +333,19 @@ const handleRowDoubleClick = (e: any) => {
     return () => window.removeEventListener('resize', updateIsMobile);
   }, []);
 
+
+  // To change the date field format after picking a value from calender
+
+  const handleCellPrepared = (e: any) => {
+    if (e.column && e.column.dataType === 'date' && e.value) {
+      // Format the date to dd/MM/yyyy
+      const formattedDate = new Date(e.value).toLocaleDateString('en-GB');
+      // Update the cell content with the formatted date
+      e.cellElement.textContent = formattedDate;
+    }
+  };
+  
+
   return (
     <>
       <div style={{ width: '100%', margin: '0 auto' }}>
@@ -342,6 +355,7 @@ const handleRowDoubleClick = (e: any) => {
           keyExpr="id"
           onEditorPreparing={handleEditorPreparing}
           columnHidingEnabled={isMobile}
+          onCellPrepared={handleCellPrepared} // Add this for custom cell formatting
           repaintChangesOnly={true}
           rtlEnabled={isRtl} // Enable RTL layout for DataGrid
         >
@@ -359,6 +373,13 @@ const handleRowDoubleClick = (e: any) => {
                 dataType={isDateColumn ? 'date' : isTimeColumn ? 'datetime' : undefined}
                 allowEditing={!column.disabled}
                 editorOptions={
+                  isDateColumn
+                  ? {
+                      displayFormat: 'dd/MM/yyyy', // Display only the date
+                      dateSerializationFormat: 'yyyy-MM-dd', // Serialization ensures no time is included
+                      pickerType: 'calendar', // Use calendar for selection
+                    }
+                  : 
                   isTimeColumn
                     ? {
                         type: 'datetime',
