@@ -320,6 +320,19 @@ const handleRowDoubleClick = (e: any) => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [showLookupGrid, filteredLookupDataSource, popupFocusedRowIndex]);
+
+  const [isMobile, setIsMobile] = useState(false);
+  // Check if the device is mobile
+  useEffect(() => {
+    const updateIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768); // Adjust breakpoint as needed
+    };
+
+    updateIsMobile();
+    window.addEventListener('resize', updateIsMobile);
+    return () => window.removeEventListener('resize', updateIsMobile);
+  }, []);
+
   return (
     <>
       <div style={{ width: '100%', margin: '0 auto' }}>
@@ -328,7 +341,7 @@ const handleRowDoubleClick = (e: any) => {
           showBorders={true}
           keyExpr="id"
           onEditorPreparing={handleEditorPreparing}
-          columnHidingEnabled={true}
+          columnHidingEnabled={isMobile}
           repaintChangesOnly={true}
           rtlEnabled={isRtl} // Enable RTL layout for DataGrid
         >

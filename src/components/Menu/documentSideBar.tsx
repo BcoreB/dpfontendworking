@@ -11,6 +11,7 @@ import {SelectBox} from 'devextreme-react'
 import { sampleDocListData } from './data/docListData';
 import ComboBox from '../ui/combobox';
 import { getLanguageByEnglish } from '@/utils/languages';
+import { useDirection } from '@/app/DirectionContext';
 interface Section {
   name: string;
   content: string;
@@ -302,36 +303,50 @@ const handleOpenClick = () => {
     };
   }, []);
 
+  const { isRtl } = useDirection();
+  const [isMobile, setIsMobile] = useState(false);
+  // Check if the device is mobile
+  useEffect(() => {
+    const updateIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768); // Adjust breakpoint as needed
+    };
 
-  
+    updateIsMobile();
+    window.addEventListener('resize', updateIsMobile);
+    return () => window.removeEventListener('resize', updateIsMobile);
+  }, []);
+
+
+
   return (
     <div className="flex h-screen relative">
       {/* Hamburger Menu */}
       <button
         onClick={() => setIsSidebarOpen((prev) => !prev)}
-        className="block md:hidden p-2 absolute top-32 text-gray-500 hover:text-black"
+        className="block md:hidden p-2 absolute top-32 right-2 text-gray-500 hover:text-black"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
       {/* Sidebar */}
       <div
         ref={sidebarRef}
-        className={`fixed md:relative top-0 right-0  z-10 h-full transition-transform transform ${
-          isSidebarOpen ? "translate-x-0" : "translate-x-full"
-        } md:translate-x-0`}
+        className={`fixed top-0 right-0 z-10 h-full transition-transform transform ${
+          isSidebarOpen ? "translate-x-0" : "translate-x-10"
+        } md:translate-x-0 md:relative bg-gray-100 shadow-lg`}
+        style={{ width: "2rem" }}
       >
       <div className="right-0 flex bg-purple-100 h-full flex-col text-sm z-10 pt-2 justify-evenly items-center mt-28 md:mt-20 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
         {sections.map((section, index) => (
@@ -352,12 +367,12 @@ const handleOpenClick = () => {
           key={index}
           show={activeSection === index}
           enter="transition-transform duration-300"
-          enterFrom="transform translate-x-full"
+          enterFrom="transform  md:translate-x-full"
           enterTo="transform translate-x-0"
           leave="transition-transform duration-300"
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
-          className="sidebar-slide absolute w-[18rem] md:w-[28rem] right-0 pr-12 h-full mt-24 shadow-lg p-4"
+          className="sidebar-slide absolute w-[18rem] md:w-[28rem] right-0 h-full mt-24 shadow-lg p-4"
           style={{ background:'#FFF7FC',}}
         >
           <div ref={sidebarRef}>
@@ -394,12 +409,13 @@ const handleOpenClick = () => {
         <DataGrid
             dataSource={referencesData[selectedDataKey]} // Use the selected key to get the right data
             showBorders={true}
+            columnHidingEnabled={isMobile}
             keyExpr={selectedDataKey === 'a' ? "DocNo" : "DocumentID"} // Update keyExpr based on selected data
             searchPanel={{ visible: true, width: 365, placeholder: getLanguageByEnglish('Search references...') }}
             selection={{ mode: 'multiple', showCheckBoxesMode: 'always' }} // Enable multi-row selection with checkboxes
             columnAutoWidth={true} // Auto-adjust column width
             onSelectionChanged={(e) => setSelectedRowsData(e.selectedRowsData)} // Store the selected rows
-            rtlEnabled={true} // Enable RTL layout for DataGrid
+            rtlEnabled={isRtl} // Enable RTL layout for DataGrid
           />
     </div>
     <button
@@ -431,7 +447,8 @@ const handleOpenClick = () => {
             showBorders={true}
             keyExpr="DocNo" // Unique key for the rows
             columnAutoWidth={true} // Auto-adjust column width
-            rtlEnabled={true} // Enable RTL layout for DataGrid
+            columnHidingEnabled={isMobile}
+            rtlEnabled={isRtl} // Enable RTL layout for DataGrid
             columns={[
                 { dataField: 'DocCd', caption: getLanguageByEnglish('DocCd') },
                 { dataField: 'CompID', caption: getLanguageByEnglish('CompID') },
@@ -626,7 +643,8 @@ const handleOpenClick = () => {
         onSelectionChanged={onRowSelectionChanged}  // Single click to select
         onRowDblClick={onRowDoubleClick}  // Double-click event to alert row data
         style={{ userSelect: 'none' }} // Disable text selection in the grid
-        rtlEnabled={true} // Enable RTL layout for DataGrid
+        rtlEnabled={isRtl} // Enable RTL layout for DataGrid
+        columnHidingEnabled={isMobile}
       />
     </div>
 
