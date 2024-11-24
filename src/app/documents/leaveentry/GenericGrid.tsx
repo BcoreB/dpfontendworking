@@ -354,8 +354,8 @@ const handleRowDoubleClick = (e: any) => {
           showBorders={true}
           keyExpr="id"
           onEditorPreparing={handleEditorPreparing}
-          // columnHidingEnabled={isMobile}
-          onCellPrepared={handleCellPrepared} // Add this for custom cell formatting
+          columnHidingEnabled={isMobile}
+          // onCellPrepared={handleCellPrepared} // Add this for custom cell formatting
           repaintChangesOnly={true}
           rtlEnabled={isRtl} // Enable RTL layout for DataGrid
         >
