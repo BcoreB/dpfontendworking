@@ -89,6 +89,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
         <div className="hidden md:flex items-center gap-6 md:w-3/6">
           <div className="relative flex-1">
             <input
+              tabIndex={-1}
               type="text"
               className="bg-[#EAF6FC] px-4 py-2 border-0 w-full max-w-full shadow-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder={getLanguageByEnglish("Search for an item")}

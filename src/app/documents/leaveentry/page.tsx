@@ -117,7 +117,7 @@ const LeaveEntry = () => {
     <>
         {isClient ?
     <div className="w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8">
-      <div className="absolute top-0 right-0 z-5">
+      <div className="absolute top-0 right-0 z-5" >
         <Sidebar docCd={docCd} docKey={docKey} form={form} />
       </div>
 
@@ -125,13 +125,19 @@ const LeaveEntry = () => {
         <div className="border-solid">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(() => {})} className="space-y-8">
-              <DocumentHeader
-                setFormValues={setFormValues}
-                docCd={docCd}
-                docKey={docKey}
-                router={router}
-                getValues={form.getValues}
-              />
+              <div onKeyDown={(e) => {
+                  if (e.key === "Tab") {
+                    e.preventDefault(); // Prevent Tab navigation
+                  }
+                }}>
+                <DocumentHeader
+                  setFormValues={setFormValues}
+                  docCd={docCd}
+                  docKey={docKey}
+                  router={router}
+                  getValues={form.getValues}
+                />
+              </div>
               <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 py-1">
                 <div className="grid gap-1 py-1 lg:col-span-1">
                   <DPInput
