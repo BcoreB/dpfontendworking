@@ -336,14 +336,14 @@ const handleRowDoubleClick = (e: any) => {
 
   // To change the date field format after picking a value from calender
 
-  const handleCellPrepared = (e: any) => {
-    if (e.column && e.column.dataType === 'date' && e.value) {
-      // Format the date to dd/MM/yyyy
-      const formattedDate = new Date(e.value).toLocaleDateString('en-GB');
-      // Update the cell content with the formatted date
-      e.cellElement.textContent = formattedDate;
-    }
-  };
+  // const handleCellPrepared = (e: any) => {
+  //   if (e.column && e.column.dataType === 'date' && e.value) {
+  //     // Format the date to dd/MM/yyyy
+  //     const formattedDate = new Date(e.value).toLocaleDateString('en-GB');
+  //     // Update the cell content with the formatted date
+  //     e.cellElement.textContent = formattedDate;
+  //   }
+  // };
   
 
   return (
@@ -354,7 +354,7 @@ const handleRowDoubleClick = (e: any) => {
           showBorders={true}
           keyExpr="id"
           onEditorPreparing={handleEditorPreparing}
-          columnHidingEnabled={isMobile}
+          // columnHidingEnabled={isMobile}
           onCellPrepared={handleCellPrepared} // Add this for custom cell formatting
           repaintChangesOnly={true}
           rtlEnabled={isRtl} // Enable RTL layout for DataGrid
