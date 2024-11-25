@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./form";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
@@ -24,7 +24,7 @@ const DPComboBox: React.FC<DPComboBoxPickerProps> = ({
   disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1); // No item highlighted initially
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
     if (disabled) return;
@@ -44,10 +44,11 @@ const DPComboBox: React.FC<DPComboBoxPickerProps> = ({
         break;
       case "Enter":
         event.preventDefault();
-        if (isOpen) {
+        if (isOpen && highlightedIndex >= 0) {
           const selectedItem = data[highlightedIndex];
           if (selectedItem) {
             onValueChange(name, selectedItem.value);
+            setHighlightedIndex(-1); // Reset highlight after selection
             setIsOpen(false);
           }
         }
@@ -62,7 +63,7 @@ const DPComboBox: React.FC<DPComboBoxPickerProps> = ({
 
   const handleSelect = (value: string, index: number) => {
     onValueChange(name, value);
-    setHighlightedIndex(index);
+    
     setIsOpen(false);
   };
 
