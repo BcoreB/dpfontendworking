@@ -8,9 +8,10 @@ import { useDirection } from '@/app/DirectionContext';
 interface AttendanceTableProps {
   employeeCode: string;
   attendanceEntries: { date: string; in: string; out: string }[];
+  isMobile:boolean;
 }
 
-const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attendanceEntries }) => {
+const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attendanceEntries, isMobile }) => {
 
   const { isRtl } = useDirection();
 
@@ -66,6 +67,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
         rtlEnabled={isRtl}
         height={500}
         columnAutoWidth={true}
+        columnHidingEnabled={isMobile}
         noDataText=""
         style={{
           border: 'none',

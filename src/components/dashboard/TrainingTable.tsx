@@ -34,10 +34,16 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
     setRows(employeeData);
   }, [employeeCode]);
 
+  const formatDate = (dateString: string): string => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+  };
   const handleRequestTraining = () => {
     const today = new Date().toISOString().split('T')[0];
+    const formattedDate = formatDate(today); // Format the date
     const newRow: TrainingData = {
-      date: today,
+
+      date: formattedDate,
       training: selectedTraining,
       attenddate: '',
     };
@@ -128,12 +134,14 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
           <TextField label={ getLanguageByEnglish("Pref. Date")} type="date" value={prefDate} onChange={(e) => setPrefDate(e.target.value)} fullWidth sx={{ mt: 2, mb: 2 }} InputLabelProps={{ shrink: true }} />
           <TextField label={ getLanguageByEnglish("Reason")} value={reason} onChange={(e) => setReason(e.target.value)} fullWidth sx={{ mb: 2 }} />
 
-          <Button variant="contained" onClick={handleRequestTraining} sx={{ mt: 2, color: 'black' }} disabled={!selectedTraining || !prefDate || !reason}>
-          { getLanguageByEnglish('Save')}
-          </Button>
-          <Button variant="outlined" onClick={handleCloseModal} sx={{ mt: 2, ml: 2 }}>
-          { getLanguageByEnglish('Cancel')}
-          </Button>
+          <div className='flex gap-5 '>
+            <Button variant="contained" onClick={handleRequestTraining} sx={{ mt: 2, color: 'black' }} disabled={!selectedTraining || !prefDate || !reason}>
+            { getLanguageByEnglish('Save')}
+            </Button>
+            <Button variant="outlined" onClick={handleCloseModal} sx={{ mt: 2, ml: 2 }}>
+            { getLanguageByEnglish('Cancel')}
+            </Button>
+          </div>
         </Box>
       </Modal>
     </div>

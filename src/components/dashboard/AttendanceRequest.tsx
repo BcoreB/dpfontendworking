@@ -25,10 +25,11 @@ import requestData from '../Menu/data/requestData';
 import { getLanguageByEnglish } from '@/utils/languages';
 interface RequestTablesProps {
   employeeCode: string;
+  isMobile:boolean;
 }
 import { useDirection } from '@/app/DirectionContext';
 
-const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
+const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode, isMobile }) => {
 
   const { isRtl } = useDirection();
   
@@ -41,7 +42,7 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
     action: 'Cancel',
     reason: '',
   });
-
+  
   const [promotionData, setPromotionData] = useState(promotion);
   const [promotionModalOpen, setPromotionModalOpen] = useState(false);
   const [promotionFormData, setPromotionFormData] = useState({
@@ -66,20 +67,28 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
     setPromotionFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const formatDate = (dateString: string): string => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+  };
+  
   const handleSaveAttendance = () => {
     const { dateTime, action, reason } = attendanceFormData;
     const [date, time] = dateTime.split('T');
-    const newEntry = { date, time, action, reason, status: 'Pending' };
+    const formattedDate = formatDate(date); // Format the date
+    const newEntry = { date: formattedDate, time, action, reason, status: 'Pending' };
     setAttendanceData(prev => [newEntry, ...prev]);
     closeAttendanceModal();
   };
-
+  
   const handleSavePromotion = () => {
+    const { date, toPosition, reason, status } = promotionFormData;
+    const formattedDate = formatDate(date); // Format the date
     const newEntry = {
-      date: promotionFormData.date,
-      positionTo: promotionFormData.toPosition,
-      reason: promotionFormData.reason,
-      status: promotionFormData.status,
+      date: formattedDate,
+      positionTo: toPosition,
+      reason,
+      status,
     };
     setPromotionData(prev => [newEntry, ...prev]);
     closePromotionModal();
@@ -96,6 +105,7 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
             showBorders={false}
             rtlEnabled={isRtl}
             rowAlternationEnabled={true}
+            columnHidingEnabled={isMobile}
           >
            
             <Column dataField="date" caption={getLanguageByEnglish("Date")} />
@@ -164,6 +174,7 @@ const RequestTables: React.FC<RequestTablesProps> = ({ employeeCode }) => {
             showBorders={false}
             rowAlternationEnabled={true}
             rtlEnabled={isRtl}
+            columnHidingEnabled={isMobile}
           >
             <Column dataField="date" caption={getLanguageByEnglish("Date")} />
             <Column dataField="positionTo" caption={getLanguageByEnglish("Position To")} />

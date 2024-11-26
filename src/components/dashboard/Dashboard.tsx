@@ -65,8 +65,8 @@ const Dashboard: React.FC<EmpProps> = ({ employeeCode }) => {
             {openAccordion === "attendance" && (
               <div className="p-4 space-y-4">
                 <Attendance onAddEntry={handleAddEntry} />
-                <AttendanceTable attendanceEntries={attendanceEntries} employeeCode={safeEmployeeCode} />
-                <RequestTables employeeCode={safeEmployeeCode} />
+                <AttendanceTable attendanceEntries={attendanceEntries} employeeCode={safeEmployeeCode} isMobile={isMobile} />
+                <RequestTables employeeCode={safeEmployeeCode} isMobile={isMobile} />
               </div>
             )}
           </div>
@@ -115,8 +115,8 @@ const Dashboard: React.FC<EmpProps> = ({ employeeCode }) => {
           {/* Main Tables Section for Desktop */}
           <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
             <div className="w-full md:w-1/3"><Attendance onAddEntry={handleAddEntry} /></div>
-            <div className="w-full md:w-1/3"><AttendanceTable attendanceEntries={attendanceEntries} employeeCode={safeEmployeeCode} /></div>
-            <div className="w-full md:w-1/3"><RequestTables employeeCode={safeEmployeeCode} /></div>
+            <div className="w-full md:w-1/3"><AttendanceTable attendanceEntries={attendanceEntries} employeeCode={safeEmployeeCode} isMobile={isMobile}/></div>
+            <div className="w-full md:w-1/3"><RequestTables employeeCode={safeEmployeeCode} isMobile={isMobile} /></div>
           </div>
 
           <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">

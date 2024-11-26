@@ -25,6 +25,7 @@ interface GridProps<T> {
   watchColumns?: (keyof T)[];  // Accept new watchColumns prop
   onValuesChange?: (changes: { field: keyof T; currentValues: any[] }) => void; // Add this line
   PopKeyExp?: keyof T | null; // Add keyExp prop
+  GridKeyExp?:keyof T | null;
 }
 
 interface CellInfo<T> {
@@ -40,6 +41,7 @@ const GenericGrid = <T extends {RowId:number }>({
   onValueSelect,
   lastColumn,
   PopKeyExp = null, // Default value
+  GridKeyExp = null,
   onValuesChange,
   watchColumns = [], // Initialize watchColumns prop
 }: GridProps<T>) => {
@@ -50,6 +52,12 @@ const GenericGrid = <T extends {RowId:number }>({
       // Add any logic needed for PopKeyExp
     }
   }, [PopKeyExp]);
+  useEffect(() => {
+    if (GridKeyExp) {
+      console.log('GridKeyExp is:', GridKeyExp);
+      // Add any logic needed for PopKeyExp
+    }
+  }, [GridKeyExp]);
 
   const [lookupDataSource, setLookupDataSource] = useState<T[]>([]);
   const [filteredLookupDataSource, setFilteredLookupDataSource] = useState<T[]>([]);
@@ -273,9 +281,45 @@ const handleRowDoubleClick = (e: any) => {
     setDataSource(updatedData);
     onValueSelect(updatedData);
 
+    // Close the popup
     setShowLookupGrid(false);
+
+    // Move focus to the next editable column
+    const currentColumnIndex = columns.findIndex(col => col.dataField === mappedColumn.dataField);
+    const nextColumn = columns.slice(currentColumnIndex + 1).find(col => !col.disabled);
+
+    if (nextColumn) {
+      const gridInstance = e.component; // Get the grid instance
+    
+      if (!gridInstance) {
+        console.error('Grid instance is undefined');
+        return;
+      }
+    
+      const nextColumnIndex = columns.indexOf(nextColumn);
+      if (nextColumnIndex === -1) {
+        console.error('Invalid nextColumn index');
+        return;
+      }
+    
+      const cellElement = gridInstance.getCellElement(selectedRowIndex, nextColumnIndex);
+      if (!cellElement) {
+        console.error('Cell element is undefined');
+        return;
+      }
+    
+      gridInstance.focus(cellElement);
+    }
   }
 };
+
+// Handle the focusedCellChanging event to enable smooth focus movement
+const handleFocusedCellChanging = (e: any) => {
+  if (e.newRowIndex !== e.rowIndex || e.newColumnIndex !== e.columnIndex) {
+    e.isHighlighted = true;
+  }
+};
+
 
   const { isRtl } = useDirection();
 
@@ -345,14 +389,40 @@ const handleRowDoubleClick = (e: any) => {
   //   }
   // };
   
-
+  const deleteFirstRowAndAddNewRow = () => {
+    if (dataSource.length > 0) {
+      // Remove the first row
+      const updatedData = dataSource.slice(1);
+  
+      // Add a new empty row if not already present
+      const newId = updatedData.length > 0 ? Math.max(...updatedData.map((item) => item.RowId)) + 1 : 1;
+      const newRow: Partial<T> = { RowId: newId } as Partial<T>;
+  
+      columns.forEach((column) => {
+        newRow[column.dataField] =
+          column.dataField === 'RowId' ? (newId as T[keyof T]) : undefined as T[keyof T];
+      });
+  
+      // Update the data source
+      const finalData = [...updatedData, newRow as T];
+      setDataSource(finalData);
+      onValueSelect(finalData);
+    }
+  };
+  
+  // Hook this function to a delete button or an action triggering the deletion
+  const handleDeleteFirstRow = () => {
+    deleteFirstRowAndAddNewRow();
+  };
+  
   return (
     <>
       <div style={{ width: '100%', margin: '0 auto' }}>
         <DataGrid
           dataSource={dataSource}
           showBorders={true}
-          keyExpr="id"
+          keyExpr={GridKeyExp}
+          onRowRemoving={handleDeleteFirstRow}
           onEditorPreparing={handleEditorPreparing}
           columnHidingEnabled={isMobile}
           // onCellPrepared={handleCellPrepared} // Add this for custom cell formatting

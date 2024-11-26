@@ -56,19 +56,25 @@ const LeaveTable = () => {
   const handleSubmit = () => {
     // Close the modal
     handleCloseModal();
-
+  
+    // Helper function to format date to dd-mm-yyyy
+    const formatDate = (dateString) => {
+      const [year, month, day] = dateString.split('-');
+      return `${day}-${month}-${year}`;
+    };
+  
     // Add form data to rows in the table with default status 'Pending'
     setRows((prevRows) => [
       ...prevRows,
       {
         type: formData.type,
-        fromDate: formData.fromDate,
-        toDate: formData.toDate,
+        fromDate: formatDate(formData.fromDate),
+        toDate: formatDate(formData.toDate),
         remarks: formData.remarks,
-        status: 'Pending'
-      }
+        status: 'Pending',
+      },
     ]);
-
+  
     // Clear form data
     setFormData({
       type: '',
@@ -76,9 +82,10 @@ const LeaveTable = () => {
       toDate: '',
       halfDay: false,
       reason: '',
-      remarks: ''
+      remarks: '',
     });
   };
+  
   const { isRtl } = useDirection();
   return (
     <div className="bg-white shadow-md rounded-md">
@@ -180,14 +187,19 @@ const LeaveTable = () => {
       <Dialog open={isModalOpen} onClose={handleCloseModal}>
         <DialogTitle>{ getLanguageByEnglish('Leave Request')}</DialogTitle>
         <DialogContent>
-          <FormControl fullWidth margin="dense">
-            <InputLabel>{ getLanguageByEnglish('Type')}</InputLabel>
-            <Select name="type" value={formData.type} onChange={handleChange}>
-              <MenuItem value="Sick Leave">{ getLanguageByEnglish('Sick Leave')}</MenuItem>
-              <MenuItem value="Casual Leave">{ getLanguageByEnglish('Casual Leave')}</MenuItem>
-              <MenuItem value="Paid Leave">{ getLanguageByEnglish('Paid Leave')}</MenuItem>
-            </Select>
-          </FormControl>
+          <TextField
+            name="type"
+            label={getLanguageByEnglish('Type')}
+            select
+            value={formData.type}
+            onChange={handleChange}
+            fullWidth
+            margin="dense"
+          >
+            <MenuItem value="Sick Leave">{getLanguageByEnglish('Sick Leave')}</MenuItem>
+            <MenuItem value="Casual Leave">{getLanguageByEnglish('Casual Leave')}</MenuItem>
+            <MenuItem value="Paid Leave">{getLanguageByEnglish('Paid Leave')}</MenuItem>
+          </TextField>
           <TextField
             name="fromDate"
             label={ getLanguageByEnglish("From Date")}
