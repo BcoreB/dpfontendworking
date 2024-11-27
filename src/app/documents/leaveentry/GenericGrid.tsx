@@ -8,6 +8,7 @@ import { DateBox } from 'devextreme-react/date-box';
 import Button from 'devextreme-react/cjs/button';
 import {getLanguageByEnglish} from '@/utils/languages'
 import { useDirection } from '@/app/DirectionContext';
+import { confirm } from 'devextreme/ui/dialog'; // Import confirm dialog from DevExtreme
 interface GridProps<T> {
   columns: {
     dataField: keyof T;
@@ -285,33 +286,29 @@ const handleRowDoubleClick = (e: any) => {
     setShowLookupGrid(false);
 
     // Move focus to the next editable column
-    const currentColumnIndex = columns.findIndex(col => col.dataField === mappedColumn.dataField);
-    const nextColumn = columns.slice(currentColumnIndex + 1).find(col => !col.disabled);
+    const gridInstance = e.component; // Get the grid instance
+    if (gridInstance) {
+      const currentColumnIndex = columns.findIndex(col => col.dataField === mappedColumn.dataField);
+      const nextColumn = columns.slice(currentColumnIndex + 1).find(col => !col.disabled);
 
-    if (nextColumn) {
-      const gridInstance = e.component; // Get the grid instance
-    
-      if (!gridInstance) {
-        console.error('Grid instance is undefined');
-        return;
+      if (nextColumn) {
+        const nextColumnIndex = columns.indexOf(nextColumn);
+
+        setTimeout(() => {
+          const cellElement = gridInstance.getCellElement(selectedRowIndex, nextColumnIndex);
+          if (cellElement) {
+            gridInstance.focus(cellElement); // Focus on the next column
+          }
+        }, 100); // Small timeout ensures the grid has updated
+      } else {
+        console.warn('No editable column found after the current one.');
       }
-    
-      const nextColumnIndex = columns.indexOf(nextColumn);
-      if (nextColumnIndex === -1) {
-        console.error('Invalid nextColumn index');
-        return;
-      }
-    
-      const cellElement = gridInstance.getCellElement(selectedRowIndex, nextColumnIndex);
-      if (!cellElement) {
-        console.error('Cell element is undefined');
-        return;
-      }
-    
-      gridInstance.focus(cellElement);
     }
   }
 };
+
+
+
 
 // Handle the focusedCellChanging event to enable smooth focus movement
 const handleFocusedCellChanging = (e: any) => {
@@ -389,8 +386,9 @@ const handleFocusedCellChanging = (e: any) => {
   //   }
   // };
   
+
   const deleteFirstRowAndAddNewRow = () => {
-    if (dataSource.length > 0) {
+    if (dataSource.length <= 1) {
       // Remove the first row
       const updatedData = dataSource.slice(1);
   
@@ -413,8 +411,25 @@ const handleFocusedCellChanging = (e: any) => {
   // Hook this function to a delete button or an action triggering the deletion
   const handleDeleteFirstRow = () => {
     deleteFirstRowAndAddNewRow();
-  };
+  };;
   
+
+  // const handleFocusedCellChanged = (e: any) => {
+  //   const { rowIndex, columnIndex, component } = e;
+
+  //   if (rowIndex !== undefined && columnIndex !== undefined) {
+  //     // Check if the column is editable
+  //     const column = columns[columnIndex];
+  //     if (!column.disabled) {
+  //       // Activate edit mode for the focused cell
+  //       if (component && typeof component.editCell === 'function') {
+  //         component.editCell(rowIndex, columnIndex);
+  //       } else {
+  //         console.error('Grid component is undefined or editCell is not a function.');
+  //     }
+  //     }
+  //   }
+  // };
   return (
     <>
       <div style={{ width: '100%', margin: '0 auto' }}>
@@ -422,7 +437,7 @@ const handleFocusedCellChanging = (e: any) => {
           dataSource={dataSource}
           showBorders={true}
           keyExpr={GridKeyExp}
-          onRowRemoving={handleDeleteFirstRow}
+          onRowRemoving={handleDeleteFirstRow}// Add the row removing handler
           onEditorPreparing={handleEditorPreparing}
           columnHidingEnabled={isMobile}
           // onCellPrepared={handleCellPrepared} // Add this for custom cell formatting
