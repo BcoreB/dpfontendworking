@@ -65,6 +65,7 @@ const GenericGrid = <T extends {RowId:number }>({
   const [showLookupGrid, setShowLookupGrid] = useState<boolean>(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
   const iconRef = useRef<HTMLElement | null>(null);
+  const gridRef = useRef(null); // Ref for the main grid instance
 
   const [popupFocusedRowIndex, setPopupFocusedRowIndex] = useState<number>(0);
 
@@ -300,25 +301,35 @@ const handleRowDoubleClick = (e: any) => {
     // Close the popup
     setShowLookupGrid(false);
 
-    // Move focus to the next editable column
-    const gridInstance = e.component; // Get the grid instance
-    if (gridInstance) {
-      const currentColumnIndex = columns.findIndex(col => col.dataField === mappedColumn.dataField);
-      const nextColumn = columns.slice(currentColumnIndex + 1).find(col => !col.disabled);
-
-      if (nextColumn) {
-        const nextColumnIndex = columns.indexOf(nextColumn);
-
-        setTimeout(() => {
-          const cellElement = gridInstance.getCellElement(selectedRowIndex, nextColumnIndex);
-          if (cellElement) {
-            gridInstance.focus(cellElement); // Focus on the next column
-          }
-        }, 100); // Small timeout ensures the grid has updated
-      } else {
-        console.warn('No editable column found after the current one.');
-      }
+    // Focus on the triggering column
+    const triggeringColumnIndex = columns.findIndex(
+      (col) => col.dataField === mappedColumn.dataField
+    );
+    if (triggeringColumnIndex === -1) {
+      console.warn("Triggering column index not found.");
+      return;
     }
+
+    console.log("Triggering column index:", triggeringColumnIndex);
+
+    // Use ref to access the grid instance
+    const gridInstance = gridRef.current;
+    if (!gridInstance) {
+      console.error("Grid instance not available.");
+      return;
+    }
+
+    // Delay to ensure the grid is updated before focusing
+    setTimeout(() => {
+      try {
+        gridInstance.editCell(selectedRowIndex, triggeringColumnIndex);
+        console.log(
+          `Focused and editing cell at row ${selectedRowIndex}, column ${triggeringColumnIndex}.`
+        );
+      } catch (error) {
+        console.error("Error focusing on the cell:", error);
+      }
+    }, 100);
   }
 };
 
@@ -627,6 +638,7 @@ const handleFocusedCellChanging = (e: any) => {
             focusedRowEnabled={true}
             onRowClick={handlePopupRowClick}
             onRowDblClick={handleRowDoubleClick}
+            ref={gridRef} // Attach the ref to the grid
             columnAutoWidth={true}
             style={{ userSelect: 'none', minHeight: '150px' }} // Set minimum height
             rtlEnabled={isRtl}
