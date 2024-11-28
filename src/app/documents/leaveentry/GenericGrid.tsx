@@ -154,6 +154,7 @@ const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
       }
 
       if (args.event.key === 'Enter' && e.dataField === lastColumn) {
+        console.log(dataSource);
         addNewRow();
       }
     };
@@ -488,6 +489,7 @@ const handleFocusedCellChanging = (e: any) => {
                       displayFormat: 'dd/MM/yyyy', // Display only the date
                       dateSerializationFormat: 'yyyy-MM-dd', // Serialization ensures no time is included
                       pickerType: 'calendar', // Use calendar for selection
+                      format: 'dd/MM/yyyy'
                     }
                   : 
                   isTimeColumn
@@ -504,7 +506,13 @@ const handleFocusedCellChanging = (e: any) => {
                 cellRender={(cellInfo: CellInfo<T>) => {
                   if (isDateColumn) {
                     return <span>
-                    {cellInfo.value ? new Intl.DateTimeFormat('en-US').format(new Date(cellInfo.value)) : ''}
+                      {cellInfo.value
+                        ? new Intl.DateTimeFormat('en-GB', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                          }).format(new Date(cellInfo.value))
+                        : ''}
                   </span>;
                   }else if (isTimeColumn) {
                     return (
