@@ -69,22 +69,24 @@ const GenericGrid = <T extends {RowId:number }>({
   const [popupFocusedRowIndex, setPopupFocusedRowIndex] = useState<number>(0);
 
 
-const addNewRow = () => {
+  const addNewRow = () => {
     const isEmptyRowPresent = dataSource.some((row) =>
-      columns.some((column) => 
-        !column.disabled && column.dataField !== 'id' && (row[column.dataField] === null || row[column.dataField] === '')
+      columns.some(
+        (column) =>
+          !column.disabled &&
+          column.dataField !== 'RowId' &&
+          (row[column.dataField] === null || row[column.dataField] === '')
       )
     );
 
     if (!isEmptyRowPresent) {
       const newId = dataSource.length > 0 ? Math.max(...dataSource.map((item) => item.RowId)) + 1 : 1;
-      
-      
-      // Dynamically set up initial values for each column in the new row
       const newRow: Partial<T> = { RowId: newId } as Partial<T>;
+
       columns.forEach((column) => {
-        newRow[column.dataField] = column.dataField === 'RowId' ? (newId as T[keyof T]) : undefined as T[keyof T];
+        newRow[column.dataField] = column.dataField === 'RowId' ? (newId as T[keyof T]) : undefined;
       });
+
       const updatedData = [...dataSource, newRow as T];
       setDataSource(updatedData);
       onValueSelect(updatedData);
@@ -113,25 +115,37 @@ const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
     const isDateColumn = columns.find(
       (column) => column.dataField === e.dataField && column.dataType === 'date'
     );
-
+    if (isDateColumn) {
+      e.editorOptions.displayFormat = 'dd/MM/yyyy';
+      e.editorOptions.onValueChanged = (args: any) => {
+        e.setValue(new Date(args.value));
+      };
+    }
     e.editorOptions.onKeyDown = (args: { event: KeyboardEvent }) => {
       const currentIndex = selectedRowIndex !== null ? selectedRowIndex : 0;
 
       if (args.event.key === 'ArrowDown') {
         if (isLookupColumn) {
-          if (e.row) setSelectedRowIndex(e.row.rowIndex);
-          setLookupDataSource(isLookupColumn?.dataSource || []);
-          setFilteredLookupDataSource(isLookupColumn?.dataSource || []);
+          if (e.row) {
+            setSelectedRowIndex(e.row.rowIndex ?? 0); // Ensure rowIndex is valid
+          }
+          const dataSource = isLookupColumn.dataSource ?? []; // Default to an empty array
+          setLookupDataSource(dataSource);
+          setFilteredLookupDataSource(dataSource);
           setShowLookupGrid(true);
         } else if (isDateColumn) {
-          const dateBoxInstance = e.editorElement?.querySelector('.dx-datebox')?.dxDateBox;
-          dateBoxInstance?.open();
+          const dateBoxElement = e.editorElement?.querySelector('.dx-datebox');
+          if (dateBoxElement && 'dxDateBox' in dateBoxElement) {
+            const dateBoxInstance = (dateBoxElement as any).dxDateBox; // Type assertion to access dxDateBox
+            dateBoxInstance?.open(); // Safely call `open` if it exists
+          }
         } else {
-          const nextIndex = Math.min(currentIndex + 1, dataSource.length - 1);
+          const nextIndex = Math.min((currentIndex ?? 0) + 1, (dataSource?.length ?? 1) - 1); // Ensure valid indices
           setSelectedRowIndex(nextIndex);
         }
-        args.event.preventDefault();
+        args.event.preventDefault(); // Prevent default action for the ArrowDown key
       }
+      
 
       if (args.event.key === 'ArrowUp') {
         const prevIndex = Math.max(currentIndex - 1, 0);
@@ -155,27 +169,27 @@ const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
 //   if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
 //     e.editorOptions.onKeyDown = (args: any) => {
 //       if (args.event.key === 'Enter') {
-//         const updatedData = [...dataSource];
-//         const currentRow = updatedData[e.row.rowIndex];
+      //   const updatedData = [...dataSource];
+      //   const currentRow = updatedData[e.row.rowIndex];
 
-//         if (formulaColumns.length > 0) {
-//           // Call executeFormulaColumns for all formula columns
-//           formulaColumns.forEach((formulaColumn) => {
-//             const calculatedValue = executeFormulaColumns([formulaColumn], updatedData, e.row.rowIndex);
-//             currentRow[formulaColumn.dataField] = calculatedValue;
-//           });
-//         }
+      //   if (formulaColumns.length > 0) {
+      //     // Call executeFormulaColumns for all formula columns
+      //     formulaColumns.forEach((formulaColumn) => {
+      //       const calculatedValue = executeFormulaColumns([formulaColumn], updatedData, e.row.rowIndex);
+      //       currentRow[formulaColumn.dataField] = calculatedValue;
+      //     });
+      //   }
 
-//         // Update the data source with the modified row
-//         updatedData[e.row.rowIndex] = currentRow;
-//         setDataSource(updatedData);
+      //   // Update the data source with the modified row
+      //   updatedData[e.row.rowIndex] = currentRow;
+      //   setDataSource(updatedData);
 
-//         // Trigger the value select handler with updated data
-//         onValueSelect(updatedData);
+      //   // Trigger the value select handler with updated data
+      //   onValueSelect(updatedData);
 
-//         // Add a new row
-//         addNewRow();
-//       }
+      //   // Add a new row
+      //   addNewRow();
+      // }
 //     };
 //   }
 // };
@@ -430,6 +444,8 @@ const handleFocusedCellChanging = (e: any) => {
   //     }
   //   }
   // };
+
+  
   return (
     <>
       <div style={{ width: '100%', margin: '0 auto' }}>
@@ -443,6 +459,15 @@ const handleFocusedCellChanging = (e: any) => {
           // onCellPrepared={handleCellPrepared} // Add this for custom cell formatting
           repaintChangesOnly={true}
           rtlEnabled={isRtl} // Enable RTL layout for DataGrid
+          onContentReady={(e) => {
+            // Remove tabIndex from header cells
+            const headers = e.element.querySelector('.dx-datagrid-headers');
+            if (headers) {
+              headers.querySelectorAll('[tabindex]').forEach((header) => {
+                header.removeAttribute('tabIndex');
+              });
+            }
+          }}
         >
           <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
 
