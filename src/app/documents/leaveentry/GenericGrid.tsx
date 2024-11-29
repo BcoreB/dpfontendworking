@@ -301,35 +301,6 @@ const handleRowDoubleClick = (e: any) => {
     // Close the popup
     setShowLookupGrid(false);
 
-    // Focus on the triggering column
-    const triggeringColumnIndex = columns.findIndex(
-      (col) => col.dataField === mappedColumn.dataField
-    );
-    if (triggeringColumnIndex === -1) {
-      console.warn("Triggering column index not found.");
-      return;
-    }
-
-    console.log("Triggering column index:", triggeringColumnIndex);
-
-    // Use ref to access the grid instance
-    const gridInstance = gridRef.current;
-    if (!gridInstance) {
-      console.error("Grid instance not available.");
-      return;
-    }
-
-    // Delay to ensure the grid is updated before focusing
-    setTimeout(() => {
-      try {
-        gridInstance.editCell(selectedRowIndex, triggeringColumnIndex);
-        console.log(
-          `Focused and editing cell at row ${selectedRowIndex}, column ${triggeringColumnIndex}.`
-        );
-      } catch (error) {
-        console.error("Error focusing on the cell:", error);
-      }
-    }, 100);
   }
 };
 
@@ -558,6 +529,30 @@ const handleFocusedCellChanging = (e: any) => {
         onHiding={() => {
           setShowLookupGrid(false);
           iconRef.current = null;
+          // Find the column with columnMapping
+        const mappedColumn = columns.find(col => col.columnMapping);
+
+        // Delay to ensure popup is closed before focusing
+        setTimeout(() => {
+          if (gridRef.current && selectedRowIndex !== null && mappedColumn) {
+            try {
+              // Find the index of the specific lookup column
+              const lookupColumnIndex = columns.findIndex(
+                (col) => col.inputType === 'lookup' && col.dataField === mappedColumn.dataField
+              );
+
+              if (lookupColumnIndex !== -1) {
+                // Use the grid instance to edit the cell
+                (gridRef.current as any).editCell(
+                  selectedRowIndex, 
+                  lookupColumnIndex
+                );
+              }
+            } catch (error) {
+              console.error('Error focusing on lookup column:', error);
+            }
+          }
+        }, 100);
         }}
         title={getLanguageByEnglish("Select Employee")}
         width={600}
