@@ -97,20 +97,13 @@ const GenericGrid = <T extends {RowId:number }>({
 
 
 
-// const handleEditorPreparing = (e: any) => {
-//     if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
-//       e.editorOptions.onKeyDown = (args: any) => {
-//         if (args.event.key === 'Enter') {
-//           addNewRow();
-//         }
-//       };
-//     }
-//   };
 
 
 
 const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
   if (e.parentType === 'dataRow') {
+
+    
     const isLookupColumn = columns.find(
       (column) => column.dataField === e.dataField && column.inputType === 'lookup'
     );
@@ -122,8 +115,16 @@ const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
       e.editorOptions.onValueChanged = (args: any) => {
         e.setValue(new Date(args.value));
       };
+      
     }
-    e.editorOptions.onKeyDown = (args: { event: KeyboardEvent }) => {
+
+    // Combine date column's original onKeyDown with new functionality
+    const originalOnKeyDown = e.editorOptions.onKeyDown;
+    e.editorOptions.onKeyDown = (args: { event: KeyboardEvent; component: any }) => {
+      // Call the original onKeyDown first to maintain date picker opening behavior
+      if (originalOnKeyDown) {
+        originalOnKeyDown(args);
+      }
       const currentIndex = selectedRowIndex !== null ? selectedRowIndex : 0;
 
       if (args.event.key === 'ArrowDown') {
@@ -135,19 +136,9 @@ const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
           setLookupDataSource(dataSource);
           setFilteredLookupDataSource(dataSource);
           setShowLookupGrid(true);
-        } else if (isDateColumn) {
-          const dateBoxElement = e.editorElement?.querySelector('.dx-datebox');
-          if (dateBoxElement && 'dxDateBox' in dateBoxElement) {
-            const dateBoxInstance = (dateBoxElement as any).dxDateBox; // Type assertion to access dxDateBox
-            dateBoxInstance?.open(); // Safely call `open` if it exists
-          }
-        } else {
-          const nextIndex = Math.min((currentIndex ?? 0) + 1, (dataSource?.length ?? 1) - 1); // Ensure valid indices
-          setSelectedRowIndex(nextIndex);
         }
-        args.event.preventDefault(); // Prevent default action for the ArrowDown key
+        
       }
-      
 
       if (args.event.key === 'ArrowUp') {
         const prevIndex = Math.max(currentIndex - 1, 0);
@@ -180,75 +171,7 @@ const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
 
 
 
-// const handleEditorPreparing = (e: any) => {
-//   const formulaColumns = columns.filter(col => col.formula); // Get all columns with formulas
 
-//   if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
-//     e.editorOptions.onKeyDown = (args: any) => {
-//       if (args.event.key === 'Enter') {
-      //   const updatedData = [...dataSource];
-      //   const currentRow = updatedData[e.row.rowIndex];
-
-      //   if (formulaColumns.length > 0) {
-      //     // Call executeFormulaColumns for all formula columns
-      //     formulaColumns.forEach((formulaColumn) => {
-      //       const calculatedValue = executeFormulaColumns([formulaColumn], updatedData, e.row.rowIndex);
-      //       currentRow[formulaColumn.dataField] = calculatedValue;
-      //     });
-      //   }
-
-      //   // Update the data source with the modified row
-      //   updatedData[e.row.rowIndex] = currentRow;
-      //   setDataSource(updatedData);
-
-      //   // Trigger the value select handler with updated data
-      //   onValueSelect(updatedData);
-
-      //   // Add a new row
-      //   addNewRow();
-      // }
-//     };
-//   }
-// };
-
-// const executeFormulaColumns = (
-//   formulaColumns: FormulaColumn[],
-//   gridData: any[],
-//   rowIndex: number
-// ) => {
-//   let finalValue = null; // Store and return the calculated value
-
-//   if (formulaColumns) {
-//     formulaColumns.forEach((fc) => {
-//       try {
-//         let formula = fc.formula;
-
-//         // Replace placeholders in the formula with the corresponding cell values
-//         columns.forEach((col) => {
-//           const placeholder = `<${col.dataField}>`;
-//           if (formula.includes(placeholder)) {
-//             let colVal = gridData[rowIndex][col.dataField];
-//             colVal = colVal === null || colVal === undefined || colVal === "" ? "0" : colVal;
-
-//             // No date-specific handling, just replace the placeholder with the value
-//             formula = formula.replace(new RegExp(placeholder, "g"), colVal.toString());
-//           }
-//         });
-
-//         // Evaluate the formula to get the final value
-//         finalValue = eval(formula); // Caution: Use eval carefully in real-world applications
-
-//         // Update the corresponding field with the calculated value if it's defined
-//         if (finalValue !== null) {
-//           gridData[rowIndex][fc.dataField] = finalValue;
-//         }
-//       } catch (error) {
-//         console.error("Error evaluating formula:", error);
-//       }
-//     });
-//   }
-//   return finalValue; // Return the calculated value
-// };
 
 
 
@@ -387,17 +310,7 @@ const handleFocusedCellChanging = (e: any) => {
   }, []);
 
 
-  // To change the date field format after picking a value from calender
 
-  // const handleCellPrepared = (e: any) => {
-  //   if (e.column && e.column.dataType === 'date' && e.value) {
-  //     // Format the date to dd/MM/yyyy
-  //     const formattedDate = new Date(e.value).toLocaleDateString('en-GB');
-  //     // Update the cell content with the formatted date
-  //     e.cellElement.textContent = formattedDate;
-  //   }
-  // };
-  
 
   const deleteFirstRowAndAddNewRow = () => {
     if (dataSource.length <= 1) {
@@ -425,24 +338,6 @@ const handleFocusedCellChanging = (e: any) => {
     deleteFirstRowAndAddNewRow();
   };;
   
-
-  // const handleFocusedCellChanged = (e: any) => {
-  //   const { rowIndex, columnIndex, component } = e;
-
-  //   if (rowIndex !== undefined && columnIndex !== undefined) {
-  //     // Check if the column is editable
-  //     const column = columns[columnIndex];
-  //     if (!column.disabled) {
-  //       // Activate edit mode for the focused cell
-  //       if (component && typeof component.editCell === 'function') {
-  //         component.editCell(rowIndex, columnIndex);
-  //       } else {
-  //         console.error('Grid component is undefined or editCell is not a function.');
-  //     }
-  //     }
-  //   }
-  // };
-
   
   return (
     <>
@@ -454,7 +349,6 @@ const handleFocusedCellChanging = (e: any) => {
           onRowRemoving={handleDeleteFirstRow}// Add the row removing handler
           onEditorPreparing={handleEditorPreparing}
           columnHidingEnabled={isMobile}
-          // onCellPrepared={handleCellPrepared} // Add this for custom cell formatting
           repaintChangesOnly={true}
           rtlEnabled={isRtl} // Enable RTL layout for DataGrid
           onContentReady={(e) => {
@@ -491,7 +385,14 @@ const handleFocusedCellChanging = (e: any) => {
                       displayFormat: 'dd/MM/yyyy', // Display only the date
                       dateSerializationFormat: 'yyyy-MM-dd', // Serialization ensures no time is included
                       pickerType: 'calendar', // Use calendar for selection
-                      format: 'dd/MM/yyyy'
+                      format: 'dd/MM/yyyy',
+                      openOnFieldClick: true, // Ensure the date picker opens on field click
+                      showDropDownButton: true, // Display a dropdown button for date picker
+                      onKeyDown: (e:any) => {
+                        if (e.event.key === 'ArrowDown') {
+                          e.component.open(); // Open the date picker on pressing ArrowDown
+                        }
+                      },
                     }
                   : 
                   isTimeColumn
