@@ -155,9 +155,23 @@ const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
         args.event.preventDefault();
       }
 
-      if (args.event.key === 'Enter' && e.dataField === lastColumn) {
-        console.log(dataSource);
-        addNewRow();
+      // Check if the Enter key is pressed
+      if (args.event.key === 'Enter') {
+        if (e.dataField === lastColumn) {
+          // Prevent default behavior
+          args.event.preventDefault();
+
+          // Add a new row if necessary
+          addNewRow();
+
+          // Focus the first column of the next row
+          setTimeout(() => {
+            (gridRef.current as any)?.editCell(
+              currentIndex + 1, // Move to the next row
+              0 // Focus the first column
+            );
+          }, 100); // Slight delay to ensure the row is added
+        }
       }
     };
   }
@@ -451,6 +465,11 @@ const handleFocusedCellChanging = (e: any) => {
                 header.removeAttribute('tabIndex');
               });
             }
+             // Remove tabIndex from delete buttons
+              const deleteButtons = e.element.querySelectorAll('.dx-link-delete');
+              deleteButtons.forEach((button) => {
+                button.removeAttribute('tabIndex'); // Set tabIndex to -1 to remove it from focus order
+              });
           }}
         >
           <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
