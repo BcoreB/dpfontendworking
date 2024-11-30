@@ -71,14 +71,15 @@ const GenericGrid = <T extends {RowId:number }>({
 
 
   const addNewRow = () => {
-    const isEmptyRowPresent = dataSource.some((row) =>
-      columns.some(
-        (column) =>
-          !column.disabled &&
-          column.dataField !== 'RowId' &&
-          (row[column.dataField] === null || row[column.dataField] === '')
-      )
-    );
+    const isEmptyRowPresent = dataSource.some((row) => {
+      return columns.some((column) => {
+        if (!column.disabled && column.dataField !== 'RowId') {
+          const value = row[column.dataField];
+          return value === null || value === '' || value === undefined;
+        }
+        return false;
+      });
+    });
 
     if (!isEmptyRowPresent) {
       const newId = dataSource.length > 0 ? Math.max(...dataSource.map((item) => item.RowId)) + 1 : 1;
