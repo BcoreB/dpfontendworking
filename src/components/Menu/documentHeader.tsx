@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from 'next/navigation';
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import  AppRouterInstance from 'next/dist/shared/lib/router/router';
@@ -9,10 +10,10 @@ import { getLanguageByEnglish } from '@/utils/languages';
 interface FormHeaderProps {
   docCd: number;
   docKey: number;
-  router: AppRouterInstance;
+  router: ReturnType<typeof useRouter>;
   getValues: UseFormGetValues<any>;
   setFormValues: React.Dispatch<React.SetStateAction<any>>;
-  fieldToPrint: string; // New prop for the field name
+  fieldToPrint?: string; // New prop for the field name
 }
 
 const DocumentHeader: React.FC<FormHeaderProps> = ({
@@ -34,9 +35,9 @@ const DocumentHeader: React.FC<FormHeaderProps> = ({
     setDocumentDate(formattedDate); // Set the current date as default
   }, []);
 
-  const addNew = useCallback(() => {
+ const addNew = useCallback(() => {
     const url = '/masters/accomodationmaster';
-    router.push(url);
+    router.push(url); // No change in logic, only type alignment
     alert("Added new");
     window.location.reload();
   }, [router]);

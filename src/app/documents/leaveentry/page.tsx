@@ -131,11 +131,12 @@ const LeaveEntry = () => {
                   }
                 }}>
                 <DocumentHeader
-                  setFormValues={setFormValues}
-                  docCd={docCd}
-                  docKey={docKey}
-                  router={router}
-                  getValues={form.getValues}
+                      setFormValues={setFormValues}
+                      docCd={docCd}
+                      docKey={docKey}
+                      router={router}
+                      getValues={form.getValues} 
+                      
                 />
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 py-1">

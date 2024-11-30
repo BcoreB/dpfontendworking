@@ -13,7 +13,7 @@ interface EmployeeData {
   Remarks: string | null;
   NPBalance: string | null;
   LeaveType: string | null;
-  RowId:number;
+  RowId:number | null;
 }
 
 
