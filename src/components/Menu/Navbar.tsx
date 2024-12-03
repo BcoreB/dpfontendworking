@@ -109,7 +109,7 @@ function DropdownMenuItem({ itemText, dropdownData, isMobileMenu = false }: Drop
     <NavigationMenu>
       <NavigationMenuItem>
         <NavigationMenuTrigger className={`text-base ${isRtl ? 'text-right' : 'text-left'}`}>{itemText}</NavigationMenuTrigger>
-        <NavigationMenuContent className={`bg-white z-100 text-black ${isMobileMenu ? 'overflow-y-auto max-h-60' : ''}`}>
+        <NavigationMenuContent className={`bg-white z-100 text-white ${isMobileMenu ? 'overflow-y-auto max-h-60' : ''}`}>
           <ul className={`grid gap-3 p-4 ${isMobileMenu ? 'w-[200px] z-100' : 'md:w-[500px] md:grid-cols-2 lg:w-[600px]'} ${isRtl ? 'text-right' : 'text-left'}`}>
             {dropdownData.map((category) => (
               <div key={category.category}>
@@ -118,7 +118,7 @@ function DropdownMenuItem({ itemText, dropdownData, isMobileMenu = false }: Drop
                   {category.items.map((item) => (
                     <li key={item.title} className={`flex items-center mb-4 gap-2 ${isRtl ? 'flex-row-reverse' : ''}`}>
                       <img src={item.icon} alt="" className="mr-2" width={30} height={30} />
-                      <Link href={item.href} className="text-sm">{getLanguageByEnglish(item.title)}</Link>
+                      <Link href={item.href} className="text-sm text-white">{getLanguageByEnglish(item.title)}</Link>
                     </li>
                   ))}
                 </ul>

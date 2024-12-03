@@ -35,7 +35,7 @@ export default function Navbar() {
   };
   return (
     <main
-      className={`flex ${isExpanded ? 'w-64' : 'w-20'} py-6 justify-between mt-20 items-center flex-col h-screen bg-white transition-width duration-300 ${isRtl ? 'rtl' : 'ltr'}`}
+      className={`flex ${isExpanded ? 'w-64' : 'w-20'} py-6 text-white justify-between mt-20 items-center flex-col h-screen bg-[#33475b] transition-width duration-300 ${isRtl ? 'rtl' : 'ltr'}`}
     >
       <div className="cursor-pointer" onClick={toggleExpand}>
         <Image
@@ -43,7 +43,7 @@ export default function Navbar() {
           height={25}
           width={25}
           alt="Toggle Menu"
-          className={`transition-transform duration-300 ${isExpanded ? 'absolute right-10' : ''}`}
+          className={`transition-transform text-white duration-300 ${isExpanded ? 'absolute text-white right-10' : ''}`}
         />
       </div>
       <nav className={`relative flex px-4 py-4 ${isRtl ? 'flex-row-reverse' : ''}`}>
@@ -62,15 +62,15 @@ export default function Navbar() {
       <div className="controls flex flex-col gap-4">
         <div className="flex items-center">
           <Image src={'/header/help.png'} height={25} width={25} alt="Help" />
-          {isExpanded && <span className="mx-4 text-sm font-medium">{getLanguageByEnglish('Help & Support')}</span>}
+          {isExpanded && <span className="mx-4 text-sm font-medium text-white">{getLanguageByEnglish('Help & Support')}</span>}
         </div>
         <div className="flex items-center">
           <Image src={'/header/Notification.png'} height={25} width={25} alt="Notifications" />
-          {isExpanded && <span className="mx-4 text-sm font-medium">{getLanguageByEnglish('Notifications')}</span>}
+          {isExpanded && <span className="mx-4 text-sm font-medium text-white">{getLanguageByEnglish('Notifications')}</span>}
         </div>
         <div className="flex items-center">
           <Image src={'/header/Settings.png'} height={25} width={25} alt="Settings" />
-          {isExpanded && <span className="mx-4 text-sm font-medium">{getLanguageByEnglish('Settings')}</span>}
+          {isExpanded && <span className="mx-4 text-sm font-medium text-white">{getLanguageByEnglish('Settings')}</span>}
         </div>
       </div>
     </main>

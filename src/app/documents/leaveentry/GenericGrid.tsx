@@ -18,6 +18,8 @@ interface GridProps<T> {
     dataType?: string;
     disabled?: boolean;
     formula?:string,
+    valueExp?:string,
+    displayExp?:string,
     columnMapping?: { [key: string]: keyof T }; // Include columnMapping here
   }[];
   dataSource: T[]; // Allow null in the dataSource
@@ -239,6 +241,25 @@ const handleRowDoubleClick = (e: any) => {
     // Close the popup
     setShowLookupGrid(false);
 
+    // Explicitly move focus to the next column
+    setTimeout(() => {
+      if (gridRef.current) {
+        try {
+          // Find the column index of the current column
+          const currentColumnIndex = columns.findIndex(
+            col => col.dataField === mappedColumn.dataField
+          );
+          
+          // Move to the next column in the same row
+          (gridRef.current as any).editCell(
+            selectedRowIndex, 
+            currentColumnIndex + 1
+          );
+        } catch (error) {
+          console.error('Error moving focus:', error);
+        }
+      }
+    }, 100);
   }
 };
 
@@ -345,7 +366,7 @@ const handleFocusedCellChanging = (e: any) => {
         <DataGrid
           dataSource={dataSource}
           showBorders={true}
-          keyExpr={GridKeyExp}
+          keyExpr={GridKeyExp ? String(GridKeyExp) : undefined}
           onRowRemoving={handleDeleteFirstRow}// Add the row removing handler
           onEditorPreparing={handleEditorPreparing}
           columnHidingEnabled={isMobile}
@@ -436,7 +457,11 @@ const handleFocusedCellChanging = (e: any) => {
                 }}
               >
                 {column.inputType === 'combo' && column.dataSource && (
-                  <Lookup dataSource={column.dataSource} valueExpr="EmpCode" displayExpr="Employee" />
+                  <Lookup 
+                    dataSource={column.dataSource} 
+                    valueExpr={column.valueExp} 
+                    displayExpr={column.displayExp}
+                  />
                 )}
               </Column>
             );
@@ -448,32 +473,28 @@ const handleFocusedCellChanging = (e: any) => {
         <Popup
         visible={true}
         onHiding={() => {
+          const currentLookupColumnIndex = columns.findIndex(
+            col => col.inputType === 'lookup'
+          );
+        
+          // Close the lookup grid
           setShowLookupGrid(false);
           iconRef.current = null;
-          // Find the column with columnMapping
-        const mappedColumn = columns.find(col => col.columnMapping);
-
-        // Delay to ensure popup is closed before focusing
-        setTimeout(() => {
-          if (gridRef.current && selectedRowIndex !== null && mappedColumn) {
-            try {
-              // Find the index of the specific lookup column
-              const lookupColumnIndex = columns.findIndex(
-                (col) => col.inputType === 'lookup' && col.dataField === mappedColumn.dataField
-              );
-
-              if (lookupColumnIndex !== -1) {
-                // Use the grid instance to edit the cell
+        
+          // Delay to ensure popup is closed before focusing
+          setTimeout(() => {
+            if (gridRef.current && selectedRowIndex !== null && currentLookupColumnIndex !== -1) {
+              try {
+                // Directly focus the lookup column in the current row
                 (gridRef.current as any).editCell(
                   selectedRowIndex, 
-                  lookupColumnIndex
+                  currentLookupColumnIndex
                 );
+              } catch (error) {
+                console.error('Error moving focus:', error);
               }
-            } catch (error) {
-              console.error('Error focusing on lookup column:', error);
             }
-          }
-        }, 100);
+          }, 100);
         }}
         title={getLanguageByEnglish("Select Employee")}
         width={600}
@@ -549,7 +570,7 @@ const handleFocusedCellChanging = (e: any) => {
           <DataGrid
             dataSource={filteredLookupDataSource}
             showBorders={true}
-            keyExpr={PopKeyExp}
+            keyExpr={PopKeyExp ? String(PopKeyExp) : undefined}
             focusedRowIndex={popupFocusedRowIndex}
             focusedRowEnabled={true}
             onRowClick={handlePopupRowClick}
@@ -558,8 +579,6 @@ const handleFocusedCellChanging = (e: any) => {
             columnAutoWidth={true}
             style={{ userSelect: 'none', minHeight: '150px' }} // Set minimum height
             rtlEnabled={isRtl}
-            focusStateEnabled={false} // Disable default focus handling
-            onKeyDown={(e) => e.stopPropagation()} // Prevent event bubbling
           >
             {filteredLookupDataSource.length > 0 &&
               Object.keys(filteredLookupDataSource[0]).map((field) => (

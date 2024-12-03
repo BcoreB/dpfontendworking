@@ -68,7 +68,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
 
   return (
     <>
-      <div className={`nav-header fixed z-10 bg-white h-20 flex w-full justify-between md:justify-evenly items-center px-4 md:px-10 ${isMobile ? "w-[90%] mx-auto mt-4 rounded-lg shadow-lg " : ""}`}>
+      <div className={`nav-header fixed z-10 bg-[#33475b] text-white h-20 flex w-full justify-between md:justify-evenly items-center px-4 md:px-10 ${isMobile ? "w-[90%] mx-auto mt-4 rounded-lg shadow-lg " : ""}`}>
         {isMobile && (
           <div className="top-4 left-4 z-10">
             <Image
@@ -138,7 +138,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
           )}
 
           {isDropdownOpen && (
-            <div className="absolute top-14 right-0 bg-white border border-gray-300 rounded-lg shadow-lg py-2 w-48 z-10">
+            <div className="absolute top-14 right-0 bg-white text-black border border-gray-300 rounded-lg shadow-lg py-2 w-48 z-10">
               <ul className="flex flex-col text-sm">
                 <li
                   className="p-2 flex gap-2 hover:bg-gray-100 cursor-pointer"
