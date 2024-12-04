@@ -114,7 +114,7 @@ function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuIte
         <img
           src={iconSrc}
           alt="Icon"
-          className={`w-8 h-8 transition-colors duration-300 ${isDropdownVisible ? 'bg-gray-200' : ''}`}
+          className={`w-8 h-8 transition-colors duration-300 ${isDropdownVisible ? '' : ''}`}
         />
         {isExpanded && dropdownData?.length > 0 && (
           <span className="ml-2 text-sm font-medium transition-opacity duration-300">
