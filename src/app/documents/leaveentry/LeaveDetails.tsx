@@ -125,7 +125,7 @@ const handleValuesChange = (changedValues:any) => {
           { dataField: 'ToDate', caption: 'To Date', dataType: 'date' },
           { dataField: 'NoDays', caption: 'No Days', disabled:true ,formula: 'ToDate - FromDate',  },
           { dataField: 'Entitled', caption: 'Entitled' },
-          { dataField: 'Remarks', caption: 'Remarks', inputType:'combo', dataSource:lookup, valueExp:'empCode', displayExp:'empname' },
+          { dataField: 'Remarks', caption: 'Remarks' },
           { dataField: 'NPBalance', caption: 'NP Balance', disabled:true },
           {
             dataField: 'LeaveType',
