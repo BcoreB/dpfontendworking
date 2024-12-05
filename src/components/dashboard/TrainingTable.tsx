@@ -120,7 +120,7 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
       </div>
 
       <Modal open={isModalOpen} onClose={handleCloseModal}>
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 600, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 24, p: 4 }}>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 600, minWidth:300 , bgcolor: 'background.paper', borderRadius: 1, boxShadow: 24, p: 4 }}>
           <Typography variant="h6" component="h2">
           { getLanguageByEnglish('Select Training')}
           </Typography>

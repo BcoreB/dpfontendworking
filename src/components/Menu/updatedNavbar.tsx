@@ -35,13 +35,13 @@ export default function Navbar() {
   };
   return (
     <main
-      className={`flex ${isExpanded ? 'w-64' : 'w-20'} py-6 text-white justify-between mt-20 items-center flex-col h-screen bg-[#33475b] transition-width duration-300 ${isRtl ? 'rtl' : 'ltr'}`}
+      className={`flex ${isExpanded ? 'w-64' : 'w-16'} py-6 text-white justify-between md:mt-16 items-center flex-col h-screen bg-[#33475b] transition-width duration-300 ${isRtl ? 'rtl' : 'ltr'}`}
     >
       <div className="cursor-pointer" onClick={toggleExpand}>
         <Image
           src={isExpanded ? '/menu/leftarrow.png' : '/menu/rightarrow.png'}
-          height={25}
-          width={25}
+          height={20}
+          width={20}
           alt="Toggle Menu"
           className={`transition-transform text-white duration-300 ${isExpanded ? 'absolute text-white right-10' : ''}`}
         />
@@ -126,7 +126,7 @@ function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuIte
       {isDropdownVisible && (
         <div
           ref={dropdownRef}
-          className={`absolute w-72 top-0 left-full ml-4 bg-white z-50 text-black shadow-lg p-4`}
+          className={`absolute w-72 top-0 left-full ml-4 bg-[#33475b] z-50 text-white rounded-r-lg shadow-lg p-4`}
           style={{ zIndex: 1000 }}
         >
           <ul className="grid gap-3">

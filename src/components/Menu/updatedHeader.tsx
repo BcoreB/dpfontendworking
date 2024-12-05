@@ -68,7 +68,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
 
   return (
     <>
-      <div className={`nav-header fixed z-10 bg-[#33475b] text-white h-20 flex w-full justify-between md:justify-evenly items-center px-4 md:px-10 ${isMobile ? "w-[90%] mx-auto mt-4 rounded-lg shadow-lg " : ""}`}>
+      <div className={`nav-header fixed z-10 bg-[#33475b] text-white h-16 flex w-full justify-between md:justify-evenly items-center px-4 md:px-10 ${isMobile ? "w-[90%] mx-auto mt-4 rounded-lg shadow-lg " : ""}`}>
         {isMobile && (
           <div className="top-4 left-4 z-10">
             <Image
@@ -91,7 +91,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
             <input
               tabIndex={-1}
               type="text"
-              className="bg-[#EAF6FC] px-4 py-2 border-0 w-full max-w-full shadow-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-[#EAF6FC] px-4 py-1.5 border-0 w-11/12 max-w-full shadow-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder={getLanguageByEnglish("Search for an item")}
               value={searchTerm}
               onChange={handleSearch}

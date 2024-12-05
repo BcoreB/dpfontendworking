@@ -96,7 +96,7 @@ export default function Home() {
   return (
     <>
       {isClient?
-        <main className="flex flex-col md:flex-row h-full w-full justify-between max-w-screen-2xl p-5 m-auto lg:px-60 lg:p-14">
+        <main className="flex rounded-lg flex-col md:flex-row h-full w-full justify-between max-w-screen-2xl p-5 m-auto lg:px-60 lg:p-14">
         <div className="landing-text bg-white md:w-1/2  pt-8 px-12">
           <div className="logo">
             <Image

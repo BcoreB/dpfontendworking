@@ -116,7 +116,7 @@ const LeaveEntry = () => {
   return (
     <>
         {isClient ?
-    <div className="w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8">
+    <div className="w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8 rounded-lg">
       <div className="absolute top-0 right-0 z-5" >
         <Sidebar docCd={docCd} docKey={docKey} form={form} />
       </div>

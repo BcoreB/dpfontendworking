@@ -50,7 +50,8 @@ export default function RootLayout({
 
         <div className='{inter.className}'>
           <HideableNavbar />
-          {children}
+          <div className="rounded-lg">{children}</div>
+          
         </div>
       </EmployeeProvider>
     </DirectionProvider>

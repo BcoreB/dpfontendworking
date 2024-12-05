@@ -582,7 +582,7 @@ const handleFocusedCellChanging = (e: any) => {
           >
             {filteredLookupDataSource.length > 0 &&
               Object.keys(filteredLookupDataSource[0]).map((field) => (
-                <Column key={field} dataField={getLanguageByEnglish(field)} />
+                <Column key={field} caption={getLanguageByEnglish(field)} dataField={field} />
               ))}
           </DataGrid>
 
