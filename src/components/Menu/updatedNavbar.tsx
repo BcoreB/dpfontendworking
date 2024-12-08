@@ -35,7 +35,7 @@ export default function Navbar() {
   };
   return (
     <main
-      className={`flex ${isExpanded ? 'w-64' : 'w-16'} py-6 text-white justify-between md:mt-16 items-center flex-col h-screen bg-[#33475b] transition-width duration-300 ${isRtl ? 'rtl' : 'ltr'}`}
+      className={`flex ${isExpanded ? 'w-64' : 'w-10'} py-6 text-white justify-between  items-center flex-col h-lvh bg-[#33475b] transition-width duration-300 ${isRtl ? 'rtl' : 'ltr'}`}
     >
       <div className="cursor-pointer" onClick={toggleExpand}>
         <Image
@@ -43,10 +43,10 @@ export default function Navbar() {
           height={20}
           width={20}
           alt="Toggle Menu"
-          className={`transition-transform text-white duration-300 ${isExpanded ? 'absolute text-white right-10' : ''}`}
+          className={`transition-transform mt-10 text-white duration-300 ${isExpanded ? 'absolute text-white right-10' : ''}`}
         />
       </div>
-      <nav className={`relative flex px-4 py-4 ${isRtl ? 'flex-row-reverse' : ''}`}>
+      <nav className={`relative flex px-2 py-2 ${isRtl ? 'flex-row-reverse' : ''}`}>
         <ul className={`flex flex-col gap-4 ${isRtl ? 'flex-row-reverse' : ''}`}>
         <DropdownMenuItem
           iconSrc="/menu/Computer.png"
@@ -61,15 +61,15 @@ export default function Navbar() {
       </nav>
       <div className="controls flex flex-col gap-4">
         <div className="flex items-center">
-          <Image src={'/header/help.png'} height={25} width={25} alt="Help" />
+          <Image src={'/header/help.png'} height={16} width={16} alt="Help" />
           {isExpanded && <span className="mx-4 text-sm font-medium text-white">{getLanguageByEnglish('Help & Support')}</span>}
         </div>
         <div className="flex items-center">
-          <Image src={'/header/Notification.png'} height={25} width={25} alt="Notifications" />
+          <Image src={'/header/Notification.png'} height={16} width={16} alt="Notifications" />
           {isExpanded && <span className="mx-4 text-sm font-medium text-white">{getLanguageByEnglish('Notifications')}</span>}
         </div>
         <div className="flex items-center">
-          <Image src={'/header/Settings.png'} height={25} width={25} alt="Settings" />
+          <Image src={'/header/Settings.png'} height={16} width={16} alt="Settings" />
           {isExpanded && <span className="mx-4 text-sm font-medium text-white">{getLanguageByEnglish('Settings')}</span>}
         </div>
       </div>
@@ -114,7 +114,7 @@ function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuIte
         <img
           src={iconSrc}
           alt="Icon"
-          className={`w-8 h-8 transition-colors duration-300 ${isDropdownVisible ? '' : ''}`}
+          className={`w-10 transition-colors duration-300 ${isDropdownVisible ? '' : ''}`}
         />
         {isExpanded && dropdownData?.length > 0 && (
           <span className="ml-2 text-sm font-medium transition-opacity duration-300">

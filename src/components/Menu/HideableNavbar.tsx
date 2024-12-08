@@ -33,8 +33,10 @@ const HideableNavbar: React.FC = () => {
 
       {/* Always show Navbar on desktop */}
       {!isMobile && (
-        <div className="absolute left-0 navbar-div">
-          <Navbar />
+        <div className="fixed">
+            <div className="absolute left-0 navbar-div">
+              <Navbar />
+            </div>
         </div>
       )}
     </div>

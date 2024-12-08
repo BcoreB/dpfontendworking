@@ -323,7 +323,7 @@ const handleOpenClick = () => {
       {/* Hamburger Menu */}
       <button
         onClick={() => setIsSidebarOpen((prev) => !prev)}
-        className="block md:hidden p-2 absolute top-32 right-2 text-gray-500 hover:text-black"
+        className="block md:hidden p-2 absolute h-screen right-2 text-gray-500 hover:text-black"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
