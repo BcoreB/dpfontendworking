@@ -35,7 +35,7 @@ export default function Navbar() {
   };
   return (
     <main
-      className={`flex ${isExpanded ? 'w-64' : 'w-10'} py-6 text-white justify-between  items-center flex-col h-lvh bg-[#33475b] transition-width duration-300 ${isRtl ? 'rtl' : 'ltr'}`}
+      className={`flex ${isExpanded ? 'w-64' : 'w-12'} py-6 text-white justify-between ${isExpanded ?'items-start':'items-center'}   ${isExpanded ?'pl-4':''} flex-col h-lvh bg-[#33475b] transition-width duration-300 ${isRtl ? 'rtl' : 'ltr'}`}
     >
       <div className="cursor-pointer" onClick={toggleExpand}>
         <Image
@@ -79,6 +79,16 @@ export default function Navbar() {
 
 function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuItemProps) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
+
+  const handleMouseEnter = () => {
+    setDropdownVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    setDropdownVisible(false);
+  };
+
+
   const dropdownRef = useRef<HTMLDivElement>(null);
   const itemRef = useRef<HTMLDivElement>(null);
 
@@ -105,16 +115,19 @@ function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuIte
   }, []);
 
   return (
-    <div className="relative flex items-center">
+    <div className="relative flex items-center" onMouseEnter={handleMouseEnter}
+    onMouseLeave={handleMouseLeave}>
       <div
         ref={itemRef}
         onClick={handleToggleDropdown}
         className="flex gap-4 items-center cursor-pointer"
       >
-        <img
+        <Image
           src={iconSrc}
           alt="Icon"
-          className={`w-10 transition-colors duration-300 ${isDropdownVisible ? '' : ''}`}
+          height={20}
+          width={20}
+          className="transition-all duration-300"
         />
         {isExpanded && dropdownData?.length > 0 && (
           <span className="ml-2 text-sm font-medium transition-opacity duration-300">
@@ -126,8 +139,11 @@ function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuIte
       {isDropdownVisible && (
         <div
           ref={dropdownRef}
-          className={`absolute w-72 top-0 left-full ml-4 bg-[#33475b] z-50 text-white rounded-r-lg shadow-lg p-4`}
-          style={{ zIndex: 1000 }}
+          className={`absolute w-72 top-0 bg-[#33475b] z-50 text-white rounded-r-lg shadow-lg p-4`}
+          style={{
+            left: isExpanded ? '14rem' : '2.5rem', // Sidebar width: 64px (16rem) when expanded, 10px (2.5rem) otherwise
+            marginLeft: '10px', // Ensures 20px gap
+          }}
         >
           <ul className="grid gap-3">
             {dropdownData.map((category) => (
