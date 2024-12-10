@@ -319,7 +319,7 @@ const handleOpenClick = () => {
 
 
   return (
-    <div className="flex h-screen relative">
+    <div className="flex h-screen relative mt-12">
       {/* Hamburger Menu */}
       <button
         onClick={() => setIsSidebarOpen((prev) => !prev)}
@@ -348,7 +348,7 @@ const handleOpenClick = () => {
         } md:translate-x-0 md:relative bg-gray-100 shadow-lg`}
         style={{ width: "2rem" }}
       >
-      <div className="right-0 flex bg-purple-100 h-full flex-col text-sm z-10 pt-2 justify-evenly items-center mt-28 md:mt-20 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
+      <div className="right-0 flex bg-purple-100 h-full flex-col text-sm z-10 pt-2 justify-evenly items-center mt-28 md:mt-0 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
         {sections.map((section, index) => (
           <button
             tabIndex={-1}
@@ -373,7 +373,7 @@ const handleOpenClick = () => {
           leave="transition-transform duration-300"
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
-          className="sidebar-slide absolute w-[18rem] md:w-[28rem] right-0 h-full mt-24 shadow-lg p-4"
+          className="sidebar-slide absolute w-[18rem] md:w-[28rem] right-0 h-full shadow-lg p-4"
           style={{ background:'#FFF7FC',}}
         >
           <div ref={sidebarRef}>

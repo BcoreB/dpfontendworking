@@ -8,15 +8,14 @@ import { useDirection } from '../../app/DirectionContext';
 
 interface DropdownItem {
   title: string;
-  name: string; // Added 'name' field
+  name: string;
   href: string;
   icon: string;
 }
 
-
 interface DropdownCategory {
   category: string;
-  parentName:string;
+  parentName: string;
   items: DropdownItem[];
 }
 
@@ -33,9 +32,10 @@ export default function Navbar() {
   const toggleExpand = () => {
     setIsExpanded((prev) => !prev);
   };
+
   return (
     <main
-      className={`flex ${isExpanded ? 'w-64' : 'w-10'} py-6 text-white justify-between  items-center flex-col h-lvh bg-[#33475b] transition-width duration-300 ${isRtl ? 'rtl' : 'ltr'}`}
+      className={`flex ${isExpanded ? 'w-64' : 'w-16'} py-6 text-white ${isExpanded ? 'pl-4' : ''} justify-between ${isExpanded ? 'items-start' : 'items-center'}  flex-col h-lvh bg-[#33475b] transition-width duration-300 ${isRtl ? 'rtl' : 'ltr'}`}
     >
       <div className="cursor-pointer" onClick={toggleExpand}>
         <Image
@@ -48,12 +48,11 @@ export default function Navbar() {
       </div>
       <nav className={`relative flex px-2 py-2 ${isRtl ? 'flex-row-reverse' : ''}`}>
         <ul className={`flex flex-col gap-4 ${isRtl ? 'flex-row-reverse' : ''}`}>
-        <DropdownMenuItem
-          iconSrc="/menu/Computer.png"
-          dropdownData={DROPDOWN_ITEM_DATA_SYSTEM || []} // Ensure default value
-          isExpanded={isExpanded}
-        />
-
+          <DropdownMenuItem
+            iconSrc="/menu/Computer.png"
+            dropdownData={DROPDOWN_ITEM_DATA_SYSTEM || []}
+            isExpanded={isExpanded}
+          />
           <DropdownMenuItem iconSrc="/menu/admin.png" dropdownData={DROPDOWN_ITEM_DATA_MASTER_SETUP} isExpanded={isExpanded} />
           <DropdownMenuItem iconSrc="/menu/cloud.png" dropdownData={DROPDOWN_ITEM_DATA_EMPLOYEE_SELF_SERVICE} isExpanded={isExpanded} />
           <DropdownMenuItem iconSrc="/menu/Computer.png" dropdownData={DROPDOWN_ITEM_DATA_EMPLOYEE_MANAGEMENT} isExpanded={isExpanded} />
@@ -81,42 +80,67 @@ function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuIte
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const itemRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleToggleDropdown = () => {
-    setDropdownVisible(!isDropdownVisible);
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setDropdownVisible(true);
+  };
+
+  const handleMouseLeave = (event: React.MouseEvent) => {
+    const relatedTarget = event.relatedTarget as Node | null;
+  
+    // If mouse is still over dropdown or menu item, do nothing
+    if (
+      relatedTarget && 
+      (dropdownRef.current && dropdownRef.current.contains(relatedTarget) || 
+       itemRef.current && itemRef.current.contains(relatedTarget))
+    ) {
+      return;
+    }
+  
+    // Add a slight delay to prevent accidental closing
+    timeoutRef.current = setTimeout(() => {
+      setDropdownVisible(false);
+    }, 100);
+  };
+
+  // Prevent default close when mouse is over dropdown
+  const handleDropdownMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
   };
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        itemRef.current &&
-        !itemRef.current.contains(event.target as Node)
-      ) {
-        setDropdownVisible(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
+    // Cleanup timeout on unmount
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
   }, []);
 
   return (
-    <div className="relative flex items-center">
+    <div 
+      className="relative flex items-center"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div
         ref={itemRef}
-        onClick={handleToggleDropdown}
         className="flex gap-4 items-center cursor-pointer"
       >
-        <img
+        <Image
           src={iconSrc}
           alt="Icon"
-          className={`w-10 transition-colors duration-300 ${isDropdownVisible ? '' : ''}`}
+          height={22}
+          width={22}
+          className="transition-colors duration-300"
         />
-        {isExpanded && dropdownData?.length > 0 && (
+        {isExpanded && (
           <span className="ml-2 text-sm font-medium transition-opacity duration-300">
             {getLanguageByEnglish(dropdownData[0].parentName)}
           </span>
@@ -126,7 +150,11 @@ function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuIte
       {isDropdownVisible && (
         <div
           ref={dropdownRef}
-          className={`absolute w-72 top-0 left-full ml-4 bg-[#33475b] z-50 text-white rounded-r-lg shadow-lg p-4`}
+          onMouseEnter={handleDropdownMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          className={`absolute w-72 top-0 left-full  bg-[#33475b] z-50 text-white rounded-md shadow-lg p-4 ${
+            isExpanded ? 'left-60 ml-[1px]' : 'left-10 top-0 ml-[5px]'
+          }`}
           style={{ zIndex: 1000 }}
         >
           <ul className="grid gap-3">
@@ -136,7 +164,10 @@ function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuIte
                 <ul className="list-none">
                   {category.items.map((item) => (
                     <li key={item.title} className="flex items-center mb-4 gap-2">
-                      <Link href={item.href} className="text-sm">
+                      <Link 
+                        href={item.href} 
+                        className="text-sm hover:text-blue-300 transition-colors duration-300 w-full"
+                      >
                         {getLanguageByEnglish(item.title)}
                       </Link>
                     </li>

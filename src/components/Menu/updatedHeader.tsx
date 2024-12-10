@@ -91,13 +91,13 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
             <input
               tabIndex={-1}
               type="text"
-              className="bg-[#EAF6FC] px-4 py-1.5 border-0 w-11/12 max-w-full shadow-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-[#425b76] px-4 py-1.5 border-0 w-11/12 max-w-full shadow-sm rounded-md focus:outline-none focus:ring-2 focus:bg-white focus:text-black"
               placeholder={getLanguageByEnglish("Search for an item")}
               value={searchTerm}
               onChange={handleSearch}
             />
             {searchTerm && (
-              <ul className="absolute top-12 left-0 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-10">
+              <ul className="absolute top-12 left-0 w-full text-black bg-white  border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-10">
                 {filteredItems.length > 0 ? (
                   filteredItems.map((item, index) => (
                     <li
@@ -122,19 +122,21 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
 
         <div className="flex items-center space-x-2 md:w-1/6 gap-4 relative">
           <div className="hidden md:block vertical-line"></div>
-          <Image
-            width={20}
-            height={20}
-            alt="Dropdown"
-            src={'/header/downarrow.png'}
-            className="opacity-50 cursor-pointer"
-            onClick={toggleDropdown}
-          />
+          
           {isClient && (
             <>
+              <Image width={30} height={30} className="rounded-full max-w-full" alt="Profile" src={employee.profileImg} />
               <h3 className="truncate max-w-[80px] md:max-w-[160px]">{employee.name}</h3>
-              <Image width={40} height={40} className="rounded-full max-w-full" alt="Profile" src={employee.profileImg} />
+              <Image
+                width={20}
+                height={20}
+                alt="Dropdown"
+                src={'/header/downarrow.png'}
+                className="opacity-50 cursor-pointer"
+                onClick={toggleDropdown}
+              />  
             </>
+            
           )}
 
           {isDropdownOpen && (
