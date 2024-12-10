@@ -35,7 +35,7 @@ export default function Navbar() {
 
   return (
     <main
-      className={`flex ${isExpanded ? 'w-64' : 'w-16'} py-6 text-white ${isExpanded ? 'pl-4' : ''} justify-between ${isExpanded ? 'items-start' : 'items-center'}  flex-col h-lvh bg-[#33475b] transition-width duration-300 ${isRtl ? 'rtl' : 'ltr'}`}
+      className={`flex ${isExpanded ? 'w-64' : 'w-16'} py-6 text-white ${isExpanded ? 'px-4' : ''} justify-between ${isExpanded ? 'items-start' : 'items-center'}  flex-col h-lvh bg-[#33475b] transition-width duration-300 ${isRtl ? 'rtl' : 'ltr'}`}
     >
       <div className="cursor-pointer" onClick={toggleExpand}>
         <Image

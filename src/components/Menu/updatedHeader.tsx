@@ -140,7 +140,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
           )}
 
           {isDropdownOpen && (
-            <div className="absolute top-14 right-0 bg-white text-black border border-gray-300 rounded-lg shadow-lg py-2 w-48 z-10">
+            <div className="absolute top-14 right-0 bg-white text-black border border-gray-300 rounded-lg shadow-lg py-2 w-48">
               <ul className="flex flex-col text-sm">
                 <li
                   className="p-2 flex gap-2 hover:bg-gray-100 cursor-pointer"

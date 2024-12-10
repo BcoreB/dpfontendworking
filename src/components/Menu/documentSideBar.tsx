@@ -374,7 +374,7 @@ const handleOpenClick = () => {
           leave="transition-transform duration-300"
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
-          className="sidebar-slide absolute w-[18rem] md:w-[28rem] mt-28 md:mt-0 right-0 h-full shadow-lg p-4"
+          className="sidebar-slide absolute w-[18rem] md:w-[28rem] mt-28 md:mt-0 pr-12 right-0 h-full shadow-lg p-4"
           style={{ background:'#FFF7FC',}}
         >
           <div ref={sidebarRef}>
@@ -394,15 +394,15 @@ const handleOpenClick = () => {
 <>
     <h2 className="text-xl font-bold pb-8">{getLanguageByEnglish('References')}</h2>
       <div className="flex items-center mb-4">
-            <label htmlFor="referenceType" className="mr-2 font-semibold">{getLanguageByEnglish('Reference Type:')}</label>
+            <label htmlFor="referenceType" className="mx-2 font-semibold">{getLanguageByEnglish('Reference Type')}</label>
             <select
                 id="referenceType"
                 value={selectedDataKey}
                 onChange={handleDataChange}
                 className="w-2/4 p-2 border border-gray-300 rounded"
             >
-                <option value="a">Data Set A</option>
-                <option value="b">Data Set B</option>
+                <option value="a">{getLanguageByEnglish('Data Set A')}</option>
+                <option value="b">{getLanguageByEnglish('Data Set B')}</option>
             </select>
         </div>
 
@@ -500,7 +500,7 @@ const handleOpenClick = () => {
                   value={newNote}
                   onChange={(e) => setNewNote(e.target.value)}
                   placeholder={getLanguageByEnglish("Add a note")}
-                  className="w-11/12 mb-4 p-2 h-28 text-sm border border-gray-300 rounded resize-none overflow-y-scroll"
+                  className="w-11/12 mb-4 p-2 h-28 mt-12 text-sm border border-gray-300 rounded resize-none overflow-y-scroll"
                 />
                 <button
                   onClick={handleAddNote}
