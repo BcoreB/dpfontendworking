@@ -319,11 +319,12 @@ const handleOpenClick = () => {
 
 
   return (
-    <div className="flex h-screen relative mt-12">
+    <div className="flex h-screen relative">
       {/* Hamburger Menu */}
       <button
         onClick={() => setIsSidebarOpen((prev) => !prev)}
-        className="block md:hidden p-2 absolute h-screen right-2 text-gray-500 hover:text-black"
+        // className="block md:hidden p-2 absolute top-2 right-2 text-gray-500 hover:text-black z-20"
+        className="block md:hidden p-2 absolute top-32 right-2 text-gray-500 hover:text-black"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -373,7 +374,7 @@ const handleOpenClick = () => {
           leave="transition-transform duration-300"
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
-          className="sidebar-slide absolute w-[18rem] md:w-[28rem] right-0 h-full shadow-lg p-4"
+          className="sidebar-slide absolute w-[18rem] md:w-[28rem] mt-28 md:mt-0 right-0 h-full shadow-lg p-4"
           style={{ background:'#FFF7FC',}}
         >
           <div ref={sidebarRef}>
