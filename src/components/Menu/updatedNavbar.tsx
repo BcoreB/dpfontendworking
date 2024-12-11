@@ -153,7 +153,7 @@ function DropdownMenuItem({ iconSrc, dropdownData, isExpanded }: DropdownMenuIte
           onMouseEnter={handleDropdownMouseEnter}
           onMouseLeave={handleMouseLeave}
           className={`absolute w-72 top-0 left-full  bg-[#33475b] z-50 text-white rounded-md shadow-lg p-4 ${
-            isExpanded ? 'left-60 ml-[1px]' : 'left-10 top-0 ml-[5px]'
+            isExpanded ? 'left-60 ml-[40px]' : 'left-10 top-0 ml-[24px]'
           }`}
           style={{ zIndex: 1000 }}
         >
