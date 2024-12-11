@@ -30,8 +30,14 @@ const AirSectorMaster = () => {
     // 2. Define a submit handler.
 
 
-  
+  const [isClient, setIsClient] = useState(false)
+ 
+    useEffect(() => {
+        setIsClient(true)
+    }, [])
   return (
+    <>
+        {isClient ?
     <div className='w-full h-full  px-5 py-5  lg:px-20 lg:pb-14 lg:pt-8'>
       <div className='fixed top-0 right-0 z-5'>
         <Sidebar
@@ -125,6 +131,10 @@ const AirSectorMaster = () => {
       </div>
     </MaxWidthWrapper>
     </div>
+    : ''
+  }
+      
+  </>
   )
   
 }

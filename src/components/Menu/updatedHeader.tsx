@@ -68,7 +68,7 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
 
   return (
     <>
-      <div className={`nav-header fixed z-10 bg-white h-20 flex w-full justify-between md:justify-evenly items-center px-4 md:px-10 ${isMobile ? "w-[90%] mx-auto mt-4 rounded-lg shadow-lg " : ""}`}>
+      <div className={`nav-header fixed z-10 bg-[#33475b] text-white h-12 flex w-full justify-between md:justify-evenly items-center px-4 md:px-10 ${isMobile ? "w-[90%] mx-auto mt-4 rounded-lg shadow-lg " : ""}`}>
         {isMobile && (
           <div className="top-4 left-4 z-10">
             <Image
@@ -85,18 +85,19 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
           <Image height={50} width={50} alt="Logo" src={'/BcoreLogo.png'} className="max-w-full" />
           <div className="hidden md:block vertical-line"></div>
         </div>
-
+        
         <div className="hidden md:flex items-center gap-6 md:w-3/6">
           <div className="relative flex-1">
             <input
+              tabIndex={-1}
               type="text"
-              className="bg-[#EAF6FC] px-4 py-2 border-0 w-full max-w-full shadow-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder={getLanguageByEnglish("Search for an item...")}
+              className="bg-[#425b76] px-4 py-1.5 border-0 w-11/12 max-w-full shadow-sm rounded-md focus:outline-none focus:ring-2 focus:bg-white focus:text-black"
+              placeholder={getLanguageByEnglish("Search for an item")}
               value={searchTerm}
               onChange={handleSearch}
             />
             {searchTerm && (
-              <ul className="absolute top-12 left-0 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-10">
+              <ul className="absolute top-12 left-0 w-full text-black bg-white  border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-10">
                 {filteredItems.length > 0 ? (
                   filteredItems.map((item, index) => (
                     <li
@@ -121,23 +122,25 @@ export default function Navheader({ employeeCode }: NavheaderProps) {
 
         <div className="flex items-center space-x-2 md:w-1/6 gap-4 relative">
           <div className="hidden md:block vertical-line"></div>
-          <Image
-            width={20}
-            height={20}
-            alt="Dropdown"
-            src={'/header/downarrow.png'}
-            className="opacity-50 cursor-pointer"
-            onClick={toggleDropdown}
-          />
+          
           {isClient && (
             <>
+              <Image width={30} height={30} className="rounded-full max-w-full" alt="Profile" src={employee.profileImg} />
               <h3 className="truncate max-w-[80px] md:max-w-[160px]">{employee.name}</h3>
-              <Image width={40} height={40} className="rounded-full max-w-full" alt="Profile" src={employee.profileImg} />
+              <Image
+                width={20}
+                height={20}
+                alt="Dropdown"
+                src={'/header/downarrow.png'}
+                className="opacity-50 cursor-pointer"
+                onClick={toggleDropdown}
+              />  
             </>
+            
           )}
 
           {isDropdownOpen && (
-            <div className="absolute top-14 right-0 bg-white border border-gray-300 rounded-lg shadow-lg py-2 w-48 z-10">
+            <div className="absolute top-14 right-0 bg-white text-black border border-gray-300 rounded-lg shadow-lg py-2 w-48">
               <ul className="flex flex-col text-sm">
                 <li
                   className="p-2 flex gap-2 hover:bg-gray-100 cursor-pointer"

@@ -120,6 +120,22 @@ export const leaveType = [
   {
     value: "b",
     label: "B",
+  },
+  {
+    value: "c",
+    label: "C",
+  },
+  {
+    value: "d",
+    label: "D",
+  },
+  {
+    value: "e",
+    label: "E",
+  },
+  {
+    value: "f",
+    label: "F",
   }
 ];
 export const payrolPeriod = [

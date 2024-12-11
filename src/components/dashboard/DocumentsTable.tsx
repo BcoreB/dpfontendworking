@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { getDocumentsByEmployeeCode, DocumentRow, updateDocumentImage } from '../Menu/data/documentData';
 import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 import { getLanguageByEnglish } from '@/utils/languages';
+import heic2any from 'heic2any';
 interface Column {
   name: string;
   title: string;
@@ -12,6 +13,7 @@ interface Column {
 interface DocumentsTableProps {
   employeeCode: string;
 }
+import { useDirection } from '@/app/DirectionContext';
 
 const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
   const [columns] = useState<Column[]>([
@@ -22,6 +24,8 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
     { name: 'actions', title: 'Actions' },
   ]);
 
+  const { isRtl } = useDirection();
+
   const [rows, setRows] = useState<DocumentRow[]>([]);
 
   useEffect(() => {
@@ -29,22 +33,40 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
     setRows(employeeData);
   }, [employeeCode]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, rowIndex: number) => {
+  const handleImageChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    rowIndex: number
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-
+      let imageUrl = "";
+      if (file.type === "image/heic" || file.name.endsWith(".heic")) {
+        try {
+          const convertedBlob = await heic2any({
+            blob: file,
+            toType: "image/jpeg", // Convert to JPEG
+          });
+          imageUrl = URL.createObjectURL(convertedBlob as Blob);
+        } catch (error) {
+          console.error("Error converting HEIC image:", error);
+          return;
+        }
+      } else {
+        imageUrl = URL.createObjectURL(file);
+      }
+  
       // Update the specific row's image URL in state
       setRows((prevRows) =>
         prevRows.map((row, index) =>
           index === rowIndex ? { ...row, image: imageUrl } : row
         )
       );
-
+  
       // Update the image URL in documentData for persistent changes
       updateDocumentImage(employeeCode, rowIndex, imageUrl);
     }
   };
+
 
   return (
     <div
@@ -83,7 +105,7 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled
-        rtlEnabled={true} // Enable RTL layout for DataGrid
+        rtlEnabled={isRtl} // Enable RTL layout for DataGrid
         height={500}
         columnWidth={150}
         noDataText=""
@@ -140,7 +162,7 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ employeeCode }) => {
                     <input
                       id={`fileInput-${cellData.rowIndex}`}
                       type="file"
-                      accept="image/*"
+                      accept="image/*, .heic"
                       style={{ display: 'none' }}
                       onChange={(e) => handleImageChange(e, cellData.rowIndex)}
                     />

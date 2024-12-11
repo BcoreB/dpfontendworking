@@ -7,6 +7,8 @@ import { AiFillCaretDown } from 'react-icons/ai';
 import { DateBox } from 'devextreme-react/date-box';
 import Button from 'devextreme-react/cjs/button';
 import {getLanguageByEnglish} from '@/utils/languages'
+import { useDirection } from '@/app/DirectionContext';
+import { confirm } from 'devextreme/ui/dialog'; // Import confirm dialog from DevExtreme
 interface GridProps<T> {
   columns: {
     dataField: keyof T;
@@ -16,6 +18,8 @@ interface GridProps<T> {
     dataType?: string;
     disabled?: boolean;
     formula?:string,
+    valueExp?:string,
+    displayExp?:string,
     columnMapping?: { [key: string]: keyof T }; // Include columnMapping here
   }[];
   dataSource: T[]; // Allow null in the dataSource
@@ -23,7 +27,8 @@ interface GridProps<T> {
   lastColumn: keyof T;
   watchColumns?: (keyof T)[];  // Accept new watchColumns prop
   onValuesChange?: (changes: { field: keyof T; currentValues: any[] }) => void; // Add this line
-  
+  PopKeyExp?: keyof T | null; // Add keyExp prop
+  GridKeyExp?:keyof T | null;
 }
 
 interface CellInfo<T> {
@@ -38,33 +43,54 @@ const GenericGrid = <T extends {RowId:number }>({
   dataSource: initialDataSource,
   onValueSelect,
   lastColumn,
-  
+  PopKeyExp = null, // Default value
+  GridKeyExp = null,
   onValuesChange,
   watchColumns = [], // Initialize watchColumns prop
 }: GridProps<T>) => {
   const [dataSource, setDataSource] = useState<T[]>(initialDataSource);
+  useEffect(() => {
+    if (PopKeyExp) {
+      console.log('PopKeyExp is:', PopKeyExp);
+      // Add any logic needed for PopKeyExp
+    }
+  }, [PopKeyExp]);
+  useEffect(() => {
+    if (GridKeyExp) {
+      console.log('GridKeyExp is:', GridKeyExp);
+      // Add any logic needed for PopKeyExp
+    }
+  }, [GridKeyExp]);
+
   const [lookupDataSource, setLookupDataSource] = useState<T[]>([]);
   const [filteredLookupDataSource, setFilteredLookupDataSource] = useState<T[]>([]);
   const [showLookupGrid, setShowLookupGrid] = useState<boolean>(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
   const iconRef = useRef<HTMLElement | null>(null);
+  const gridRef = useRef(null); // Ref for the main grid instance
 
-const addNewRow = () => {
-    const isEmptyRowPresent = dataSource.some((row) =>
-      columns.some((column) => 
-        !column.disabled && column.dataField !== 'id' && (row[column.dataField] === null || row[column.dataField] === '')
-      )
-    );
+  const [popupFocusedRowIndex, setPopupFocusedRowIndex] = useState<number>(0);
+
+
+  const addNewRow = () => {
+    const isEmptyRowPresent = dataSource.some((row) => {
+      return columns.some((column) => {
+        if (!column.disabled && column.dataField !== 'RowId') {
+          const value = row[column.dataField];
+          return value === null || value === '' || value === undefined;
+        }
+        return false;
+      });
+    });
 
     if (!isEmptyRowPresent) {
       const newId = dataSource.length > 0 ? Math.max(...dataSource.map((item) => item.RowId)) + 1 : 1;
-      
-      
-      // Dynamically set up initial values for each column in the new row
       const newRow: Partial<T> = { RowId: newId } as Partial<T>;
+
       columns.forEach((column) => {
-        newRow[column.dataField] = column.dataField === 'RowId' ? (newId as T[keyof T]) : undefined as T[keyof T];
+        newRow[column.dataField] = column.dataField === 'RowId' ? (newId as T[keyof T]) : undefined;
       });
+
       const updatedData = [...dataSource, newRow as T];
       setDataSource(updatedData);
       onValueSelect(updatedData);
@@ -73,135 +99,81 @@ const addNewRow = () => {
 
 
 
-// const handleEditorPreparing = (e: any) => {
-//     if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
-//       e.editorOptions.onKeyDown = (args: any) => {
-//         if (args.event.key === 'Enter') {
-//           addNewRow();
-//         }
-//       };
-//     }
-//   };
 
 
 
 const handleEditorPreparing = (e: EditorPreparingEvent<T>) => {
-  
   if (e.parentType === 'dataRow') {
-    // Check if the column being edited is in the watchColumns array
-    if (watchColumns.includes(e.dataField as keyof T)) {
-      e.editorOptions.onValueChanged = (args: { value: any }) => {
-        const rowIndex = e.row?.rowIndex;
-        if (rowIndex !== undefined) {
-          const updatedData = [...dataSource];
-          const updatedRow = { ...updatedData[rowIndex] };
 
-          // Update the field that has changed
-          updatedRow[e.dataField as keyof T] = args.value;
-          updatedData[rowIndex] = updatedRow;
+    
+    const isLookupColumn = columns.find(
+      (column) => column.dataField === e.dataField && column.inputType === 'lookup'
+    );
+    const isDateColumn = columns.find(
+      (column) => column.dataField === e.dataField && column.dataType === 'date'
+    );
+    if (isDateColumn) {
+      e.editorOptions.displayFormat = 'dd/MM/yyyy';
+      e.editorOptions.onValueChanged = (args: any) => {
+        e.setValue(new Date(args.value));
+      };
+      
+    }
 
-          // Create an object of key-value pairs where the key is the column and value is the updated value
-          const currentValues = watchColumns.reduce((acc, column) => {
-            acc[column] = updatedRow[column] || ""; // Assign default empty string if value is undefined
-            return acc;
-          }, {} as Record<keyof T, any>);
+    // Combine date column's original onKeyDown with new functionality
+    const originalOnKeyDown = e.editorOptions.onKeyDown;
+    e.editorOptions.onKeyDown = (args: { event: KeyboardEvent; component: any }) => {
+      // Call the original onKeyDown first to maintain date picker opening behavior
+      if (originalOnKeyDown) {
+        originalOnKeyDown(args);
+      }
+      const currentIndex = selectedRowIndex !== null ? selectedRowIndex : 0;
 
-          // Check if all fields in watchColumns are filled (non-empty)
-          const allFieldsFilled = watchColumns.every((column) => updatedRow[column]);
-
-          // Only call onValuesChange if all fields in watchColumns are filled
-          if (allFieldsFilled) {
-            onValuesChange?.({ field: e.dataField as keyof T, currentValues });
+      if (args.event.key === 'ArrowDown') {
+        if (isLookupColumn) {
+          if (e.row) {
+            setSelectedRowIndex(e.row.rowIndex ?? 0); // Ensure rowIndex is valid
           }
-
-          // Update the data source
-          setDataSource(updatedData);
-          onValueSelect(updatedData);
+          const dataSource = isLookupColumn.dataSource ?? []; // Default to an empty array
+          setLookupDataSource(dataSource);
+          setFilteredLookupDataSource(dataSource);
+          setShowLookupGrid(true);
         }
-      };
-    }
+        
+      }
 
-    // Handle the "Enter" keypress to add a new row
-    if (e.dataField === lastColumn) {
-      e.editorOptions.onKeyDown = (args: { event: KeyboardEvent }) => {
-        if (args.event.key === 'Enter') {
+      if (args.event.key === 'ArrowUp') {
+        const prevIndex = Math.max(currentIndex - 1, 0);
+        setSelectedRowIndex(prevIndex);
+        args.event.preventDefault();
+      }
+
+      // Check if the Enter key is pressed
+      if (args.event.key === 'Enter') {
+        if (e.dataField === lastColumn) {
+          // Prevent default behavior
+          args.event.preventDefault();
+
+          // Add a new row if necessary
           addNewRow();
+
+          // Focus the first column of the next row
+          setTimeout(() => {
+            (gridRef.current as any)?.editCell(
+              currentIndex + 1, // Move to the next row
+              0 // Focus the first column
+            );
+          }, 100); // Slight delay to ensure the row is added
         }
-      };
-    }
+      }
+    };
   }
 };
 
 
-// const handleEditorPreparing = (e: any) => {
-//   const formulaColumns = columns.filter(col => col.formula); // Get all columns with formulas
 
-//   if (e.parentType === 'dataRow' && e.dataField === lastColumn) {
-//     e.editorOptions.onKeyDown = (args: any) => {
-//       if (args.event.key === 'Enter') {
-//         const updatedData = [...dataSource];
-//         const currentRow = updatedData[e.row.rowIndex];
 
-//         if (formulaColumns.length > 0) {
-//           // Call executeFormulaColumns for all formula columns
-//           formulaColumns.forEach((formulaColumn) => {
-//             const calculatedValue = executeFormulaColumns([formulaColumn], updatedData, e.row.rowIndex);
-//             currentRow[formulaColumn.dataField] = calculatedValue;
-//           });
-//         }
 
-//         // Update the data source with the modified row
-//         updatedData[e.row.rowIndex] = currentRow;
-//         setDataSource(updatedData);
-
-//         // Trigger the value select handler with updated data
-//         onValueSelect(updatedData);
-
-//         // Add a new row
-//         addNewRow();
-//       }
-//     };
-//   }
-// };
-
-// const executeFormulaColumns = (
-//   formulaColumns: FormulaColumn[],
-//   gridData: any[],
-//   rowIndex: number
-// ) => {
-//   let finalValue = null; // Store and return the calculated value
-
-//   if (formulaColumns) {
-//     formulaColumns.forEach((fc) => {
-//       try {
-//         let formula = fc.formula;
-
-//         // Replace placeholders in the formula with the corresponding cell values
-//         columns.forEach((col) => {
-//           const placeholder = `<${col.dataField}>`;
-//           if (formula.includes(placeholder)) {
-//             let colVal = gridData[rowIndex][col.dataField];
-//             colVal = colVal === null || colVal === undefined || colVal === "" ? "0" : colVal;
-
-//             // No date-specific handling, just replace the placeholder with the value
-//             formula = formula.replace(new RegExp(placeholder, "g"), colVal.toString());
-//           }
-//         });
-
-//         // Evaluate the formula to get the final value
-//         finalValue = eval(formula); // Caution: Use eval carefully in real-world applications
-
-//         // Update the corresponding field with the calculated value if it's defined
-//         if (finalValue !== null) {
-//           gridData[rowIndex][fc.dataField] = finalValue;
-//         }
-//       } catch (error) {
-//         console.error("Error evaluating formula:", error);
-//       }
-//     });
-//   }
-//   return finalValue; // Return the calculated value
-// };
 
 
 
@@ -266,23 +238,154 @@ const handleRowDoubleClick = (e: any) => {
     setDataSource(updatedData);
     onValueSelect(updatedData);
 
+    // Close the popup
     setShowLookupGrid(false);
+
+    // Explicitly move focus to the next column
+    setTimeout(() => {
+      if (gridRef.current) {
+        try {
+          // Find the column index of the current column
+          const currentColumnIndex = columns.findIndex(
+            col => col.dataField === mappedColumn.dataField
+          );
+          
+          // Move to the next column in the same row
+          (gridRef.current as any).editCell(
+            selectedRowIndex, 
+            currentColumnIndex + 1
+          );
+        } catch (error) {
+          console.error('Error moving focus:', error);
+        }
+      }
+    }, 100);
   }
 };
 
 
 
+
+// Handle the focusedCellChanging event to enable smooth focus movement
+const handleFocusedCellChanging = (e: any) => {
+  if (e.newRowIndex !== e.rowIndex || e.newColumnIndex !== e.columnIndex) {
+    e.isHighlighted = true;
+  }
+};
+
+
+  const { isRtl } = useDirection();
+
+
+  const handlePopupRowClick = (e: any) => {
+    const clickedRowIndex = e.rowIndex; // Get the index of the clicked row
+    const clickedRowData = e.data; // Get the data of the clicked row
+  
+    setPopupFocusedRowIndex(clickedRowIndex); // Keep track of the selected row index
+    
+    console.log('Focused Row Index:', clickedRowIndex);
+    console.log('Selected Row Data:', clickedRowData);
+  };
+  
+  // Add keyboard event handler for popup
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!showLookupGrid) return;
+
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault(); // Prevent default scroll behavior
+
+        setPopupFocusedRowIndex(prevIndex => {
+          const maxIndex = filteredLookupDataSource.length - 1;
+          if (e.key === 'ArrowDown') {
+            return Math.min(prevIndex + 1, maxIndex);
+          } else {
+            return Math.max(prevIndex - 1, 0);
+          }
+        });
+      }
+
+      // Handle Enter key to select the focused row
+      if (e.key === 'Enter' && showLookupGrid) {
+        const selectedRow = filteredLookupDataSource[popupFocusedRowIndex];
+        if (selectedRow) {
+          handleRowDoubleClick({ data: selectedRow });
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showLookupGrid, filteredLookupDataSource, popupFocusedRowIndex]);
+
+  const [isMobile, setIsMobile] = useState(false);
+  // Check if the device is mobile
+  useEffect(() => {
+    const updateIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768); // Adjust breakpoint as needed
+    };
+
+    updateIsMobile();
+    window.addEventListener('resize', updateIsMobile);
+    return () => window.removeEventListener('resize', updateIsMobile);
+  }, []);
+
+
+
+
+  const deleteFirstRowAndAddNewRow = () => {
+    if (dataSource.length <= 1) {
+      // Remove the first row
+      const updatedData = dataSource.slice(1);
+  
+      // Add a new empty row if not already present
+      const newId = updatedData.length > 0 ? Math.max(...updatedData.map((item) => item.RowId)) + 1 : 1;
+      const newRow: Partial<T> = { RowId: newId } as Partial<T>;
+  
+      columns.forEach((column) => {
+        newRow[column.dataField] =
+          column.dataField === 'RowId' ? (newId as T[keyof T]) : undefined as T[keyof T];
+      });
+  
+      // Update the data source
+      const finalData = [...updatedData, newRow as T];
+      setDataSource(finalData);
+      onValueSelect(finalData);
+    }
+  };
+  
+  // Hook this function to a delete button or an action triggering the deletion
+  const handleDeleteFirstRow = () => {
+    deleteFirstRowAndAddNewRow();
+  };;
+  
+  
   return (
     <>
       <div style={{ width: '100%', margin: '0 auto' }}>
         <DataGrid
           dataSource={dataSource}
           showBorders={true}
-          keyExpr="id"
+          keyExpr={GridKeyExp ? String(GridKeyExp) : undefined}
+          onRowRemoving={handleDeleteFirstRow}// Add the row removing handler
           onEditorPreparing={handleEditorPreparing}
-          columnHidingEnabled={true}
+          columnHidingEnabled={isMobile}
           repaintChangesOnly={true}
-          rtlEnabled={true} // Enable RTL layout for DataGrid
+          rtlEnabled={isRtl} // Enable RTL layout for DataGrid
+          onContentReady={(e) => {
+            // Remove tabIndex from header cells
+            const headers = e.element.querySelector('.dx-datagrid-headers');
+            if (headers) {
+              headers.querySelectorAll('[tabindex]').forEach((header) => {
+                header.removeAttribute('tabIndex');
+              });
+            }
+             // Remove tabIndex from delete buttons
+              const deleteButtons = e.element.querySelectorAll('.dx-link-delete');
+              deleteButtons.forEach((button) => {
+                button.removeAttribute('tabIndex'); // Set tabIndex to -1 to remove it from focus order
+              });
+          }}
         >
           <Editing mode="cell" allowUpdating={true} allowAdding={false} allowDeleting={true} useIcons={true} />
 
@@ -298,6 +401,21 @@ const handleRowDoubleClick = (e: any) => {
                 dataType={isDateColumn ? 'date' : isTimeColumn ? 'datetime' : undefined}
                 allowEditing={!column.disabled}
                 editorOptions={
+                  isDateColumn
+                  ? {
+                      displayFormat: 'dd/MM/yyyy', // Display only the date
+                      dateSerializationFormat: 'yyyy-MM-dd', // Serialization ensures no time is included
+                      pickerType: 'calendar', // Use calendar for selection
+                      format: 'dd/MM/yyyy',
+                      openOnFieldClick: true, // Ensure the date picker opens on field click
+                      showDropDownButton: true, // Display a dropdown button for date picker
+                      onKeyDown: (e:any) => {
+                        if (e.event.key === 'ArrowDown') {
+                          e.component.open(); // Open the date picker on pressing ArrowDown
+                        }
+                      },
+                    }
+                  : 
                   isTimeColumn
                     ? {
                         type: 'datetime',
@@ -312,7 +430,13 @@ const handleRowDoubleClick = (e: any) => {
                 cellRender={(cellInfo: CellInfo<T>) => {
                   if (isDateColumn) {
                     return <span>
-                    {cellInfo.value ? new Intl.DateTimeFormat('en-US').format(new Date(cellInfo.value)) : ''}
+                      {cellInfo.value
+                        ? new Intl.DateTimeFormat('en-GB', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                          }).format(new Date(cellInfo.value))
+                        : ''}
                   </span>;
                   }else if (isTimeColumn) {
                     return (
@@ -333,7 +457,11 @@ const handleRowDoubleClick = (e: any) => {
                 }}
               >
                 {column.inputType === 'combo' && column.dataSource && (
-                  <Lookup dataSource={column.dataSource} valueExpr="EmpCode" displayExpr="Employee" />
+                  <Lookup 
+                    dataSource={column.dataSource} 
+                    valueExpr={column.valueExp} 
+                    displayExpr={column.displayExp}
+                  />
                 )}
               </Column>
             );
@@ -345,14 +473,35 @@ const handleRowDoubleClick = (e: any) => {
         <Popup
         visible={true}
         onHiding={() => {
+          const currentLookupColumnIndex = columns.findIndex(
+            col => col.inputType === 'lookup'
+          );
+        
+          // Close the lookup grid
           setShowLookupGrid(false);
           iconRef.current = null;
+        
+          // Delay to ensure popup is closed before focusing
+          setTimeout(() => {
+            if (gridRef.current && selectedRowIndex !== null && currentLookupColumnIndex !== -1) {
+              try {
+                // Directly focus the lookup column in the current row
+                (gridRef.current as any).editCell(
+                  selectedRowIndex, 
+                  currentLookupColumnIndex
+                );
+              } catch (error) {
+                console.error('Error moving focus:', error);
+              }
+            }
+          }, 100);
         }}
-        title="Select Employee"
+        title={getLanguageByEnglish("Select Employee")}
         width={600}
+        minHeight={250}
         height={'max-content'}
         showCloseButton={true}
-        dragEnabled={true}
+        dragEnabled={false}
         position={() => {
           if (!iconRef.current) return;
           
@@ -393,12 +542,12 @@ const handleRowDoubleClick = (e: any) => {
         <div>
           <div style={{ display: 'flex', marginBottom: '10px', justifyContent: 'space-between' }}>
           <TextBox
-                placeholder="Search..."
+                placeholder={getLanguageByEnglish("Search...")}
                 onValueChanged={(e) => handleSearchChange(e.value)}
                 className='w-1/2'
               />
               <Button
-                text="Search"
+                text={getLanguageByEnglish("Search")}
                 onClick={() => {
                   const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
                   if (input) {
@@ -407,7 +556,7 @@ const handleRowDoubleClick = (e: any) => {
                 }}
               />
               <Button
-                text="Clear"
+                text={getLanguageByEnglish("Clear")}
                 style={{background:'red', fontWeight:600,}}
                 onClick={() => {
                   const input = document.querySelector('.dx-texteditor-input') as HTMLInputElement;
@@ -421,17 +570,22 @@ const handleRowDoubleClick = (e: any) => {
           <DataGrid
             dataSource={filteredLookupDataSource}
             showBorders={true}
-            selection={{ mode: 'single' }}
+            keyExpr={PopKeyExp ? String(PopKeyExp) : undefined}
+            focusedRowIndex={popupFocusedRowIndex}
+            focusedRowEnabled={true}
+            onRowClick={handlePopupRowClick}
             onRowDblClick={handleRowDoubleClick}
-            columnAutoWidth={true}  // Auto-adjust column widths to content
-            style={{ userSelect: 'none' }} // Disable text selection in the grid
-            rtlEnabled={true} // Enable RTL layout for DataGrid
+            ref={gridRef} // Attach the ref to the grid
+            columnAutoWidth={true}
+            style={{ userSelect: 'none', minHeight: '150px' }} // Set minimum height
+            rtlEnabled={isRtl}
           >
             {filteredLookupDataSource.length > 0 &&
               Object.keys(filteredLookupDataSource[0]).map((field) => (
-                <Column key={field} dataField={field} />
+                <Column key={field} caption={getLanguageByEnglish(field)} dataField={field} />
               ))}
           </DataGrid>
+
         </div>
       </Popup>
       

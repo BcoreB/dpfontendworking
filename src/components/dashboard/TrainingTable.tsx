@@ -4,6 +4,7 @@ import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/dat
 import { Button, Modal, Box, Typography, MenuItem, Select, TextField } from '@mui/material';
 import { trainingData, TrainingData } from '../Menu/data/trainingData';
 import { getLanguageByEnglish } from '@/utils/languages';
+import { useDirection } from '@/app/DirectionContext';
 interface Column {
   name: string;
   title: string;
@@ -14,6 +15,7 @@ interface TrainingTableProps {
 }
 
 const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
+  const { isRtl } = useDirection();
   const [columns] = useState<Column[]>([
     { name: 'date', title: 'Date' },
     { name: 'training', title: 'Training' },
@@ -32,10 +34,16 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
     setRows(employeeData);
   }, [employeeCode]);
 
+  const formatDate = (dateString: string): string => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+  };
   const handleRequestTraining = () => {
     const today = new Date().toISOString().split('T')[0];
+    const formattedDate = formatDate(today); // Format the date
     const newRow: TrainingData = {
-      date: today,
+
+      date: formattedDate,
       training: selectedTraining,
       attenddate: '',
     };
@@ -68,7 +76,7 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
 
         <DataGrid
           dataSource={rows}
-          rtlEnabled={true} // Enable RTL layout for DataGrid
+          rtlEnabled={isRtl} // Enable RTL layout for DataGrid
           showBorders={false}
           rowAlternationEnabled={false}
           hoverStateEnabled
@@ -112,7 +120,7 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
       </div>
 
       <Modal open={isModalOpen} onClose={handleCloseModal}>
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 600, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 24, p: 4 }}>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 600, minWidth:300 , bgcolor: 'background.paper', borderRadius: 1, boxShadow: 24, p: 4 }}>
           <Typography variant="h6" component="h2">
           { getLanguageByEnglish('Select Training')}
           </Typography>
@@ -126,12 +134,14 @@ const TrainingTable: React.FC<TrainingTableProps> = ({ employeeCode }) => {
           <TextField label={ getLanguageByEnglish("Pref. Date")} type="date" value={prefDate} onChange={(e) => setPrefDate(e.target.value)} fullWidth sx={{ mt: 2, mb: 2 }} InputLabelProps={{ shrink: true }} />
           <TextField label={ getLanguageByEnglish("Reason")} value={reason} onChange={(e) => setReason(e.target.value)} fullWidth sx={{ mb: 2 }} />
 
-          <Button variant="contained" onClick={handleRequestTraining} sx={{ mt: 2, color: 'black' }} disabled={!selectedTraining || !prefDate || !reason}>
-          { getLanguageByEnglish('Save')}
-          </Button>
-          <Button variant="outlined" onClick={handleCloseModal} sx={{ mt: 2, ml: 2 }}>
-          { getLanguageByEnglish('Cancel')}
-          </Button>
+          <div className='flex gap-5 '>
+            <Button variant="contained" onClick={handleRequestTraining} sx={{ mt: 2, color: 'black' }} disabled={!selectedTraining || !prefDate || !reason}>
+            { getLanguageByEnglish('Save')}
+            </Button>
+            <Button variant="outlined" onClick={handleCloseModal} sx={{ mt: 2, ml: 2 }}>
+            { getLanguageByEnglish('Cancel')}
+            </Button>
+          </div>
         </Box>
       </Modal>
     </div>

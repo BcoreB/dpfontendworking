@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 import { getEmployeeData } from '../Menu/data/employeeData';
 import { getLanguageByEnglish } from '@/utils/languages';
+import { useDirection } from '@/app/DirectionContext';
 // Define props interface to accept employeeCode
 interface StaffLedgerTableProps {
   employeeCode: string;
@@ -20,6 +21,7 @@ interface RowData {
 
 
 const StaffLedgerTable: React.FC<StaffLedgerTableProps> = ({ employeeCode }) => {
+  const { isRtl } = useDirection();
   const columns = [
     { name: 'date', title: 'Date' },
     { name: 'account', title: 'Account' },
@@ -74,7 +76,7 @@ const StaffLedgerTable: React.FC<StaffLedgerTableProps> = ({ employeeCode }) => 
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled={true}
-        rtlEnabled={true} // Enable RTL layout for DataGrid
+        rtlEnabled={isRtl} // Enable RTL layout for DataGrid
         height={450}
         columnWidth={150}
         noDataText="" // This will hide any default no data text

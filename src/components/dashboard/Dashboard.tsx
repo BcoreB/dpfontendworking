@@ -17,6 +17,7 @@ import LoanRequestTables from './LoanRequestTable';
 import PaySlipTable from './PaySlipTable';
 
 import 'devextreme/dist/css/dx.light.css';
+import { getLanguageByEnglish } from '@/utils/languages';
 
 interface EmpProps {
   employeeCode: string;
@@ -47,6 +48,7 @@ const Dashboard: React.FC<EmpProps> = ({ employeeCode }) => {
 
   return (
     <div className="p-4 md:p-10 space-y-6 max-h-lvh">
+      
       {/* Profile and Summary Cards */}
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
         <div className="w-full md:w-1/3"><ProfileCard employeeCode={safeEmployeeCode}/></div>
@@ -58,20 +60,20 @@ const Dashboard: React.FC<EmpProps> = ({ employeeCode }) => {
         <>
           <div>
             <button onClick={() => toggleAccordion("attendance")} className="w-full text-left font-medium p-4 bg-gray-100 rounded-md shadow">
-              Attendance
+              {getLanguageByEnglish('Attendance')}
             </button>
             {openAccordion === "attendance" && (
               <div className="p-4 space-y-4">
                 <Attendance onAddEntry={handleAddEntry} />
-                <AttendanceTable attendanceEntries={attendanceEntries} employeeCode={safeEmployeeCode} />
-                <RequestTables employeeCode={safeEmployeeCode} />
+                <AttendanceTable attendanceEntries={attendanceEntries} employeeCode={safeEmployeeCode} isMobile={isMobile} />
+                <RequestTables employeeCode={safeEmployeeCode} isMobile={isMobile} />
               </div>
             )}
           </div>
 
           <div>
             <button onClick={() => toggleAccordion("documents")} className="w-full text-left font-medium p-4 bg-gray-100 rounded-md shadow">
-              Documents, Holidays, and Training
+            {getLanguageByEnglish('Documents, Holidays, and Training')}
             </button>
             {openAccordion === "documents" && (
               <div className="p-4 space-y-4">
@@ -84,7 +86,7 @@ const Dashboard: React.FC<EmpProps> = ({ employeeCode }) => {
 
           <div>
             <button onClick={() => toggleAccordion("salaryAnnouncements")} className="w-full text-left font-medium p-4 bg-gray-100 rounded-md shadow">
-              Salary and Announcements
+            {getLanguageByEnglish('Salary and Announcements')}
             </button>
             {openAccordion === "salaryAnnouncements" && (
               <div className="p-4 space-y-4">
@@ -97,7 +99,7 @@ const Dashboard: React.FC<EmpProps> = ({ employeeCode }) => {
 
           <div>
             <button onClick={() => toggleAccordion("others")} className="w-full text-left font-medium p-4 bg-gray-100 rounded-md shadow">
-              Pay Slip, Leave, and Loan Requests
+            {getLanguageByEnglish('Pay Slip, Leave, and Loan Requests')}
             </button>
             {openAccordion === "others" && (
               <div className="p-4 space-y-4">
@@ -113,8 +115,8 @@ const Dashboard: React.FC<EmpProps> = ({ employeeCode }) => {
           {/* Main Tables Section for Desktop */}
           <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
             <div className="w-full md:w-1/3"><Attendance onAddEntry={handleAddEntry} /></div>
-            <div className="w-full md:w-1/3"><AttendanceTable attendanceEntries={attendanceEntries} employeeCode={safeEmployeeCode} /></div>
-            <div className="w-full md:w-1/3"><RequestTables employeeCode={safeEmployeeCode} /></div>
+            <div className="w-full md:w-1/3"><AttendanceTable attendanceEntries={attendanceEntries} employeeCode={safeEmployeeCode} isMobile={isMobile}/></div>
+            <div className="w-full md:w-1/3"><RequestTables employeeCode={safeEmployeeCode} isMobile={isMobile} /></div>
           </div>
 
           <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">

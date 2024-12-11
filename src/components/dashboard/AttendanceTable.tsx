@@ -4,12 +4,17 @@ import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/dat
 import attendanceData from '../Menu/data/attendanceData';
 import { RowData } from '../Menu/data/attendanceData';
 import { getLanguageByEnglish } from '@/utils/languages';
+import { useDirection } from '@/app/DirectionContext';
 interface AttendanceTableProps {
   employeeCode: string;
   attendanceEntries: { date: string; in: string; out: string }[];
+  isMobile:boolean;
 }
 
-const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attendanceEntries }) => {
+const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attendanceEntries, isMobile }) => {
+
+  const { isRtl } = useDirection();
+
   const [columns] = useState([
     { name: 'date', title: 'Date' },
     { name: 'in', title: 'In' },
@@ -59,9 +64,10 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ employeeCode, attenda
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled={true}
-        rtlEnabled={true}
+        rtlEnabled={isRtl}
         height={500}
         columnAutoWidth={true}
+        columnHidingEnabled={isMobile}
         noDataText=""
         style={{
           border: 'none',

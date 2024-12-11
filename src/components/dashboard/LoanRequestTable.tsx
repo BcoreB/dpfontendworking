@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { DataGrid, Column, Paging, Scrolling } from 'devextreme-react/data-grid';
 import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, Select } from '@mui/material';
 import { getLanguageByEnglish } from '@/utils/languages';
+import { useDirection } from '@/app/DirectionContext';
 const LoanRequestTables = () => {
   // Column definitions for each table
   const loanColumns = [
@@ -112,7 +113,7 @@ const LoanRequestTables = () => {
       [name]: value,
     });
   };
-
+  const { isRtl } = useDirection();
   return (
     <div>
       {/* Loan Request Table */}
@@ -130,7 +131,7 @@ const LoanRequestTables = () => {
             showBorders={true}
             columnAutoWidth={true}
             height={200}
-            rtlEnabled={true} // Enable RTL layout for DataGrid
+            rtlEnabled={isRtl} // Enable RTL layout for DataGrid
           >
             {loanColumns.map((col) => (
               <Column key={col.name} dataField={col.name} caption={ getLanguageByEnglish(col.title)} />
@@ -164,7 +165,7 @@ const LoanRequestTables = () => {
             showBorders={true}
             columnAutoWidth={true}
             height={200}
-            rtlEnabled={true} // Enable RTL layout for DataGrid
+            rtlEnabled={isRtl} // Enable RTL layout for DataGrid
           >
             {expenseColumns.map((col) => (
               <Column key={col.name} dataField={col.name} caption={ getLanguageByEnglish(col.title)} />
@@ -198,9 +199,9 @@ const LoanRequestTables = () => {
               <MenuItem key={option} value={option}>{getLanguageByEnglish(option)}</MenuItem>
             ))}
           </Select>
-          <TextField className="my-4" label={getLanguageByEnglish("Amount")} name="amount" fullWidth value={loanFormData.amount} onChange={handleLoanInputChange} />
-          <TextField className="my-4" label={getLanguageByEnglish("Guarantor")} name="guarantor" fullWidth value={loanFormData.guarantor} onChange={handleLoanInputChange} />
-          <TextField className="my-4" label={getLanguageByEnglish("Reason")} name="reason" fullWidth value={loanFormData.reason} onChange={handleLoanInputChange} />
+          <TextField className="my-4" sx={{ marginBottom: 2 }} label={getLanguageByEnglish("Amount")} type='number' name="amount" fullWidth value={loanFormData.amount} onChange={handleLoanInputChange} />
+          <TextField className="my-4" sx={{ marginBottom: 2 }} label={getLanguageByEnglish("Guarantor")} name="guarantor" fullWidth value={loanFormData.guarantor} onChange={handleLoanInputChange} />
+          <TextField className="my-4" sx={{ marginBottom: 2 }} label={getLanguageByEnglish("Reason")} name="reason" fullWidth value={loanFormData.reason} onChange={handleLoanInputChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseLoanDialog} color="primary">{ getLanguageByEnglish('Cancel')}</Button>
@@ -223,9 +224,9 @@ const LoanRequestTables = () => {
               <MenuItem key={option} value={option}>{getLanguageByEnglish(option)}</MenuItem>
             ))}
           </Select>
-          <TextField className="my-4" label={ getLanguageByEnglish("Voucher")} name="voucher" fullWidth value={expenseFormData.voucher} onChange={handleExpenseInputChange} />
-          <TextField className="my-4" label={ getLanguageByEnglish("Amount")} type='number' name="amount" fullWidth value={expenseFormData.amount} onChange={handleExpenseInputChange} />
-          <TextField className="my-4" label={ getLanguageByEnglish("Reason")} name="reason" fullWidth value={expenseFormData.reason} onChange={handleExpenseInputChange} />
+          <TextField className="my-4" sx={{ marginBottom: 2 }} label={ getLanguageByEnglish("Voucher")} name="voucher" fullWidth value={expenseFormData.voucher} onChange={handleExpenseInputChange} />
+          <TextField className="my-4" sx={{ marginBottom: 2 }} label={ getLanguageByEnglish("Amount")} type='number' name="amount" fullWidth value={expenseFormData.amount} onChange={handleExpenseInputChange} />
+          <TextField className="my-4" sx={{ marginBottom: 2 }} label={ getLanguageByEnglish("Reason")} name="reason" fullWidth value={expenseFormData.reason} onChange={handleExpenseInputChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseExpenseDialog} color="primary">{ getLanguageByEnglish("Cancel")}</Button>

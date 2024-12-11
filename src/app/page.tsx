@@ -55,7 +55,12 @@ export default function Home() {
   };
 
   // carousel
-  
+  const [isClient, setIsClient] = useState(false)
+ 
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const slides = [
@@ -89,8 +94,10 @@ export default function Home() {
 
 
   return (
-    <main className="flex h-full w-full justify-between max-w-screen-2xl p-5 m-auto lg:px-60 lg:p-14">
-        <div className="landing-text bg-white w-1/2  pt-8 px-12">
+    <>
+      {isClient?
+        <main className="flex rounded-lg flex-col md:flex-row h-full w-full justify-between max-w-screen-2xl p-5 m-auto lg:px-60 lg:p-14">
+        <div className="landing-text bg-white md:w-1/2  pt-8 px-12">
           <div className="logo">
             <Image
               width={100}
@@ -103,7 +110,7 @@ export default function Home() {
           <h1 className='text-3xl font-bold mt-2'>{getLanguageByEnglish('Login to your account')}</h1>
           <LoginForm />
         </div>
-        <div className="landing-carousel bg-[#818CF8] w-1/2">
+        <div className="landing-carousel bg-[#818CF8] md:w-1/2 pb-2">
           <div className="relative w-full mx-auto">
             {/* Slide */}
             <div className="w-full h-full  text-white text-center  items-center py-10 overflow-hidden">
@@ -133,5 +140,10 @@ export default function Home() {
           </div>
         </div>
     </main>
+    :
+    ''
+    }
+    </>
+    
   );
 }

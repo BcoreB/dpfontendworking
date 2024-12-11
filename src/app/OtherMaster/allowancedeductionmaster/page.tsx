@@ -46,6 +46,14 @@ const hasEmptyRow = (gridData: any) => {
 
 
 const AllowanceDeduction = () => {
+
+  const [isClient, setIsClient] = useState(false)
+ 
+    useEffect(() => {
+        setIsClient(true)
+    }, [])
+
+
     const docCd = 8;
     const docKey = 101;
     const [formValues, setFormValues] = useState<z.infer<typeof formSchema>>();
@@ -112,6 +120,8 @@ const AllowanceDeduction = () => {
     // Initialize the form
     const form = InitializeForm();
     return (
+      <>
+        {isClient ?
         <div className="w-full h-full px-5 py-5 lg:px-20 lg:pb-14 lg:pt-8">
           <MaxWidthWrapper className="px-5 py-5 lg:px-10 lg:pb-6 lg:pt-10">
             <div className="border-solid">
@@ -275,7 +285,7 @@ const AllowanceDeduction = () => {
                   />
            </div>
            <div className="flex items-end justify-start gap-4">
-                    <Button type="button" onClick={loadSampleData}>Load Sample Data</Button>
+                    <Button type="button" onClick={loadSampleData}>{getLanguageByEnglish("Load Sample Data")}</Button>
               </div>
           </div>
           
@@ -286,6 +296,10 @@ const AllowanceDeduction = () => {
                 
           </MaxWidthWrapper>
         </div>
+        : ''
+      }
+          
+      </>
       );
 
 

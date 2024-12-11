@@ -4,12 +4,12 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/Menu/updatedNavbar";
 import Navheader from "@/components/Menu/updatedHeader";
 import { useEmployee } from '@/app/EmployeeContext';
+
 const HideableNavbar: React.FC = () => {
   const pathname = usePathname();
   const [isMobile, setIsMobile] = useState(false);
   const { employeeCode } = useEmployee(); // Access employeeCode from context
 
-  
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -33,8 +33,10 @@ const HideableNavbar: React.FC = () => {
 
       {/* Always show Navbar on desktop */}
       {!isMobile && (
-        <div className="absolute left-0 navbar-div">
-          <Navbar />
+        <div className="fixed top-0 left-0 z-[50]">
+          <div className="absolute left-0 top-0 navbar-div bg-white w-12h-screen z-[50] shadow-lg">
+            <Navbar />
+          </div>
         </div>
       )}
     </div>

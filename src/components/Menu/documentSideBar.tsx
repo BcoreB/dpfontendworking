@@ -11,6 +11,7 @@ import {SelectBox} from 'devextreme-react'
 import { sampleDocListData } from './data/docListData';
 import ComboBox from '../ui/combobox';
 import { getLanguageByEnglish } from '@/utils/languages';
+import { useDirection } from '@/app/DirectionContext';
 interface Section {
   name: string;
   content: string;
@@ -281,6 +282,7 @@ const handleOpenClick = () => {
     setNotes(prevNotes => prevNotes.map((note, i) => i === index ? { ...note, expanded: !note.expanded } : note));
   };
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const handleClickOutside = (event: MouseEvent) => {
     if (sidebarRef.current) {
       const sidebarRect = sidebarRef.current.getBoundingClientRect();
@@ -289,22 +291,68 @@ const handleOpenClick = () => {
         setActiveSection(null); // Close the sidebar
       }
     }
+    if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      setIsSidebarOpen(false);
+    }
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
+  const { isRtl } = useDirection();
+  const [isMobile, setIsMobile] = useState(false);
+  // Check if the device is mobile
+  useEffect(() => {
+    const updateIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768); // Adjust breakpoint as needed
+    };
 
-  
+    updateIsMobile();
+    window.addEventListener('resize', updateIsMobile);
+    return () => window.removeEventListener('resize', updateIsMobile);
+  }, []);
+
+
+
   return (
     <div className="flex h-screen relative">
-      <div className="right-0 flex bg-purple-100 h-full flex-col text-sm z-10 pt-2 justify-evenly items-center mt-20 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
+      {/* Hamburger Menu */}
+      <button
+        onClick={() => setIsSidebarOpen((prev) => !prev)}
+        // className="block md:hidden p-2 absolute top-2 right-2 text-gray-500 hover:text-black z-20"
+        className="block md:hidden p-2 absolute top-32 right-2 text-gray-500 hover:text-black"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+      {/* Sidebar */}
+      <div
+        ref={sidebarRef}
+        className={`fixed top-0 right-0 z-10 h-full transition-transform transform ${
+          isSidebarOpen ? "translate-x-0" : "translate-x-10"
+        } md:translate-x-0 md:relative bg-gray-100 shadow-lg`}
+        style={{ width: "2rem" }}
+      >
+      <div className="right-0 flex bg-purple-100 h-full flex-col text-sm z-10 pt-2 justify-evenly items-center mt-28 md:mt-0 bg-gray-100 shadow-lg" style={{ width: '2.2rem' }}>
         {sections.map((section, index) => (
           <button
+            tabIndex={-1}
             key={index}
             className={`w-20 bg-purple-200 text-black py-1 rounded-sm hover:text-gray-900 text-center transform origin-center rotate-90 ${section.name === 'Document Actions' ? 'w-36 mb-10' : ''} ${section.name === 'Attachments' ? 'w-28 mt-6' : ''} ${section.name === 'Drafts' ? 'mt-6' : ''}${section.name === 'Notes' ? 'mt-2' : ''}${section.name === 'Document List' ? 'w-36 mt-10' : ''}`}
             onClick={() => toggleSection(index)}
@@ -315,18 +363,19 @@ const handleOpenClick = () => {
           </button>
         ))}
       </div>
+      </div>
       {sections.map((section, index) => (
         <Transition
           key={index}
           show={activeSection === index}
           enter="transition-transform duration-300"
-          enterFrom="transform translate-x-full"
+          enterFrom="transform  md:translate-x-full"
           enterTo="transform translate-x-0"
           leave="transition-transform duration-300"
           leaveFrom="transform translate-x-0"
           leaveTo="transform translate-x-full"
-          className="sidebar-slide absolute right-0 pr-12 h-full mt-24 shadow-lg p-4"
-          style={{ width: '28rem', background:'#FFF7FC',}}
+          className="sidebar-slide absolute w-[18rem] md:w-[28rem] mt-28 md:mt-0 pr-12 right-0 h-full shadow-lg p-4"
+          style={{ background:'#FFF7FC',}}
         >
           <div ref={sidebarRef}>
             {section.name === 'Document Actions' && (
@@ -345,15 +394,15 @@ const handleOpenClick = () => {
 <>
     <h2 className="text-xl font-bold pb-8">{getLanguageByEnglish('References')}</h2>
       <div className="flex items-center mb-4">
-            <label htmlFor="referenceType" className="mr-2 font-semibold">{getLanguageByEnglish('Reference Type:')}</label>
+            <label htmlFor="referenceType" className="mx-2 font-semibold">{getLanguageByEnglish('Reference Type')}</label>
             <select
                 id="referenceType"
                 value={selectedDataKey}
                 onChange={handleDataChange}
                 className="w-2/4 p-2 border border-gray-300 rounded"
             >
-                <option value="a">Data Set A</option>
-                <option value="b">Data Set B</option>
+                <option value="a">{getLanguageByEnglish('Data Set A')}</option>
+                <option value="b">{getLanguageByEnglish('Data Set B')}</option>
             </select>
         </div>
 
@@ -362,12 +411,13 @@ const handleOpenClick = () => {
         <DataGrid
             dataSource={referencesData[selectedDataKey]} // Use the selected key to get the right data
             showBorders={true}
+            columnHidingEnabled={isMobile}
             keyExpr={selectedDataKey === 'a' ? "DocNo" : "DocumentID"} // Update keyExpr based on selected data
             searchPanel={{ visible: true, width: 365, placeholder: getLanguageByEnglish('Search references...') }}
             selection={{ mode: 'multiple', showCheckBoxesMode: 'always' }} // Enable multi-row selection with checkboxes
             columnAutoWidth={true} // Auto-adjust column width
             onSelectionChanged={(e) => setSelectedRowsData(e.selectedRowsData)} // Store the selected rows
-            rtlEnabled={true} // Enable RTL layout for DataGrid
+            rtlEnabled={isRtl} // Enable RTL layout for DataGrid
           />
     </div>
     <button
@@ -399,7 +449,8 @@ const handleOpenClick = () => {
             showBorders={true}
             keyExpr="DocNo" // Unique key for the rows
             columnAutoWidth={true} // Auto-adjust column width
-            rtlEnabled={true} // Enable RTL layout for DataGrid
+            columnHidingEnabled={isMobile}
+            rtlEnabled={isRtl} // Enable RTL layout for DataGrid
             columns={[
                 { dataField: 'DocCd', caption: getLanguageByEnglish('DocCd') },
                 { dataField: 'CompID', caption: getLanguageByEnglish('CompID') },
@@ -449,7 +500,7 @@ const handleOpenClick = () => {
                   value={newNote}
                   onChange={(e) => setNewNote(e.target.value)}
                   placeholder={getLanguageByEnglish("Add a note")}
-                  className="w-11/12 mb-4 p-2 h-28 text-sm border border-gray-300 rounded resize-none overflow-y-scroll"
+                  className="w-11/12 mb-4 p-2 h-28 mt-12 text-sm border border-gray-300 rounded resize-none overflow-y-scroll"
                 />
                 <button
                   onClick={handleAddNote}
@@ -594,14 +645,15 @@ const handleOpenClick = () => {
         onSelectionChanged={onRowSelectionChanged}  // Single click to select
         onRowDblClick={onRowDoubleClick}  // Double-click event to alert row data
         style={{ userSelect: 'none' }} // Disable text selection in the grid
-        rtlEnabled={true} // Enable RTL layout for DataGrid
+        rtlEnabled={isRtl} // Enable RTL layout for DataGrid
+        columnHidingEnabled={isMobile}
       />
     </div>
 
     {/* Open button */}
     <div className="absolute bottom-4 right-4">
       <Button
-        text="Open"
+        text={getLanguageByEnglish("Open")}
         onClick={handleOpenClick}
         type="default"
         className="w-full max-w-xs mr-8"  // max-w-xs sets the max width to 4rem

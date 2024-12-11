@@ -1,132 +1,63 @@
 // app/utils/language.tsx
 import { useDirection } from '../app/DirectionContext';
+import * as XLSX from 'xlsx';
 
-const englishToArabic: Record<string, string> = {
-   "welcome Back!": "مرحبا بعودتك!",
-   "Login to your account": "تسجيل الدخول إلى حسابك",
-   "User Email": "البريد الإلكتروني للمستخدم",
-   "Password": "كلمة المرور",
-   "Select Location": "حدد الموقع",
-   "Location 1": "الموقع 1",
-   "Location 2": "الموقع 2",
-   "Remember me": "تذكرني",
-   "Forgot password?": "هل نسيت كلمة المرور؟",
-   "LOGIN": "تسجيل الدخول",
-   "Redefining Employee Management":"إعادة تعريف إدارة الموظفين",
-   "Foster a connected workforce with our all-in-one ERP solution.":"عزز قوة عاملة متصلة من خلال حل تخطيط موارد المؤسسات (ERP) الشامل لدينا.",
-   "Complete Employee Management Platform":"منصة كاملة لإدارة الموظفين",
-   "From recruitment to retirement, manage every employee journey seamlessly and efficiently.":"من التوظيف إلى التقاعد، قم بإدارة رحلة كل موظف بسلاسة وكفاءة.",
-   "The Future of Workforce Management":"مستقبل إدارة القوى العاملة",
-   "Boost Engagement and Compliance with Intuitive ERP Solutions.":"تعزيز المشاركة والامتثال من خلال حلول تخطيط موارد المؤسسات (ERP) البديهية.",
-   "January": "يناير",
-   "February": "فبراير",
-   "March": "مارس",
-   "April": "أبريل",
-   "May": "مايو",
-   "June": "يونيو",
-   "July": "يوليو",
-   "August": "أغسطس",
-   "September": "سبتمبر",
-   "October": "أكتوبر",
-   "November": "نوفمبر",
-   "December": "ديسمبر",
-   'ABSENT':'غائب',
-   'LEAVE':'يترك',
-   'LOAN':'يُقرض',
-   'Late In, Early Out':"في وقت متأخر، في وقت مبكر للخروج",
-   'Attendance':'حضور',
-   'Remarks':"ملاحظات",
-   'Type':'يكتب',
-   'Location':'موقع',
-   'Check In':'الدفع',
-   'Check Out':'تحقق في',
-   'Office':'مكتب',
-   'Client':'عميل',
-   'Home':'بيت',
-   'Date':'تاريخ',
-   'In':'في',
-   'Out':'خارج',
-   'Shift':'يحول',
-   'Training':'تمرين',
-   'Attend Date':"تاريخ الحضور",
-  'Request Training':"طلب التدريب",
-  'Select Training':"اختر التدريب",
-  'Choose a training':"اختر التدريب",
-  "Pref. Date":"التاريخ المفضل",
-  "Reason":"سبب",
-  'Save':'يحفظ',
-  'Cancel':'يلغي',
-  'Holidays':'العطل',
-  'Description':'وصف',
-  'Documents':'وثائق',
-  'Actions':"الإجراءات",
-  'Image':'صورة',
-  'Expiry':"انتهاء الصلاحية",
-  'Number':'رقم',
-  'Staff Ledger':"دفتر حسابات الموظفين",
-  'Account':'حساب',
-  'Ref#':"المرجع #",
-  'Amount':'كمية',
-  "Announcements":"الإعلانات",
-  "Latest announcements will appear here.":"أحدث الإعلانات ستظهر هنا.",
-  "Monthly Salary Statistics":"إحصاءات الرواتب الشهرية",
-  "Loan Request":"طلب القرض",
-  'Status':'حالة',
-  'Guarantor':"الضامن",
-  'Request':'طلب',
-  "Expense Request":"طلب النفقات",
-  'Voucher':'قسيمة',
-  'New Expense Request':'طلب نفقات جديد',
-  'Submit':'يُقدِّم',
-  'New Loan Request':"طلب قرض جديد",
-  'Personal Loan':"القرض الشخصي",
-  'Car Loan':"قرض السيارة",
-  'Home Loan':"قرض المنزل",
-  'Travel':'يسافر',
-  'Office Supplies':"اللوازم المكتبية",
-  'Meals':"الوجبات",
-  'Leave':'يترك',
-  'From Date':"من التاريخ",
-  'To Date':"حتى الآن",
-  'Sick Leave':"إجازة مرضية",
-  'Casual Leave':"إجازة عارضة",
-  'Paid Leave':"إجازة مدفوعة الأجر",
-  'Work from Home':"العمل من المنزل",
-  'Half Day':'نصف يوم',
-  'Leave Request':'طلب الإجازة',
-  'Pay Slip':"قسيمة الدفع",
-  'Month':'شهر',
-  'Attendance Request':"طلب الحضور",
-  "New":"جديد",
-  'Date & Time':'التاريخ والوقت',
-  'Promotion Requests':'طلبات الترويج',
-  "Manager":"مدير",
-  "Chief":"رئيس",
-  "Supervisor":"مشرف",
-  "Delete":"يمسح",
-  'Print':'مطبعة',
-  'Log':'سجل',
-  "Draft":"مسودة",
-  'Doc No:':'رقم المستند:',
-  "Doc Date:":"تاريخ المستند:",
-  'Document Actions':"إجراءات المستند",
-  'References':'مراجع',
-  'Attachments':"المرفقات",
-  'Drafts':"المسودات",
-  'Document List':"قائمة المستندات",
-  'Notes':'ملحوظات',
-  
+let translations: Record<string, string> = {};
+let newWordsBuffer: [string, string][] = []; // Array to store new words
+let logTimeout: NodeJS.Timeout | null = null; // Timeout for batching logs
 
-   // Add more translations as needed
- };
- 
- export const getLanguageByEnglish = (english: string): string => {
-   const { isRtl } = useDirection();
- 
-   if (isRtl) {
-     return englishToArabic[english] || english; // Return Arabic if available, else fallback to English
-   }
- 
-   return english; // Return English by default
- };
- 
+// Function to read translations from Excel
+const loadTranslationsFromExcel = async () => {
+  try {
+    const response = await fetch('/Updatedtranslations.xlsx');
+    const data = await response.arrayBuffer();
+    const workbook = XLSX.read(data, { type: 'array' });
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1 });
+
+    // Convert Excel data into a key-value object
+    jsonData.forEach(([english, arabic]) => {
+      if (english) {
+        translations[english] = arabic || '';
+      }
+    });
+  } catch (error) {
+    console.error('Error loading translations:', error);
+  }
+};
+
+// Function to log new translations in batches
+const logNewTranslations = () => {
+  if (logTimeout) clearTimeout(logTimeout); // Clear previous timeout if any
+
+  logTimeout = setTimeout(() => {
+    if (newWordsBuffer.length > 0) {
+      // Copy the buffer to avoid mutation issues during logging
+      const bufferCopy = [...newWordsBuffer];
+      newWordsBuffer = []; // Clear the buffer
+
+      console.log('New words added to translations:', bufferCopy);
+    }
+  }, 500); // Batch log every 500ms
+};
+
+// Load translations on initial run
+loadTranslationsFromExcel();
+
+export const getLanguageByEnglish = (english: string): string => {
+  const { isRtl } = useDirection();
+
+  if (!translations[english]) {
+    // Add missing word to translations with an empty Arabic value
+    translations[english] = '';
+
+    // Store the new word in the buffer
+    newWordsBuffer.push([english, '']);
+
+    // Log the new translations
+    logNewTranslations();
+  }
+
+  // Return Arabic if available and direction is RTL, else return English
+  return isRtl ? translations[english] || english : english;
+};

@@ -13,7 +13,7 @@ interface EmployeeData {
   Remarks: string | null;
   NPBalance: string | null;
   LeaveType: string | null;
-  RowId:number;
+  RowId:number | null;
 }
 
 
@@ -60,7 +60,11 @@ const LeaveManagement = ({ data, updateEmployeeData }: LeaveManagementProps) => 
     { EmpCode: 2, Employee: 'Jane Smith', CPR: '654321', NPBalance: '15', LeaveType: 'Sick' },
     { EmpCode: 3, Employee: 'Alice Johnson', CPR: '789012', NPBalance: '8', LeaveType: 'Annual' },
   ];
-
+  const lookup = [
+    { EmpCode: 1, Employee: 'John Doe' },
+    { EmpCode: 2, Employee: 'Jane Smith' },
+    { EmpCode: 3, Employee: 'Alice Johnson' },
+  ];
   // Update leave data when the incoming prop `data` changes
   useEffect(() => {
     if (data && data.length > 0) {
@@ -115,14 +119,14 @@ const handleValuesChange = (changedValues:any) => {
               LeaveType: 'LeaveType',
             },
           },
-          { dataField: 'Employee', caption: 'Employee' },
-          { dataField: 'CPR', caption: 'CPR' },
-          { dataField: 'FromDate', caption: 'From Date', dataType: 'date' },
+          { dataField: 'Employee', caption: 'Employee', disabled:true },
+          { dataField: 'CPR', caption: 'CPR', disabled:true },
+          { dataField: 'FromDate', caption: 'From Date', dataType: 'date', },
           { dataField: 'ToDate', caption: 'To Date', dataType: 'date' },
           { dataField: 'NoDays', caption: 'No Days', disabled:true ,formula: 'ToDate - FromDate',  },
           { dataField: 'Entitled', caption: 'Entitled' },
           { dataField: 'Remarks', caption: 'Remarks' },
-          { dataField: 'NPBalance', caption: 'NP Balance' },
+          { dataField: 'NPBalance', caption: 'NP Balance', disabled:true },
           {
             dataField: 'LeaveType',
             caption: 'Leave Type',
@@ -135,6 +139,8 @@ const handleValuesChange = (changedValues:any) => {
         lastColumn="LeaveType"
         watchColumns={['FromDate','ToDate']}
         onValuesChange={handleValuesChange}
+        PopKeyExp="EmpCode"
+        // GridKeyExp = "EmpCode"
       />
     </div>
   );

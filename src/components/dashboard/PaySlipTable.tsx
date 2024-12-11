@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid, Column, Paging, Scrolling, Pager } from 'devextreme-react/data-grid';
 import { getPaySlipData, PaySlipRow } from '../Menu/data/paySlipData'; // Assume this function fetches PaySlip data
 import { getLanguageByEnglish } from '@/utils/languages';
+import { useDirection } from '@/app/DirectionContext';
 const PaySlipTable: React.FC = () => {
   // Define columns with specified widths
   const [columns] = useState([
@@ -21,7 +22,7 @@ const PaySlipTable: React.FC = () => {
     const paySlipData = getPaySlipData(); // Fetches the data
     setRows(paySlipData);
   }, []);
-
+  const { isRtl } = useDirection();
   return (
     <div
       className="bg-white shadow-lg rounded-lg p-4"
@@ -59,7 +60,7 @@ const PaySlipTable: React.FC = () => {
         showBorders={false}
         rowAlternationEnabled={false}
         hoverStateEnabled={true}
-        rtlEnabled={true} // Enable RTL layout for DataGrid
+        rtlEnabled={isRtl} // Enable RTL layout for DataGrid
         height={650}
         columnAutoWidth={false} // Disable auto width as we have specific column widths
         noDataText=""
